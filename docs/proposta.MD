@@ -1,3 +1,11 @@
+<!-- COMO FAZER O COMMIT -->
+<!-- git add .
+git commit -m "mensagem do commit"
+git checkout main
+git pull origin main
+git merge nome-da-sua-branch
+git push origin main -->
+
 ## 1. Nome provisório do jogo
 
 Informe o nome provisório do jogo.
@@ -21,7 +29,7 @@ Informe o nome provisório do jogo.
 
 **Como esse tema se relaciona com o jogo?**
 
-> O jogador deverá analisar documentos, respostas e pistas para decidir quem pode entrar na área protegida. Autorizar uma IA disfarçada ou impedir a entrada de um humano contará como erro, afetando a pontuação/vida do jogador. Assim, conferir informações e avaliar as evidências serão ações necessárias para vencer.
+> O jogador deverá analisar documentos, respostas e pistas para decidir quem pode entrar na área protegida. Autorizar uma IA disfarçada ou impedir a entrada de um humano contará como erro, afetando a vida do jogador. Assim, conferir informações e avaliar as evidências serão ações necessárias para vencer.
 
 ## 4. Tipo de jogo
 
@@ -33,7 +41,7 @@ Informe o nome provisório do jogo.
 
 **Descrição:**
 
-> Na tela aparecerá um posto de fiscalização, com um personagem em primeira pessoal, por vez solicitando entrada na área protegida. O jogador usará o mouse para consultar documentos, selecionar perguntas e analisar as respostas antes de autorizar ou negar o acesso. O desafio será identificar contradições e reunir pistas para distinguir humanos de IAs disfarçadas, sem decidir apenas pela aparência. Cada decisão correta renderá (pontos?), enquanto os erros comprometerão o desempenho e poderão (perder pontos?/perder vida?) ou até mesmo encerrar a partida dependendo da quantidade de pontos perdida. 
+> Na tela aparecerá um posto de fiscalização, com um personagem em primeira pessoal, por vez solicitando entrada na área protegida. O jogador usará o mouse para consultar documentos, selecionar perguntas e analisar as respostas antes de autorizar ou negar o acesso. O desafio será identificar contradições e reunir pistas para distinguir humanos de IAs disfarçadas, sem decidir apenas pela aparência. Cada decisão correta renderá pontos que serão expostos ao final, enquanto os erros comprometerão a vida do jogador, a cada erro um coração de vida é perdido, caso perca todos os corações (3 corações) a partida é encerrada e mostra o relatório final. 
 
 ## 6. Objetivo do jogador
 
@@ -53,7 +61,7 @@ Informe o nome provisório do jogo.
 
 **Condição de vitória:**
 
-> O jogador vence ao concluir os (x) atendimentos com pelo menos uma vida restante. Ao final, será exibida o número de decisões corretas.
+> O jogador vence ao concluir 10 atendimentos com pelo menos uma vida restante. Ao final, será exibida o número de decisões corretas.
 
 ## 9. Condição de derrota ou encerramento
 
@@ -66,11 +74,11 @@ Informe o nome provisório do jogo.
 - **Personagem ou elemento principal:**
 > Visão em primeira pessoa 
 - **Obstáculos ou desafios:**
-> Identificar se é humano ou uma Ia
+> A identificação de personagem, se é uma IA ou um humano
 - **Itens ou objetos de interação (se houver):**
-> Documentos, Botão de aceitar ou rejeitar, conversa, cénario.
+> Documentos, Botão de aceitar ou rejeitar, dialogo, cénario.
 - **Pontuação, vidas, tempo ou progresso:**
-> O jogo será feito utilizando sistema de vidas. Caso o jogador deixe uma Ia entrar ou rejeite um humano perderá vida. 
+> O jogo será feito utilizando sistema de vidas. Caso o jogador deixe uma Ia entrar na área segura ou rejeite a entrada de um humano, perderá vida. 
 
 ## 11. Controles previstos
 
@@ -81,14 +89,14 @@ Informe o nome provisório do jogo.
 ## 12. Principais dificuldades esperadas
 
 - Dificuldade 1: Criação de vários modelos de personagens e seus diálogos 
-- Dificuldade 2: Adicionar os sons 
-- Dificuldade 3: Cenário 
+- Dificuldade 2: Adicionar sons, como na interação com o cenário
+- Dificuldade 3: Design de cenário e interação com o mesmo
 
 ## 13. Escopo mínimo para a entrega final
 
 **Escopo mínimo:**
 
-> Cenário com todos os elementos necessários para a interação das mecânicas, ao menos 3 modelos de personagens que terão as características "humano" ou "ia" sorteadas, garantindo que as partidas não sejam sempre iguais e efeitos sonoros suficientes para trazer mais imersão e diminuir possível tédio do jogador.
+> Cenário com todos os elementos necessários para a interação das mecânicas, 10 modelos de personagens que terão as características "humano" ou "ia" sorteadas, garantindo que as partidas não sejam sempre iguais e efeitos sonoros suficientes para trazer mais imersão e diminuir possível tédio do jogador.
 
 ## 14. Possíveis melhorias, caso haja tempo
 
