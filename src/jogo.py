@@ -25,6 +25,20 @@ def executar_jogo():
     tampo_balcao = pygame.Rect(0, 450, LARGURA_TELA, 90)
     frente_balcao = pygame.Rect(0, 540, LARGURA_TELA, ALTURA_TELA - 540)
 
+#========================DOCUMENTO=========================
+    documento = pygame.Rect(40, 470, 150, 48)
+    documento_aberto = False # True = aberta / False = fechada
+
+    fonte = pygame.font.Font(None, 26) #(None = fonte padrão do pygame) e 26 é o tamanho definido
+
+    # Transforma o "passe de entrada" em uma surface e o True suaviza a fonte
+    rotulo_documento = fonte.render("Passe de entrada", True, (30, 35, 42)) 
+    texto_passe = fonte.render("Passe V-014 / Setor 3", True, (30, 35, 42))
+    nome_visitante = fonte.render("Portador: Alex Moraes", True, (30, 35, 42))
+
+    # A mesma área é usada para desenhar a ficha e verificar cliques dentro dela.
+    ficha_documento = pygame.Rect(210, 395, 380, 115)
+
 #=======================================================
 
     tela = pygame.display.set_mode((LARGURA_TELA, ALTURA_TELA))
@@ -37,7 +51,13 @@ def executar_jogo():
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 rodando = False
-        
+
+            elif evento.type == pygame.MOUSEBUTTONDOWN and evento.button == 1:
+                # O passe alterna o estado da ficha. Clicar fora dela fecha a leitura.
+                if documento.collidepoint(evento.pos):
+                    documento_aberto = not documento_aberto
+                elif not ficha_documento.collidepoint(evento.pos):
+                    documento_aberto = False
 
         # Pinta a parede da cabine antes de desenhar os outros elementos.
         tela.fill(CINZA)
@@ -57,6 +77,15 @@ def executar_jogo():
         # O tampo mais claro diferencia a superfície da frente do balcão.
         pygame.draw.rect(tela, (61, 66, 75), tampo_balcao)
         pygame.draw.rect(tela, (38, 42, 49), frente_balcao)
+
+        pygame.draw.rect(tela, (225, 214, 184), documento)
+        tela.blit(rotulo_documento, rotulo_documento.get_rect(center=documento.center))
+
+        if documento_aberto:
+            # O passe fica visível no balcão. Os dados só aparecem com a ficha aberta.
+            pygame.draw.rect(tela, (242, 234, 211), ficha_documento)
+            tela.blit(texto_passe, (230, 415))
+            tela.blit(nome_visitante, (230, 450))
 
         pygame.display.flip() # Exibe o quadro depois que todas as camadas foram desenhadas.
         relogio.tick(FPS)
