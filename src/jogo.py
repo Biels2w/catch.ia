@@ -25,7 +25,7 @@ def executar_jogo():
     tampo_balcao = pygame.Rect(0, 450, LARGURA_TELA, 90)
     frente_balcao = pygame.Rect(0, 540, LARGURA_TELA, ALTURA_TELA - 540)
 
-#========================DOCUMENTO=========================
+#========================DOCUMENTOS=========================
     documento = pygame.Rect(40, 470, 150, 48)
     documento_aberto = False # True = aberta / False = fechada
 
@@ -38,6 +38,15 @@ def executar_jogo():
 
     # A mesma área é usada para desenhar a ficha e verificar cliques dentro dela.
     ficha_documento = pygame.Rect(210, 395, 380, 115)
+
+    # Pasta clicável sobre o balcão
+    sombra_pasta = pygame.Rect(32, 468, 174, 62)
+    pasta = pygame.Rect(28, 462, 174, 62)
+    aba_pasta = pygame.Rect(40, 452, 60, 14)
+
+#========================LUMINÁRIA=========================
+    # Base da luminária no canto direito do balcão.
+    base_luminaria = pygame.Rect(700, 480, 78, 10)
 
 #=======================================================
 
@@ -86,6 +95,30 @@ def executar_jogo():
             pygame.draw.rect(tela, (242, 234, 211), ficha_documento)
             tela.blit(texto_passe, (230, 415))
             tela.blit(nome_visitante, (230, 450))
+
+        # Desenha a pasta do fundo pra frente.
+        pygame.draw.rect(tela, (65, 47, 30), sombra_pasta)
+        pygame.draw.rect(tela, (180, 153, 100), aba_pasta)
+        pygame.draw.rect(tela, (201, 176, 126), pasta)
+
+        # Braços articulados da luminária.
+        pygame.draw.line(tela, (40, 44, 50), (738, 480), (765, 410), 10)
+        pygame.draw.line(tela, (40, 44, 50), (765, 410), (714, 370), 10)
+
+        # Os trem que conectam os braços (esqueci o nome).
+        pygame.draw.circle(tela, (73, 78, 85), (765, 410), 9)
+        pygame.draw.circle(tela, (73, 78, 85), (714, 370), 8)
+
+        # Cabeça da luminária, ligada por 4 pontos em sequencia
+        pygame.draw.polygon(
+        tela,
+        (48, 53, 60),
+        [(699, 365), (721, 365), (736, 397), (683, 397)])
+
+        # Parte iluminada da lâmpada e base de apoio.
+        pygame.draw.ellipse(tela, (255, 218, 135), (686, 391, 47, 10))
+        pygame.draw.rect(tela, (40, 44, 50), base_luminaria)
+
 
         pygame.display.flip() # Exibe o quadro depois que todas as camadas foram desenhadas.
         relogio.tick(FPS)
