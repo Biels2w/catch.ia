@@ -31,6 +31,10 @@ def executar_jogo():
 
     fonte = pygame.font.Font(None, 26) #(None = fonte padrão do pygame) e 26 é o tamanho definido
 
+    fonte_rotulo = pygame.font.Font(None, 20)
+    rotulo_documento = fonte_rotulo.render(
+    "Passe de entrada", True, (30, 35, 42))
+
     # Transforma o "passe de entrada" em uma surface e o True suaviza a fonte
     rotulo_documento = fonte.render("Passe de entrada", True, (30, 35, 42)) 
     texto_passe = fonte.render("Passe V-014 / Setor 3", True, (30, 35, 42))
