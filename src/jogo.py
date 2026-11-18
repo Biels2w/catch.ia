@@ -113,10 +113,15 @@ def executar_jogo():
         pygame.draw.polygon(
         tela,
         (48, 53, 60),
-        [(699, 365), (721, 365), (736, 397), (683, 397)])
+        [(702, 360), (722, 368), (725, 403), (676, 385)])
 
-        # Parte iluminada da lâmpada e base de apoio.
-        pygame.draw.ellipse(tela, (255, 218, 135), (686, 391, 47, 10))
+        # Faz a luz acompanhar a luminária
+        pygame.draw.line(tela,
+        (255, 218, 135),
+        (679, 386),
+        (722, 402),
+        6)
+
         pygame.draw.rect(tela, (40, 44, 50), base_luminaria)
 
 
