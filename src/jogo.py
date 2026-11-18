@@ -26,7 +26,7 @@ def executar_jogo():
     frente_balcao = pygame.Rect(0, 540, LARGURA_TELA, ALTURA_TELA - 540)
 
 #========================DOCUMENTOS=========================
-    documento = pygame.Rect(40, 470, 150, 48)
+    documento = pygame.Rect(40, 470, 116, 48)
     documento_aberto = False # True = aberta / False = fechada
 
     fonte = pygame.font.Font(None, 26) #(None = fonte padrão do pygame) e 26 é o tamanho definido
@@ -40,9 +40,9 @@ def executar_jogo():
     ficha_documento = pygame.Rect(210, 395, 380, 115)
 
     # Pasta clicável sobre o balcão
-    sombra_pasta = pygame.Rect(32, 468, 174, 62)
-    pasta = pygame.Rect(28, 462, 174, 62)
-    aba_pasta = pygame.Rect(40, 452, 60, 14)
+    sombra_pasta = pygame.Rect(32, 468, 140, 70)
+    pasta = pygame.Rect(28, 462, 140, 70)
+    aba_pasta = pygame.Rect(40, 452, 48, 18)
 
 #========================LUMINÁRIA=========================
     # Base da luminária no canto direito do balcão.
