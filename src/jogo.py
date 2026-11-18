@@ -26,7 +26,7 @@ def executar_jogo():
     frente_balcao = pygame.Rect(0, 540, LARGURA_TELA, ALTURA_TELA - 540)
 
 #========================DOCUMENTOS=========================
-    documento = pygame.Rect(40, 470, 116, 48)
+    documento = pygame.Rect(40, 470, 116, 58)
     documento_aberto = False # True = aberta / False = fechada
 
     fonte = pygame.font.Font(None, 26) #(None = fonte padrão do pygame) e 26 é o tamanho definido
