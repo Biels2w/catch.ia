@@ -52,6 +52,27 @@ def executar_jogo():
     # Base da luminária no canto direito do balcão.
     base_luminaria = pygame.Rect(700, 480, 78, 10)
 
+    luminaria_acesa = True
+    area_luminaria = pygame.Rect(675, 350, 110, 145)
+
+    # Camada transparente para desenhar a iluminação (se não sobrepõe a imagem do fundo)
+    iluminacao = pygame.Surface(
+    (LARGURA_TELA, ALTURA_TELA), pygame.SRCALPHA)
+
+    # Feixe de luz em direção do balcão 
+    pygame.draw.polygon(
+        iluminacao,
+        (255, 215, 130, 25),
+        [(679, 386), (722, 402), (720, 525), (520, 525)],
+    )
+
+    # Manchas de luz sobre a mesa/balcão
+    pygame.draw.ellipse(
+        iluminacao, (255, 215, 130, 40), (520, 480, 210, 48)
+    )
+    pygame.draw.ellipse(
+        iluminacao, (255, 215, 130, 55), (550, 487, 150, 32))
+
 #=======================================================
 
     tela = pygame.display.set_mode((LARGURA_TELA, ALTURA_TELA))
@@ -66,9 +87,12 @@ def executar_jogo():
                 rodando = False
 
             elif evento.type == pygame.MOUSEBUTTONDOWN and evento.button == 1:
-                # O passe alterna o estado da ficha. Clicar fora dela fecha a leitura.
-                if documento.collidepoint(evento.pos):
+                if area_luminaria.collidepoint(evento.pos):
+                    luminaria_acesa = not luminaria_acesa
+
+                elif documento.collidepoint(evento.pos):
                     documento_aberto = not documento_aberto
+
                 elif not ficha_documento.collidepoint(evento.pos):
                     documento_aberto = False
 
@@ -90,6 +114,10 @@ def executar_jogo():
         # O tampo mais claro diferencia a superfície da frente do balcão.
         pygame.draw.rect(tela, (61, 66, 75), tampo_balcao)
         pygame.draw.rect(tela, (38, 42, 49), frente_balcao)
+
+        # Sobrepõe a iluminação ao cenário quando a luminária está acesa.
+        if luminaria_acesa: # Tem que desenhar antes dos items em cima da mesa
+            tela.blit(iluminacao, (0, 0))
 
         pygame.draw.rect(tela, (225, 214, 184), documento)
         tela.blit(rotulo_documento, rotulo_documento.get_rect(center=documento.center))
@@ -119,12 +147,19 @@ def executar_jogo():
         (48, 53, 60),
         [(702, 360), (722, 368), (725, 403), (676, 385)])
 
-        # Faz a luz acompanhar a luminária
-        pygame.draw.line(tela,
-        (255, 218, 135),
-        (679, 386),
-        (722, 402),
-        6)
+# A lâmpada fica amarela quando acesa e cinza quando apagada.
+        if luminaria_acesa:
+            cor_lampada = (255, 218, 135)
+        else:
+            cor_lampada = (85, 85, 80)
+
+        pygame.draw.line(
+            tela,
+            cor_lampada,
+            (679, 386),
+            (722, 402),
+            6,
+)
 
         pygame.draw.rect(tela, (40, 44, 50), base_luminaria)
 
