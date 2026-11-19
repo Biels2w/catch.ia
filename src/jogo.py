@@ -103,6 +103,13 @@ def executar_jogo():
     tela = pygame.display.set_mode((LARGURA_TELA, ALTURA_TELA))
     pygame.display.set_caption(TITULO_JOGO)
 
+    #=====================SPRITE CHÃO=====================
+    # Carrega a textura e ajusta ao tamanho do chão externo.
+    textura_chao = pygame.image.load("assets/imagens/floor.png").convert()
+    textura_chao = pygame.transform.scale(textura_chao, chao_externo.size)
+
+    
+
     relogio = pygame.time.Clock()
     rodando = True
 
@@ -132,7 +139,8 @@ def executar_jogo():
         # O muro e o chão cobrem a parte inferior da abertura.
         # A faixa azulada que sobra acima deles representa o céu.
         pygame.draw.rect(tela, (60, 68, 80), muro_externo)
-        pygame.draw.rect(tela, (47, 56, 68), chao_externo)
+        # Desenha a textura na posição do chão externo.
+        tela.blit(textura_chao, chao_externo)
         pygame.draw.rect(tela, (29, 33, 39), peitoril)
 
         # Balcão
