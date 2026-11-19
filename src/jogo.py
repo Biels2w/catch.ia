@@ -73,6 +73,31 @@ def executar_jogo():
     pygame.draw.ellipse(
         iluminacao, (255, 215, 130, 55), (550, 487, 150, 32))
 
+    # Define onde a iluminação pode aparecer.
+    mascara_luz = pygame.Surface(
+        (LARGURA_TELA, ALTURA_TELA), pygame.SRCALPHA
+    )
+
+    # Permite o feixe acima do balcão.
+    pygame.draw.rect(
+        mascara_luz,
+        (255, 255, 255, 255),
+        (0, 0, LARGURA_TELA, tampo_balcao.top),
+    )
+
+    # Sobre a mesa, permite luz somente dentro da área oval.
+    pygame.draw.ellipse(
+        mascara_luz,
+        (255, 255, 255, 255),
+        (520, 480, 210, 48),
+    )
+
+    # Recorta a iluminação conforme a máscara.
+    iluminacao.blit(
+        mascara_luz,
+        (0, 0),
+        special_flags=pygame.BLEND_RGBA_MULT, )
+
 #=======================================================
 
     tela = pygame.display.set_mode((LARGURA_TELA, ALTURA_TELA))
