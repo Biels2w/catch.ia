@@ -52,7 +52,7 @@ def executar_jogo():
     # Base da luminária no canto direito do balcão.
     base_luminaria = pygame.Rect(700, 480, 78, 10)
 
-    luminaria_acesa = True
+    luminaria_acesa = False
     area_luminaria = pygame.Rect(675, 350, 110, 145)
 
     # Camada transparente para desenhar a iluminação (se não sobrepõe a imagem do fundo)
