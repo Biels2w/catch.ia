@@ -108,7 +108,10 @@ def executar_jogo():
     textura_chao = pygame.image.load("assets/imagens/floor.png").convert()
     textura_chao = pygame.transform.scale(textura_chao, chao_externo.size)
 
-    
+    #=====================SPRITE MURO=====================
+    # Carrega a imagem e ajusta ao tamanho do muro.
+    textura_muro = pygame.image.load("assets/imagens/muro.png").convert()
+    textura_muro = pygame.transform.scale(textura_muro, muro_externo.size)
 
     relogio = pygame.time.Clock()
     rodando = True
@@ -138,7 +141,7 @@ def executar_jogo():
         # Vista externa
         # O muro e o chão cobrem a parte inferior da abertura.
         # A faixa azulada que sobra acima deles representa o céu.
-        pygame.draw.rect(tela, (60, 68, 80), muro_externo)
+        tela.blit(textura_muro, muro_externo)
         # Desenha a textura na posição do chão externo.
         tela.blit(textura_chao, chao_externo)
         pygame.draw.rect(tela, (29, 33, 39), peitoril)
