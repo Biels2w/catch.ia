@@ -39,10 +39,6 @@ def executar_jogo():
 
     fonte = pygame.font.Font(None, 26) #(None = fonte padrão do pygame) e 26 é o tamanho definido
 
-    fonte_rotulo = pygame.font.Font(None, 20)
-    rotulo_documento = fonte_rotulo.render(
-    "Passe de entrada", True, (30, 35, 42))
-
     # Transforma o "passe de entrada" em uma surface e o True suaviza a fonte
     rotulo_documento = fonte.render("Passe de entrada", True, (30, 35, 42)) 
     texto_passe = fonte.render("Passe V-014 / Setor 3", True, (30, 35, 42))
@@ -160,6 +156,15 @@ def executar_jogo():
         (135, 135, 135), special_flags=pygame.BLEND_RGB_MULT
 )
 
+    #=====================SPRITE ARQUIVO=====================
+    sprite_arquivo = pygame.image.load(
+    "assets/imagens/arquivo.png"
+    ).convert_alpha()
+
+    sprite_arquivo = pygame.transform.scale(
+    sprite_arquivo, (pasta.width, pasta.bottom - aba_pasta.top)
+)
+    #=======================================================
     relogio = pygame.time.Clock()
     rodando = True
 
@@ -192,11 +197,11 @@ def executar_jogo():
         tela.blit(textura_chao, chao_externo)
         tela.blit(textura_peitoril, peitoril)
 
-        # Balcão em primeiro plano.
+        # Balcão em primeiro plano (visto de frente).
         tela.blit(textura_tampo, tampo_balcao)
         tela.blit(textura_frente, frente_balcao)
 
-        # Sombra projetada pela borda do tampo sobre a frente.
+        # Sombra projetada pela borda do tampo sobre a frente do balcão.
         pygame.draw.rect(
         tela,
         (40, 26, 18),
@@ -211,19 +216,13 @@ def executar_jogo():
         if luminaria_acesa: # Tem que desenhar antes dos items em cima da mesa
             tela.blit(iluminacao, (0, 0))
 
-        pygame.draw.rect(tela, (225, 214, 184), documento)
-        tela.blit(rotulo_documento, rotulo_documento.get_rect(center=documento.center))
+        tela.blit(sprite_arquivo, (pasta.left, aba_pasta.top))
 
         if documento_aberto:
             # O passe fica visível no balcão. Os dados só aparecem com a ficha aberta.
             pygame.draw.rect(tela, (242, 234, 211), ficha_documento)
             tela.blit(texto_passe, (230, 415))
             tela.blit(nome_visitante, (230, 450))
-
-        # Desenha a pasta do fundo pra frente.
-        pygame.draw.rect(tela, (65, 47, 30), sombra_pasta)
-        pygame.draw.rect(tela, (180, 153, 100), aba_pasta)
-        pygame.draw.rect(tela, (201, 176, 126), pasta)
 
         # Braços articulados da luminária.
         pygame.draw.line(tela, (40, 44, 50), (738, 480), (765, 410), 10)
