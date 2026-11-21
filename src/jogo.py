@@ -125,6 +125,30 @@ def executar_jogo():
     textura_ceu = pygame.image.load("assets/imagens/ceu.png").convert()
     textura_ceu = pygame.transform.scale(textura_ceu, ceu_externo.size)
 
+    #=====================SPRITE PAREDE=====================
+    # Parede ajustada ao tamanho da tela.
+    textura_parede = pygame.image.load("assets/imagens/parede.png").convert()
+    textura_parede = pygame.transform.scale(
+        textura_parede, (LARGURA_TELA, ALTURA_TELA)
+    )
+
+    #=====================SPRITE MOLDURA JANELA=====================
+    # A mesma imagem de metal serve para a moldura e o peitoril.
+    imagem_metal = pygame.image.load("assets/imagens/moldura.png").convert()
+    textura_moldura = pygame.transform.scale(imagem_metal, moldura_janela.size)
+    textura_peitoril = pygame.transform.scale(imagem_metal, peitoril.size)
+
+    #=====================SPRITE BALCÃO=====================
+    # Madeira para o tampo e a frente do balcão.
+    imagem_madeira = pygame.image.load("assets/imagens/balcao.png").convert()
+    textura_tampo = pygame.transform.scale(imagem_madeira, tampo_balcao.size)
+    textura_frente = pygame.transform.scale(imagem_madeira, frente_balcao.size)
+
+    # Escurece a frente para dar profundidade ao balcão.
+    textura_frente.fill(
+    (165, 165, 165), special_flags=pygame.BLEND_RGB_MULT
+)
+
     relogio = pygame.time.Clock()
     rodando = True
 
@@ -146,21 +170,20 @@ def executar_jogo():
         # Pinta a parede da cabine antes de desenhar os outros elementos.
         tela.fill(CINZA)
 
-        #Moldura e abertura janela
-        pygame.draw.rect(tela, (35, 40, 46), moldura_janela)
+        # A parede cobre o fundo inteiro.
+        tela.blit(textura_parede, (0, 0))
+
+        # A vista externa cobre o centro da textura metálica,
+        # deixando apenas as bordas da moldura aparentes.
+        tela.blit(textura_moldura, moldura_janela)
         tela.blit(textura_ceu, ceu_externo)
-
-        # Vista externa
-        # O muro e o chão cobrem a parte inferior da abertura.
         tela.blit(textura_muro, muro_externo)
-        # Desenha a textura na posição do chão externo.
         tela.blit(textura_chao, chao_externo)
-        pygame.draw.rect(tela, (29, 33, 39), peitoril)
+        tela.blit(textura_peitoril, peitoril)
 
-        # Balcão
-        # O tampo mais claro diferencia a superfície da frente do balcão.
-        pygame.draw.rect(tela, (61, 66, 75), tampo_balcao)
-        pygame.draw.rect(tela, (38, 42, 49), frente_balcao)
+        # Balcão em primeiro plano.
+        tela.blit(textura_tampo, tampo_balcao)
+        tela.blit(textura_frente, frente_balcao)
 
         # Sobrepõe a iluminação ao cenário quando a luminária está acesa.
         if luminaria_acesa: # Tem que desenhar antes dos items em cima da mesa
