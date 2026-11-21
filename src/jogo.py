@@ -144,9 +144,20 @@ def executar_jogo():
     textura_tampo = pygame.transform.scale(imagem_madeira, tampo_balcao.size)
     textura_frente = pygame.transform.scale(imagem_madeira, frente_balcao.size)
 
-    # Escurece a frente para dar profundidade ao balcão.
+    # Gira a madeira para deixar os veios na vertical.
+    madeira_vertical = pygame.transform.rotate(imagem_madeira, 90)
+    textura_frente = pygame.transform.scale(
+    madeira_vertical, frente_balcao.size
+)
+    # Gira a madeira para deixar os veios na vertical.
+    madeira_vertical = pygame.transform.rotate(imagem_madeira, 90)
+
+    textura_frente = pygame.transform.scale(
+    madeira_vertical, frente_balcao.size)
+
+    # A frente recebe menos luz que o tampo.
     textura_frente.fill(
-    (165, 165, 165), special_flags=pygame.BLEND_RGB_MULT
+        (135, 135, 135), special_flags=pygame.BLEND_RGB_MULT
 )
 
     relogio = pygame.time.Clock()
@@ -184,6 +195,17 @@ def executar_jogo():
         # Balcão em primeiro plano.
         tela.blit(textura_tampo, tampo_balcao)
         tela.blit(textura_frente, frente_balcao)
+
+        # Sombra projetada pela borda do tampo sobre a frente.
+        pygame.draw.rect(
+        tela,
+        (40, 26, 18),
+        (
+        frente_balcao.left,
+        frente_balcao.top,
+        frente_balcao.width,
+        8)
+)
 
         # Sobrepõe a iluminação ao cenário quando a luminária está acesa.
         if luminaria_acesa: # Tem que desenhar antes dos items em cima da mesa
