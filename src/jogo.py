@@ -20,6 +20,14 @@ def executar_jogo():
     chao_externo = pygame.Rect(152, 290, 496, 68)
     peitoril = pygame.Rect(132, 358, 536, 16)
 
+    # Ocupa o espaço entre o topo da abertura e o muro.
+    ceu_externo = pygame.Rect(
+    abertura_janela.left,
+    abertura_janela.top,
+    abertura_janela.width,
+    muro_externo.top - abertura_janela.top,
+)
+
 #========================BALCÃO=========================
     # O balcão ocupa toda a largura da tela e vai até a borda inferior.
     tampo_balcao = pygame.Rect(0, 450, LARGURA_TELA, 90)
@@ -113,6 +121,10 @@ def executar_jogo():
     textura_muro = pygame.image.load("assets/imagens/muro.png").convert()
     textura_muro = pygame.transform.scale(textura_muro, muro_externo.size)
 
+    #=====================SPRITE CÉU=====================
+    textura_ceu = pygame.image.load("assets/imagens/ceu.png").convert()
+    textura_ceu = pygame.transform.scale(textura_ceu, ceu_externo.size)
+
     relogio = pygame.time.Clock()
     rodando = True
 
@@ -136,11 +148,10 @@ def executar_jogo():
 
         #Moldura e abertura janela
         pygame.draw.rect(tela, (35, 40, 46), moldura_janela)
-        pygame.draw.rect(tela, (77, 93, 155), abertura_janela)
+        tela.blit(textura_ceu, ceu_externo)
 
         # Vista externa
         # O muro e o chão cobrem a parte inferior da abertura.
-        # A faixa azulada que sobra acima deles representa o céu.
         tela.blit(textura_muro, muro_externo)
         # Desenha a textura na posição do chão externo.
         tela.blit(textura_chao, chao_externo)
