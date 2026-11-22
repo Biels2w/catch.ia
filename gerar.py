@@ -1,5 +1,9 @@
 """
+<<<<<<< HEAD
 Garoto castanho - versão IA "Circuitos Pulsantes" (mesmo estilo e mesma respiração da menina de roxo)
+=======
+Menina de cabelo preto - versão IA "Circuitos Pulsantes" (mesmo estilo e mesma respiração da menina de roxo)
+>>>>>>> 1fa965d65c84b596f650410068fb1166d5887254
 
 Gera, a partir de sprite_humano.png (nesta pasta):
   humano.gif / humano_estatico.png   versão humana respirando / parada
@@ -22,10 +26,17 @@ N = 56            # quadros por ciclo (2,24 s, mesmo tempo do GIF de referência
 MS = 40           # ms por quadro
 
 # ---------------- configuração deste personagem ----------------
+<<<<<<< HEAD
 NOME = 'Garoto castanho'
 COR = (160, 90, 255)                 # cor das linhas e dos olhos
 OLHOS = ((118, 262), (218, 262))             # centros dos olhos (px do sprite)
 QUEIXO, APICE, TESTA = 50, 58, (29, 23) # referências em unidades de 7 px
+=======
+NOME = 'Menina de cabelo preto'
+COR = (0, 205, 185)                 # cor das linhas e dos olhos
+OLHOS = ((120, 247), (215, 247))             # centros dos olhos (px do sprite)
+QUEIXO, APICE, TESTA = 49, 57, (29, 23) # referências em unidades de 7 px
+>>>>>>> 1fa965d65c84b596f650410068fb1166d5887254
 PRONTO = False           # True: a arte IA já vem pronta em sprite_ia.png (menina de roxo)
 GRADE = None             # None = mede a grade do sprite; ou (largura, altura) exatas de 1 pixel da arte
 RAIO_OLHO = (14, 16)          # raio (x, y) da íris em px
