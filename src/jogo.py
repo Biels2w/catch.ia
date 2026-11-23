@@ -283,10 +283,12 @@ def executar_jogo():
         sprite_jornal, area_jornal.size
     )
 
-    texto_boletim = fonte_parede.render(
+    fonte_titulo_jornal = pygame.font.Font(None, 14)
+
+    texto_boletim = fonte_titulo_jornal.render(
         "BOLETIM", True, (55, 48, 39)
     )
-    texto_refugio = fonte_parede.render(
+    texto_refugio = fonte_titulo_jornal.render(
         "DO REFÚGIO", True, (55, 48, 39)
 )
 
@@ -385,16 +387,14 @@ def executar_jogo():
         tela.blit(
             texto_boletim,
             texto_boletim.get_rect(
-                center=(area_jornal.centerx, area_jornal.top + 23)
+                center=(area_jornal.centerx, area_jornal.top + 21)
             ),
         )
         tela.blit(
             texto_refugio,
             texto_refugio.get_rect(
-                center=(area_jornal.centerx, area_jornal.top + 36)
-            ),
-        )
-
+                center=(area_jornal.centerx, area_jornal.top + 32)
+            ))
 #==========================================================================
 
         # A vista externa cobre o centro da textura metálica,
@@ -576,6 +576,8 @@ def executar_jogo():
                     fonte,
                     fonte_consulta,
                 )
+
+            
 
 
         pygame.display.flip() # Exibe o quadro depois que todas as camadas foram desenhadas.
