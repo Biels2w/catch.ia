@@ -40,7 +40,6 @@ def executar_jogo():
     fonte = pygame.font.Font(None, 26) #(None = fonte padrão do pygame) e 26 é o tamanho definido
 
     # Transforma o "passe de entrada" em uma surface e o True suaviza a fonte
-    rotulo_documento = fonte.render("Passe de entrada", True, (30, 35, 42)) 
     texto_passe = fonte.render("Passe V-014 / Setor 3", True, (30, 35, 42))
     nome_visitante = fonte.render("Portador: Alex Moraes", True, (30, 35, 42))
 
@@ -101,6 +100,20 @@ def executar_jogo():
         mascara_luz,
         (0, 0),
         special_flags=pygame.BLEND_RGBA_MULT, )
+
+#========================BOTÕES PERMISSÃO=========================
+
+    # Placa fixada na parede, à esquerda da janela.
+    base_botoes = pygame.Rect(24, 284, 96, 132)
+    botao_liberar = pygame.Rect(36, 300, 72, 40)
+    botao_recusar = pygame.Rect(36, 360, 72, 40)
+
+    # Nenhuma decisão foi tomada ao iniciar o atendimento.
+    decisao = None
+
+    fonte_botoes = pygame.font.Font(None, 18)
+    texto_liberar = fonte_botoes.render("LIBERAR", True, (255, 255, 255))
+    texto_recusar = fonte_botoes.render("RECUSAR", True, (255, 255, 255))
 
 #=======================================================
 
@@ -174,7 +187,15 @@ def executar_jogo():
                 rodando = False
 
             elif evento.type == pygame.MOUSEBUTTONDOWN and evento.button == 1:
-                if area_luminaria.collidepoint(evento.pos):
+                if botao_liberar.collidepoint(evento.pos):
+                    if decisao is None:
+                        decisao = "liberar"
+
+                elif botao_recusar.collidepoint(evento.pos):
+                    if decisao is None:
+                        decisao = "recusar"
+
+                elif area_luminaria.collidepoint(evento.pos):
                     luminaria_acesa = not luminaria_acesa
 
                 elif documento.collidepoint(evento.pos):
@@ -217,6 +238,25 @@ def executar_jogo():
             tela.blit(iluminacao, (0, 0))
 
         tela.blit(sprite_arquivo, (pasta.left, aba_pasta.top))
+
+        # Base metálica com uma borda mais clara.
+        pygame.draw.rect(tela, (35, 39, 45), base_botoes, border_radius=5)
+        pygame.draw.rect(
+            tela, (100, 105, 112), base_botoes, width=2, border_radius=5
+        )
+
+        # Botões de autorização e recusa.
+        pygame.draw.rect(
+            tela, (30, 125, 65), botao_liberar, border_radius=6
+        )
+        pygame.draw.rect(
+            tela, (165, 45, 45), botao_recusar, border_radius=6
+        )
+
+        # Centraliza os textos sobre os botões.
+        tela.blit(texto_liberar, texto_liberar.get_rect(center=botao_liberar.center))
+        tela.blit(texto_recusar, texto_recusar.get_rect(center=botao_recusar.center))
+
 
         if documento_aberto:
             # O passe fica visível no balcão. Os dados só aparecem com a ficha aberta.
