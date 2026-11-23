@@ -194,7 +194,16 @@ def executar_jogo():
     sprite_botoes = pygame.transform.scale(
         sprite_botoes, base_botoes.size)
 
-    
+    #=====================SPRITE FOLHAS DOCUMENTO=====================
+    # Ajusta a imagem ao tamanho da folha aberta.
+    sprite_folha = pygame.image.load(
+        "assets/imagens/folha_manual.png"
+    ).convert_alpha()
+
+    sprite_folha = pygame.transform.scale(
+        sprite_folha, ficha_documento.size
+)
+
     #=======================================================
     relogio = pygame.time.Clock()
     rodando = True
@@ -297,7 +306,8 @@ def executar_jogo():
                 (55, 43, 31),
                 ficha_documento.move(5, 5),
             )
-            pygame.draw.rect(tela, (242, 234, 211), ficha_documento)
+            # Desenha o papel antes dos textos e dos botões.
+            tela.blit(sprite_folha, ficha_documento)
 
             # Transforma o título em uma imagem e a coloca na folha.
             titulo_manual = fonte.render(
