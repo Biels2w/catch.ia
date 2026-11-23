@@ -13,7 +13,7 @@ MESES = (
 
 
 def desenhar_calendario(tela, area, data_partida, fonte, fonte_menor):
-    """Desenha o calendário sobre a folha que já está na tela."""
+    #Desenha o calendário sobre a folha que já está na tela.
     cor_texto = (45, 42, 36)
 
     titulo = fonte.render("CALENDÁRIO DO POSTO", True, cor_texto)
@@ -85,9 +85,10 @@ def desenhar_calendario(tela, area, data_partida, fonte, fonte_menor):
         aviso.get_rect(center=(area.centerx, area.bottom - 25)),
     )
 
+#==================================================================================
 
 def desenhar_jornal(tela, area, data_partida, noticias, fonte, fonte_menor):
-    """Desenha a edição semanal e seus avisos sobre a folha."""
+    #Desenha a edição semanal e seus avisos sobre a folha.
     cor_texto = (45, 42, 36)
 
     titulo = fonte.render("BOLETIM DO REFÚGIO", True, cor_texto)
@@ -142,4 +143,55 @@ def desenhar_jornal(tela, area, data_partida, noticias, fonte, fonte_menor):
     tela.blit(
         aviso,
         aviso.get_rect(center=(area.centerx, area.bottom - 18)),
+    )
+
+#==================================================================================
+
+def desenhar_livro(tela, area, fonte, fonte_menor):
+    #Desenha o conteúdo do livro sobre a folha já exibida pelo jogo.
+
+    cor_texto = (45, 42, 36)
+
+    # Render transforma o texto em uma imagem.
+    titulo = fonte.render(
+        "LIVRO DE OCORRÊNCIAS", True, cor_texto
+    )
+
+    # Centraliza o título usando a posição da folha recebida.
+    tela.blit(
+        titulo,
+        titulo.get_rect(center=(area.centerx, area.top + 38)),
+    )
+
+    # Separa o cabeçalho do espaço destinado aos registros.
+    pygame.draw.line(
+        tela,
+        (155, 140, 110),
+        (area.left + 20, area.top + 72),
+        (area.right - 20, area.top + 72),
+        2,
+    )
+
+    # Por enquanto, o livro apresenta uma página vazia.
+    mensagem = fonte_menor.render(
+        "Nenhuma ocorrência registrada.", True, cor_texto
+    )
+    tela.blit(mensagem, (area.left + 20, area.top + 105))
+
+    # Desenha as linhas da página, avançando 40 pixels por linha.
+    for y in range(area.top + 160, area.bottom - 60, 40):
+        pygame.draw.line(
+            tela,
+            (190, 177, 148),
+            (area.left + 20, y),
+            (area.right - 20, y),
+            1,
+        )
+
+    aviso = fonte_menor.render(
+        "Clique fora ou Esc para fechar.", True, cor_texto
+    )
+    tela.blit(
+        aviso,
+        aviso.get_rect(center=(area.centerx, area.bottom - 25)),
     )

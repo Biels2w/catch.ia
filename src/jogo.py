@@ -1,7 +1,7 @@
 import pygame
 
 from datetime import date
-from src.consultas import MESES, desenhar_calendario, desenhar_jornal
+from src.consultas import MESES, desenhar_calendario, desenhar_jornal, desenhar_livro
 
 from src.audio import carregar_audio, tocar_som
 from src.funcoes import desenhar_relogio
@@ -418,6 +418,13 @@ def executar_jogo():
                         documento_aberto = False
                         tocar_som(sons, "fechar")
 
+                elif area_livro.collidepoint(evento.pos):
+                    # Guarda qual consulta precisa aparecer na tela.
+                    consulta_aberta = "livro"
+
+                    # Reutiliza o efeito de papel já carregado.
+                    tocar_som(sons, "abrir")
+
                 elif area_calendario.collidepoint(evento.pos):
                     consulta_aberta = "calendario"
                     tocar_som(sons, "abrir")
@@ -742,6 +749,16 @@ def executar_jogo():
                     ficha_documento,
                     data_partida,
                     noticias_semana,
+                    fonte,
+                    fonte_consulta,
+                )
+
+            elif consulta_aberta == "livro":
+                # A folha e sua sombra já foram desenhadas acima.
+                # Esta função acrescenta apenas o conteúdo do livro.
+                desenhar_livro(
+                    tela,
+                    ficha_documento,
                     fonte,
                     fonte_consulta,
                 )
