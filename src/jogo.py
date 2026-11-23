@@ -5,7 +5,8 @@ from datetime import date
 from src.consultas import MESES, desenhar_calendario, desenhar_jornal, desenhar_livro
 
 from src.audio import carregar_audio, tocar_som
-from src.funcoes import desenhar_relogio
+from src.funcoes import desenhar_relogio, avaliar_decisao, desenhar_vidas
+from src.dados import carregar_ocorrencias, salvar_ocorrencias
 
 from src.config import LARGURA_TELA, ALTURA_TELA, FPS, TITULO_JOGO, CINZA, PRETO
 
@@ -17,6 +18,18 @@ def executar_jogo():
 
     # Carrega os efeitos uma única vez e inicia a trilha em repetição.
     sons = carregar_audio()
+
+#==================SISTEMA DE VIDAS==================
+    vidas = 3
+
+    # Recupera os atendimentos de execuções anteriores.
+    ocorrencias = carregar_ocorrencias()
+    pagina_livro = max(0, (len(ocorrencias) - 1) // 3)
+
+    # Camada transparente usada no efeito de captura.
+    camada_efeitos = pygame.Surface(
+        (LARGURA_TELA, ALTURA_TELA), pygame.SRCALPHA
+    )
 
 #========================JANELA=========================
     # retângulo recebe (x, y, largura, altura).
@@ -428,6 +441,9 @@ def executar_jogo():
         "tipo": None, # Será sorteado na chegada.
         "revelado": False, # Controla a exibição da identidade.
         "revelacao_ate": 0, # Momento em que poderá começar a sair.
+        "registrado": False,
+        "desfecho": "saindo",
+        "efeito_inicio": 0,
     }
     #=======================================================
     relogio = pygame.time.Clock()
@@ -443,6 +459,17 @@ def executar_jogo():
             if evento.type == pygame.QUIT:
                 rodando = False
 
+            elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_r and vidas == 0:
+                # Reinicia a partida sem apagar as ocorrências.
+                vidas = 3
+                decisao = None
+                visitante["estado"] = "ausente"
+                documento_aberto = False
+                consulta_aberta = None
+                inicio_turno = agora
+                proximo_toque = 0
+                aviso_campainha_ate = 0
+
             elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_ESCAPE:
                 # Só toca o fechamento se alguma consulta estava aberta.
                 if documento_aberto or consulta_aberta is not None:
@@ -454,7 +481,21 @@ def executar_jogo():
             elif evento.type == pygame.MOUSEBUTTONDOWN and evento.button == 1:
                 if consulta_aberta is not None:
                     # Clicar fora fecha a consulta e toca o efeito.
-                    if not ficha_documento.collidepoint(evento.pos):
+                    if consulta_aberta == "livro" and botao_anterior.collidepoint(evento.pos):
+                        if pagina_livro > 0:
+                            pagina_livro -= 1
+                            tocar_som(sons, "pagina")
+
+                    elif consulta_aberta == "livro" and botao_proximo.collidepoint(evento.pos):
+                        ultima = max(
+                            0, (len(ocorrencias) - 1) // 3
+                        )
+
+                        if pagina_livro < ultima:
+                            pagina_livro += 1
+                            tocar_som(sons, "pagina")
+
+                    elif not ficha_documento.collidepoint(evento.pos):
                         consulta_aberta = None
                         tocar_som(sons, "fechar")
 
@@ -495,27 +536,17 @@ def executar_jogo():
                     tocar_som(sons, "abrir")
 
                 elif botao_liberar.collidepoint(evento.pos):
-                    if decisao is None and visitante["estado"] == "aguardando":
+                    if vidas > 0 and decisao is None and visitante["estado"] == "aguardando":
                         decisao = "liberar"
                         tocar_som(sons, "botao")
 
-                        # Revela a aparência real antes da saída.
-                        visitante["revelado"] = True
-                        visitante["imagem"] = imagens_visitante[
-                            visitante["tipo"]
-                        ].copy()
-
-                        visitante["estado"] = "revelando"
-                        visitante["revelacao_ate"] = agora + 1200
-
                 elif botao_recusar.collidepoint(evento.pos):
-                    if decisao is None and visitante["estado"] == "aguardando":
-                        # Registra a recusa e impede outra decisão.
+                    if vidas > 0 and decisao is None and visitante["estado"] == "aguardando":
                         decisao = "recusar"
                         tocar_som(sons, "botao")
 
                 elif area_campainha.collidepoint(evento.pos):
-                    if agora >= proximo_toque:
+                    if agora >= proximo_toque and vidas > 0:
                         tocar_som(sons, "campainha")
                         # Inicia a chegada somente se ainda não houver visitante.
                         # Tocar novamente não reinicia o movimento.
@@ -525,11 +556,12 @@ def executar_jogo():
                             visitante["imagem"] = imagens_visitante["humano"].copy()
                             visitante["revelado"] = False
                             visitante["revelacao_ate"] = 0
+                            # Cada novo atendimento poderá gerar um registro.
+                            visitante["registrado"] = False
 
                             # Reposiciona à esquerda para o novo atendimento.
                             visitante["rect"].right = abertura_janela.left
                             visitante["x"] = float(visitante["rect"].x)
-
                             visitante["estado"] = "entrando"
                             decisao = None
 
@@ -546,6 +578,53 @@ def executar_jogo():
                     else:
                         tocar_som(sons, "luz_desligar")
 
+        # Este bloco fica fora do for de eventos, mas dentro do while.
+        if decisao is not None and not visitante["registrado"]:
+            vidas, acertou = avaliar_decisao(
+                visitante["tipo"], decisao, vidas
+            )
+
+            # Usa o horário fictício do expediente.
+            segundos = horario_inicial + (agora - inicio_turno) // 1000
+            hora = (
+                f"{(segundos // 3600) % 24:02d}:"
+                f"{(segundos // 60) % 60:02d}"
+            )
+
+            ocorrencias.append({
+                "nome": visitante["nome"],
+                "tipo": visitante["tipo"],
+                "decisao": decisao,
+                "acertou": acertou,
+                "vidas": vidas,
+                "data": data_partida.strftime("%d/%m/%Y"),
+                "hora": hora,
+            })
+
+            salvar_ocorrencias(ocorrencias)
+
+            # Abre a página que contém o registro mais recente.
+            pagina_livro = (len(ocorrencias) - 1) // 3
+
+            # Impede novo desconto e novo registro nos próximos quadros.
+            visitante["registrado"] = True
+
+            visitante["revelado"] = True
+            visitante["imagem"] = imagens_visitante[
+                visitante["tipo"]
+            ].copy()
+
+            # Escolhe a consequência da decisão.
+            if decisao == "liberar":
+                visitante["desfecho"] = "saindo"
+            elif visitante["tipo"] == "ia":
+                visitante["desfecho"] = "desativando"
+            else:
+                visitante["desfecho"] = "capturado"
+
+            visitante["estado"] = "revelando"
+            visitante["revelacao_ate"] = agora + 1200
+
         if visitante["estado"] == "entrando":
             # Atualiza a posição e move o retângulo usado no desenho.
             visitante["x"] = min(
@@ -561,7 +640,8 @@ def executar_jogo():
         elif visitante["estado"] == "revelando":
             # Mantém a revelação visível até terminar o prazo.
             if agora >= visitante["revelacao_ate"]:
-                visitante["estado"] = "saindo"
+                visitante["estado"] = visitante["desfecho"]
+                visitante["efeito_inicio"] = agora
 
         elif visitante["estado"] == "saindo":
             visitante["x"] += visitante["velocidade"] * tempo_frame
@@ -570,6 +650,32 @@ def executar_jogo():
             # A saída termina quando ele ultrapassa a abertura.
             if visitante["rect"].left >= abertura_janela.right:
                 visitante["estado"] = "ausente"
+
+        elif visitante["estado"] == "desativando":
+            # A IA perde a opacidade durante 900 milissegundos.
+            progresso = min(
+                1, (agora - visitante["efeito_inicio"]) / 900
+            )
+            visitante["imagem"].set_alpha(
+                round(255 * (1 - progresso))
+            )
+
+            if progresso >= 1:
+                visitante["estado"] = "ausente"
+
+        elif visitante["estado"] == "capturado":
+            # O humano é puxado para a direita enquanto desaparece.
+            progresso = min(
+                1, (agora - visitante["efeito_inicio"]) / 1000
+            )
+            visitante["x"] += 400 * tempo_frame
+            visitante["rect"].x = round(visitante["x"])
+            visitante["imagem"].set_alpha(
+                round(255 * (1 - progresso))
+            )
+
+            if progresso >= 1 or visitante["rect"].left >= abertura_janela.right:
+                visitante["estado"] = "ausente"
 #=========================================================================================
 
         # Pinta a parede da cabine antes de desenhar os outros elementos.
@@ -577,6 +683,8 @@ def executar_jogo():
 
         # A parede cobre o fundo inteiro.
         tela.blit(textura_parede, (0, 0))
+
+        desenhar_vidas(tela, vidas) # desenha os corações de vida
 
         #=== Aciona o relógio na parede ===
         # Converte os milissegundos transcorridos em segundos.
@@ -646,6 +754,23 @@ def executar_jogo():
             # Permite desenhar somente dentro da abertura.
             # Assim, o personagem passa por trás da parede.
             tela.set_clip(abertura_janela)
+            if visitante["estado"] == "capturado":
+                # O recorte mantém o feixe somente dentro da janela.
+                camada_efeitos.fill((0, 0, 0, 0))
+
+                pygame.draw.polygon(
+                    camada_efeitos,
+                    (110, 210, 255, 55),
+                    [
+                        (abertura_janela.right, abertura_janela.top + 55),
+                        (abertura_janela.right, abertura_janela.bottom - 30),
+                        (visitante["rect"].centerx, visitante["rect"].bottom),
+                        (visitante["rect"].centerx, visitante["rect"].top),
+                    ],
+                )
+
+                tela.blit(camada_efeitos, (0, 0))
+
             tela.blit(visitante["imagem"], visitante["rect"])
 
             if visitante["revelado"]:
@@ -671,6 +796,18 @@ def executar_jogo():
                     ),
                 )
 
+            # Linhas piscando simulam o curto-circuito da IA.
+            if visitante["estado"] == "desativando" and (agora // 80) % 2 == 0:
+                for deslocamento in (60, 120, 180):
+                    y = visitante["rect"].top + deslocamento
+
+                    pygame.draw.line(
+                        tela,
+                        (210, 140, 255),
+                        (visitante["rect"].left, y),
+                        (visitante["rect"].right, y + 8),
+                        3,
+                    )
             # Restaura o desenho normal para o restante do cenário.
             tela.set_clip(recorte_anterior)
 
@@ -871,6 +1008,30 @@ def executar_jogo():
 
         pygame.draw.rect(tela, (40, 44, 50), base_luminaria)
 
+        if (
+            vidas == 0
+            and visitante["estado"] == "ausente"
+            and consulta_aberta is None
+            and not documento_aberto
+        ):
+            pygame.draw.rect(
+                tela, (35, 38, 44),
+                (190, 160, 420, 140),
+                border_radius=6,
+            )
+
+            for texto, y in [
+                ("FIM DE PARTIDA", 190),
+                ("Você perdeu as três vidas.", 225),
+                ("R: reiniciar | Consulte o livro.", 260),
+            ]:
+                imagem = fonte.render(
+                    texto, True, (240, 229, 202)
+                )
+                tela.blit(
+                    imagem,
+                    imagem.get_rect(center=(400, y)),
+                )
 
         # A consulta ampliada aparece sobre o cenário.
         if consulta_aberta is not None:
@@ -906,6 +1067,10 @@ def executar_jogo():
                     ficha_documento,
                     fonte,
                     fonte_consulta,
+                    ocorrencias,
+                    pagina_livro,
+                    botao_anterior,
+                    botao_proximo,
                 )
 
             

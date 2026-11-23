@@ -147,51 +147,90 @@ def desenhar_jornal(tela, area, data_partida, noticias, fonte, fonte_menor):
 
 #==================================================================================
 
-def desenhar_livro(tela, area, fonte, fonte_menor):
-    #Desenha o conteúdo do livro sobre a folha já exibida pelo jogo.
-
+def desenhar_livro(
+    tela, area, fonte, fonte_menor, ocorrencias, pagina,
+    botao_anterior, botao_proximo,
+):
+    # Mostra três ocorrências por página.
     cor_texto = (45, 42, 36)
 
-    # Render transforma o texto em uma imagem.
     titulo = fonte.render(
         "LIVRO DE OCORRÊNCIAS", True, cor_texto
     )
-
-    # Centraliza o título usando a posição da folha recebida.
     tela.blit(
         titulo,
         titulo.get_rect(center=(area.centerx, area.top + 38)),
     )
 
-    # Separa o cabeçalho do espaço destinado aos registros.
     pygame.draw.line(
-        tela,
-        (155, 140, 110),
+        tela, (155, 140, 110),
         (area.left + 20, area.top + 72),
-        (area.right - 20, area.top + 72),
-        2,
+        (area.right - 20, area.top + 72), 2,
     )
 
-    # Por enquanto, o livro apresenta uma página vazia.
-    mensagem = fonte_menor.render(
-        "Nenhuma ocorrência registrada.", True, cor_texto
-    )
-    tela.blit(mensagem, (area.left + 20, area.top + 105))
+    total_paginas = max(1, (len(ocorrencias) + 2) // 3)
+    pagina = max(0, min(pagina, total_paginas - 1))
 
-    # Desenha as linhas da página, avançando 40 pixels por linha.
-    for y in range(area.top + 160, area.bottom - 60, 40):
-        pygame.draw.line(
-            tela,
-            (190, 177, 148),
-            (area.left + 20, y),
-            (area.right - 20, y),
-            1,
+    # Seleciona somente os três registros desta página.
+    inicio = pagina * 3
+    registros = ocorrencias[inicio:inicio + 3]
+
+    if not registros:
+        mensagem = fonte_menor.render(
+            "Nenhuma ocorrência registrada.", True, cor_texto
+        )
+        tela.blit(
+            mensagem, (area.left + 20, area.top + 105)
         )
 
-    aviso = fonte_menor.render(
-        "Clique fora ou Esc para fechar.", True, cor_texto
+    for indice, registro in enumerate(registros):
+        y = area.top + 100 + indice * 82
+        tipo = "Humano" if registro["tipo"] == "humano" else "IA"
+        escolha = "Autorizado" if registro["decisao"] == "liberar" else "Recusado"
+        resultado = "Acerto" if registro["acertou"] else "Erro"
+        cor_resultado = (
+            (45, 110, 65) if registro["acertou"] else (160, 55, 45)
+        )
+
+        linhas = [
+            (
+                f'{registro["data"][:5]} {registro["hora"]} - {registro["nome"]}',
+                cor_texto,
+            ),
+            (f"{tipo} | {escolha}", cor_texto),
+            (
+                f'{resultado} | Vidas restantes: {registro["vidas"]}',
+                cor_resultado,
+            ),
+        ]
+
+        for linha, (texto, cor) in enumerate(linhas):
+            imagem = fonte_menor.render(texto, True, cor)
+            tela.blit(
+                imagem, (area.left + 20, y + linha * 22)
+            )
+
+    # Reutiliza os retângulos dos botões do manual.
+    for retangulo, texto, ativo in [
+        (botao_anterior, "Anterior", pagina > 0),
+        (botao_proximo, "Próxima", pagina < total_paginas - 1),
+    ]:
+        cor = (180, 166, 135) if ativo else (220, 211, 190)
+        pygame.draw.rect(
+            tela, cor, retangulo, border_radius=4
+        )
+
+        imagem = fonte_menor.render(texto, True, cor_texto)
+        tela.blit(
+            imagem, imagem.get_rect(center=retangulo.center)
+        )
+
+    numero = fonte_menor.render(
+        f"{pagina + 1} / {total_paginas}", True, cor_texto
     )
     tela.blit(
-        aviso,
-        aviso.get_rect(center=(area.centerx, area.bottom - 25)),
+        numero,
+        numero.get_rect(
+            center=(area.centerx, botao_anterior.centery)
+        ),
     )

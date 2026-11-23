@@ -1,31 +1,30 @@
-from src.funcoes import calcular_pontos, jogador_perdeu, limitar_valor
+from src.funcoes import avaliar_decisao
+from src.dados import carregar_ocorrencias, salvar_ocorrencias
 
 
-def test_calcular_pontos():
-    """Deve somar corretamente os pontos atuais com os pontos ganhos."""
-    assert calcular_pontos(10, 5) == 15
+def test_quatro_decisoes_possiveis():
+    casos = [
+        ("humano", "liberar", (3, True)),
+        ("humano", "recusar", (2, False)),
+        ("ia", "liberar", (2, False)),
+        ("ia", "recusar", (3, True)),
+    ]
+
+    for tipo, decisao, esperado in casos:
+        assert avaliar_decisao(tipo, decisao, 3) == esperado
 
 
-def test_jogador_perdeu_com_zero_vidas():
-    """Deve indicar derrota quando o total de vidas chega a zero."""
-    assert jogador_perdeu(0) is True
+def test_vidas_nao_ficam_negativas():
+    assert avaliar_decisao("ia", "liberar", 0) == (0, False)
 
 
-def test_jogador_nao_perdeu_com_vidas():
-    """Nao deve indicar derrota quando o jogador ainda tem vidas."""
-    assert jogador_perdeu(3) is False
+def test_historico_pode_ser_salvo_e_recuperado(tmp_path):
+    # O pytest fornece uma pasta temporária para este teste.
+    caminho = tmp_path / "ocorrencias.json"
+    registros = [{"nome": "João", "acertou": True}]
 
+    assert carregar_ocorrencias(caminho) == []
 
-def test_limitar_valor_abaixo_do_minimo():
-    """Deve retornar o limite minimo quando o valor informado for menor."""
-    assert limitar_valor(-5, 0, 100) == 0
+    salvar_ocorrencias(registros, caminho)
 
-
-def test_limitar_valor_acima_do_maximo():
-    """Deve retornar o limite maximo quando o valor informado for maior."""
-    assert limitar_valor(150, 0, 100) == 100
-
-
-def test_limitar_valor_dentro_do_intervalo():
-    """Deve manter o valor original quando ele ja estiver no intervalo."""
-    assert limitar_valor(50, 0, 100) == 50
+    assert carregar_ocorrencias(caminho) == registros

@@ -96,3 +96,36 @@ def criar_som_campainha():
         amostras.extend([valor] * canais)
 
     return pygame.mixer.Sound(buffer=amostras.tobytes())
+
+#====================================================================================
+
+def avaliar_decisao(tipo, decisao, vidas):
+    #Retorna as vidas atualizadas e informa se houve acerto.
+    if tipo not in ("humano", "ia") or decisao not in ("liberar", "recusar"):
+        raise ValueError("Tipo de visitante ou decisão inválidos.")
+
+    acertou = (
+        (tipo == "humano" and decisao == "liberar")
+        or (tipo == "ia" and decisao == "recusar")
+    )
+
+    # Um erro tira uma vida. A quantidade nunca fica negativa.
+    return max(0, vidas - (0 if acertou else 1)), acertou
+
+
+def desenhar_vidas(tela, vidas):
+    """Desenha três corações, preenchendo os que ainda restam."""
+    for indice in range(3):
+        x = 24 + indice * 34
+        y = 24
+
+        cor = (220, 65, 80) if indice < vidas else (70, 62, 65)
+
+        # Dois círculos e um triângulo formam cada coração.
+        pygame.draw.circle(tela, cor, (x + 7, y + 7), 7)
+        pygame.draw.circle(tela, cor, (x + 19, y + 7), 7)
+        pygame.draw.polygon(
+            tela,
+            cor,
+            [(x, y + 8), (x + 26, y + 8), (x + 13, y + 26)],
+        )
