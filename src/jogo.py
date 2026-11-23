@@ -374,11 +374,49 @@ def executar_jogo():
         sprite_livro, area_livro.size
     )
 
+    #=====================SPRITES VISITANTES=====================
+
+    #=====================PRIMEIRO VISITANTE=====================
+
+    imagem_lucas = pygame.image.load(
+        "assets/imagens/personagens/Lucas/lucas_transparente.png"
+    ).convert_alpha()
+
+    # Define a altura e calcula a largura mantendo a proporção.
+    altura_visitante = 280
+    largura_visitante = round(
+        imagem_lucas.get_width() * altura_visitante
+        / imagem_lucas.get_height()
+    )
+
+    imagem_lucas = pygame.transform.scale(
+        imagem_lucas, (largura_visitante, altura_visitante)
+    )
+
+    # Começa totalmente à esquerda da abertura.
+    rect_visitante = imagem_lucas.get_rect()
+    rect_visitante.right = abertura_janela.left
+
+    # O corpo continua abaixo do peitoril, como alguém do lado de fora.
+    rect_visitante.bottom = abertura_janela.bottom + 20
+
+    # O dicionário reúne a imagem, a posição e o estado do visitante.
+    visitante = {
+        "nome": "Lucas",
+        "imagem": imagem_lucas,
+        "rect": rect_visitante,
+        "x": float(rect_visitante.x),
+        "destino_x": abertura_janela.centerx - rect_visitante.width // 2,
+        "velocidade": 220,  # Pixels percorridos por segundo.
+        "estado": "ausente",
+    }
     #=======================================================
     relogio = pygame.time.Clock()
     rodando = True
 
     while rodando:
+        # tick retorna milissegundos; dividimos por 1000 para obter segundos.
+        tempo_frame = relogio.tick(FPS) / 1000
         # Tempo atual em milissegundos.
         # Controla os efeitos sem interromper o jogo.
         agora = pygame.time.get_ticks()
@@ -438,18 +476,24 @@ def executar_jogo():
                     tocar_som(sons, "abrir")
 
                 elif botao_liberar.collidepoint(evento.pos):
-                    if decisao is None:
+                    # Só permite decidir depois que o visitante parar.
+                    if decisao is None and visitante["estado"] == "aguardando":
                         decisao = "liberar"
                         tocar_som(sons, "botao")
 
                 elif botao_recusar.collidepoint(evento.pos):
-                    if decisao is None:
+                    if decisao is None and visitante["estado"] == "aguardando":
                         decisao = "recusar"
                         tocar_som(sons, "botao")
 
                 elif area_campainha.collidepoint(evento.pos):
                     if agora >= proximo_toque:
                         tocar_som(sons, "campainha")
+                        # Inicia a chegada somente se ainda não houver visitante.
+                        # Tocar novamente não reinicia o movimento.
+                        if visitante["estado"] == "ausente":
+                            visitante["estado"] = "entrando"
+                            decisao = None
 
                         campainha_pressionada_ate = agora + 150
                         aviso_campainha_ate = agora + 2500
@@ -463,6 +507,23 @@ def executar_jogo():
                         tocar_som(sons, "luz_ligar")
                     else:
                         tocar_som(sons, "luz_desligar")
+
+        if visitante["estado"] == "entrando":
+            # Distância = velocidade multiplicada pelo tempo do quadro.
+            # min impede que ele ultrapasse a posição de parada.
+            visitante["x"] = min(
+                visitante["x"] + visitante["velocidade"] * tempo_frame,
+                visitante["destino_x"],
+            )
+
+            # Guardamos frações em "x", mas desenhamos em pixels inteiros.
+            visitante["rect"].x = round(visitante["x"])
+
+            # Ao chegar ao centro, passa a aguardar a fiscalização.
+            if visitante["x"] >= visitante["destino_x"]:
+                visitante["estado"] = "aguardando"
+
+#=========================================================================================
 
         # Pinta a parede da cabine antes de desenhar os outros elementos.
         tela.fill(CINZA)
@@ -530,6 +591,20 @@ def executar_jogo():
         tela.blit(textura_ceu, ceu_externo)
         tela.blit(textura_muro, muro_externo)
         tela.blit(textura_chao, chao_externo)
+
+        if visitante["estado"] != "ausente":
+            # Guarda o recorte atual da tela.
+            recorte_anterior = tela.get_clip()
+
+            # Permite desenhar somente dentro da abertura.
+            # Assim, o personagem passa por trás da parede.
+            tela.set_clip(abertura_janela)
+            tela.blit(visitante["imagem"], visitante["rect"])
+
+            # Restaura o desenho normal para o restante do cenário.
+            tela.set_clip(recorte_anterior)
+
+        # O peitoril aparece na frente do visitante.
         tela.blit(textura_peitoril, peitoril)
 
         # Balcão em primeiro plano (visto de frente).
@@ -767,6 +842,5 @@ def executar_jogo():
 
 
         pygame.display.flip() # Exibe o quadro depois que todas as camadas foram desenhadas.
-        relogio.tick(FPS)
 
     pygame.quit()
