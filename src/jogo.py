@@ -6,6 +6,8 @@ from src.consultas import MESES, desenhar_calendario, desenhar_jornal
 from math import sin, cos, radians, pi
 from array import array
 
+from src.audio import carregar_audio, tocar_som
+
 from src.config import LARGURA_TELA, ALTURA_TELA, FPS, TITULO_JOGO, CINZA, PRETO
 
 #======================================================================
