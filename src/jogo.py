@@ -103,17 +103,15 @@ def executar_jogo():
 
 #========================BOTÕES PERMISSÃO=========================
 
-    # Placa fixada na parede, à esquerda da janela.
-    base_botoes = pygame.Rect(24, 284, 96, 132)
-    botao_liberar = pygame.Rect(36, 300, 72, 40)
-    botao_recusar = pygame.Rect(36, 360, 72, 40)
+    # Placa abaixo da janela: a moldura termina em y=370.
+    base_botoes = pygame.Rect(140, 384, 128, 62)
+
+    # Áreas dos dois botões redondos.
+    botao_liberar = pygame.Rect(154, 397, 36, 36)
+    botao_recusar = pygame.Rect(218, 397, 36, 36)
 
     # Nenhuma decisão foi tomada ao iniciar o atendimento.
     decisao = None
-
-    fonte_botoes = pygame.font.Font(None, 18)
-    texto_liberar = fonte_botoes.render("LIBERAR", True, (255, 255, 255))
-    texto_recusar = fonte_botoes.render("RECUSAR", True, (255, 255, 255))
 
 #=======================================================
 
@@ -239,23 +237,53 @@ def executar_jogo():
 
         tela.blit(sprite_arquivo, (pasta.left, aba_pasta.top))
 
-        # Base metálica com uma borda mais clara.
-        pygame.draw.rect(tela, (35, 39, 45), base_botoes, border_radius=5)
+#===========================================================================================
+
+
         pygame.draw.rect(
-            tela, (100, 105, 112), base_botoes, width=2, border_radius=5
+            tela, (35, 39, 45), base_botoes, border_radius=6
+        )
+        pygame.draw.rect(
+            tela, (90, 95, 102), base_botoes, width=2, border_radius=6
         )
 
-        # Botões de autorização e recusa.
-        pygame.draw.rect(
-            tela, (30, 125, 65), botao_liberar, border_radius=6
-        )
-        pygame.draw.rect(
-            tela, (165, 45, 45), botao_recusar, border_radius=6
+        # Botões redondos com aros escuros.
+        pygame.draw.circle(tela, (18, 22, 25), botao_liberar.center, 21)
+        pygame.draw.circle(tela, (30, 140, 70), botao_liberar.center, 18)
+
+        pygame.draw.circle(tela, (18, 22, 25), botao_recusar.center, 21)
+        pygame.draw.circle(tela, (180, 45, 45), botao_recusar.center, 18)
+
+        # Símbolo de confirmação no botão verde.
+        x, y = botao_liberar.center
+        pygame.draw.lines(
+            tela,
+            (245, 245, 245),
+            False,
+            [(x - 8, y), (x - 2, y + 6), (x + 9, y - 7)],
+            3,
         )
 
-        # Centraliza os textos sobre os botões.
-        tela.blit(texto_liberar, texto_liberar.get_rect(center=botao_liberar.center))
-        tela.blit(texto_recusar, texto_recusar.get_rect(center=botao_recusar.center))
+        # Símbolo X no botão vermelho.
+        x, y = botao_recusar.center
+        pygame.draw.line(
+            tela, (245, 245, 245), (x - 6, y - 6), (x + 6, y + 6), 3
+        )
+        pygame.draw.line(
+            tela, (245, 245, 245), (x - 6, y + 6), (x + 6, y - 6), 3
+        )
+
+        # Cria e desenha a mensagem somente após uma decisão.
+        if decisao is not None:
+            if decisao == "liberar":
+                mensagem = "Entrada autorizada"
+                cor_mensagem = (120, 220, 145)
+            else:
+                mensagem = "Entrada recusada"
+                cor_mensagem = (255, 145, 145)
+
+            texto_decisao = fonte.render(mensagem, True, cor_mensagem)
+            tela.blit(texto_decisao, (285, 405))
 
 
         if documento_aberto:
