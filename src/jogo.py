@@ -175,6 +175,17 @@ def executar_jogo():
     sprite_arquivo = pygame.transform.scale(
     sprite_arquivo, (pasta.width, pasta.bottom - aba_pasta.top)
 )
+
+    #=====================SPRITE BOTÕES DECISÃO=====================
+    # Carrega o painel preservando o fundo transparente.
+    sprite_botoes = pygame.image.load(
+        "assets/imagens/botoes.png"
+    ).convert_alpha()
+
+    sprite_botoes = pygame.transform.scale(
+        sprite_botoes, base_botoes.size)
+
+    
     #=======================================================
     relogio = pygame.time.Clock()
     rodando = True
@@ -239,39 +250,10 @@ def executar_jogo():
 
 #===========================================================================================
 
+        tela.blit(sprite_arquivo, (pasta.left, aba_pasta.top))
 
-        pygame.draw.rect(
-            tela, (35, 39, 45), base_botoes, border_radius=6
-        )
-        pygame.draw.rect(
-            tela, (90, 95, 102), base_botoes, width=2, border_radius=6
-        )
-
-        # Botões redondos com aros escuros.
-        pygame.draw.circle(tela, (18, 22, 25), botao_liberar.center, 21)
-        pygame.draw.circle(tela, (30, 140, 70), botao_liberar.center, 18)
-
-        pygame.draw.circle(tela, (18, 22, 25), botao_recusar.center, 21)
-        pygame.draw.circle(tela, (180, 45, 45), botao_recusar.center, 18)
-
-        # Símbolo de confirmação no botão verde.
-        x, y = botao_liberar.center
-        pygame.draw.lines(
-            tela,
-            (245, 245, 245),
-            False,
-            [(x - 8, y), (x - 2, y + 6), (x + 9, y - 7)],
-            3,
-        )
-
-        # Símbolo X no botão vermelho.
-        x, y = botao_recusar.center
-        pygame.draw.line(
-            tela, (245, 245, 245), (x - 6, y - 6), (x + 6, y + 6), 3
-        )
-        pygame.draw.line(
-            tela, (245, 245, 245), (x - 6, y + 6), (x + 6, y - 6), 3
-        )
+        # Painel com os dois botões em relevo.
+        tela.blit(sprite_botoes, base_botoes)
 
         # Cria e desenha a mensagem somente após uma decisão.
         if decisao is not None:
