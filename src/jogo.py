@@ -3,7 +3,8 @@ import pygame
 from datetime import date
 from src.consultas import MESES, desenhar_calendario, desenhar_jornal
 
-from math import sin, cos, radians
+from math import sin, cos, radians, pi
+from array import array
 
 from src.config import LARGURA_TELA, ALTURA_TELA, FPS, TITULO_JOGO, CINZA, PRETO
 
@@ -63,6 +64,44 @@ def desenhar_relogio(tela, sprite, area, segundos_turno):
 
     # Acabamento que cobre a junção dos três ponteiros.
     pygame.draw.circle(tela, (55, 48, 40), centro, 4)
+
+#FAZ A CAMPAINHA FUNCIONAR
+def criar_som_campainha():
+    #Gera um toque metálico e devolve um som do Pygame.
+
+    configuracao = pygame.mixer.get_init()
+
+    # Permite continuar o jogo caso o áudio não tenha iniciado.
+    if configuracao is None:
+        return None
+
+    frequencia, formato, canais = configuracao
+
+    if formato != -16:
+        return None
+
+    duracao = 0.7
+    amostras = array("h")
+
+    for indice in range(int(frequencia * duracao)):
+        instante = indice / frequencia
+
+        # O toque começa rapidamente e perde volume aos poucos.
+        volume = (
+            min(1, instante / 0.005)
+            * (1 - instante / duracao) ** 3
+        )
+
+        # Combina duas frequências para produzir um toque metálico.
+        onda = sin(2 * pi * 1046.5 * instante)
+        onda += 0.35 * sin(2 * pi * 2888 * instante)
+
+        valor = int(11000 * volume * onda)
+
+        # Repete a amostra conforme a quantidade de canais de áudio.
+        amostras.extend([valor] * canais)
+
+    return pygame.mixer.Sound(buffer=amostras.tobytes())
 #======================================================================
 
 def executar_jogo():
@@ -381,11 +420,42 @@ def executar_jogo():
 
     fonte_relogio = pygame.font.Font(None, 18)
 
+    #=====================SPRITE CAMPAINHA=====================
+
+    # Posição sobre o balcão, à direita da pasta.
+    area_campainha = pygame.Rect(204, 460, 80, 70)
+
+    sprite_campainha = pygame.image.load(
+        "assets/imagens/campainha.png"
+    ).convert_alpha()
+
+    sprite_campainha = pygame.transform.scale(
+        sprite_campainha, area_campainha.size
+    )
+
+    # Cria o som uma única vez, antes do loop.
+    som_campainha = criar_som_campainha()
+
+    # Guardam até quando cada efeito deve permanecer ativo.
+    campainha_pressionada_ate = 0
+    aviso_campainha_ate = 0
+
+    # Impede vários toques seguidos em um intervalo muito curto.
+    proximo_toque = 0
+
+    fonte_campainha = pygame.font.Font(None, 24)
+    texto_campainha = fonte_campainha.render(
+        "Próximo, por favor!", True, (242, 229, 197)
+    )
+
     #=======================================================
     relogio = pygame.time.Clock()
     rodando = True
 
     while rodando:
+        # Tempo atual em milissegundos.
+        # Controla os efeitos sem interromper o jogo.
+        agora = pygame.time.get_ticks()
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 rodando = False
@@ -430,6 +500,20 @@ def executar_jogo():
                 elif botao_recusar.collidepoint(evento.pos):
                     if decisao is None:
                         decisao = "recusar"
+                    
+                elif area_campainha.collidepoint(evento.pos):
+                    if agora >= proximo_toque:
+                        if som_campainha is not None:
+                            som_campainha.play()
+
+                        # Pequena animação de pressão: 150 milissegundos.
+                        campainha_pressionada_ate = agora + 150
+
+                        # Mantém o aviso visível por 2,5 segundos.
+                        aviso_campainha_ate = agora + 2500
+
+                        # Permite outro toque após 800 milissegundos.
+                        proximo_toque = agora + 800
 
                 elif area_luminaria.collidepoint(evento.pos):
                     luminaria_acesa = not luminaria_acesa
@@ -442,6 +526,7 @@ def executar_jogo():
 
                 elif documento.collidepoint(evento.pos):
                     documento_aberto = True
+                
 
         # Pinta a parede da cabine antes de desenhar os outros elementos.
         tela.fill(CINZA)
@@ -487,6 +572,7 @@ def executar_jogo():
             ),
         )
 
+        # === Cria Jornal ===
         tela.blit(sprite_jornal, area_jornal)
 
         tela.blit(
@@ -529,7 +615,49 @@ def executar_jogo():
         if luminaria_acesa: # Tem que desenhar antes dos items em cima da mesa
             tela.blit(iluminacao, (0, 0))
 
+        
+        # === Pasta em cima da mesa ===
         tela.blit(sprite_arquivo, (pasta.left, aba_pasta.top))
+
+        # Sombra de contato sobre a madeira.
+        pygame.draw.ellipse(
+            tela,
+            (45, 30, 20),
+            (
+                area_campainha.left + 6,
+                area_campainha.bottom - 8,
+                area_campainha.width - 12,
+                8,
+            ),
+        )
+
+        # === Campainha em cima da mesa ===
+        # Durante o toque, desloca o sprite um pouco para baixo.
+        deslocamento = 0
+
+        if agora < campainha_pressionada_ate:
+            deslocamento = 3
+
+        tela.blit(
+            sprite_campainha,
+            area_campainha.move(0, deslocamento),
+        )
+
+        # O aviso desaparece automaticamente quando o prazo termina.
+        if agora < aviso_campainha_ate:
+            fundo_aviso = pygame.Rect(310, 480, 210, 32)
+
+            pygame.draw.rect(
+                tela,
+                (45, 39, 32),
+                fundo_aviso,
+                border_radius=4,
+            )
+
+            tela.blit(
+                texto_campainha,
+                texto_campainha.get_rect(center=fundo_aviso.center),
+            )
 
 #===========================================================================================
 
