@@ -2,15 +2,15 @@
 Garoto de cabelo vinho - versão IA "Circuitos Pulsantes" (mesmo estilo e mesma respiração da menina de roxo)
 
 Gera, a partir de sprite_humano.png (nesta pasta):
-  humano.gif / humano_estatico.png   versão humana respirando / parada
-  ia.gif / ia_estatico.png           versão IA respirando / parada
+    humano.gif / humano_estatico.png   versão humana respirando / parada
+    ia.gif / ia_estatico.png           versão IA respirando / parada
 
 Como funciona (v3, tudo alinhado à grade de pixels da arte):
-  1. mede a grade real do sprite (largura e altura de 1 "pixel" da arte e o deslocamento);
-  2. as linhas de circuito são pintadas em CÉLULAS INTEIRAS dessa grade, nunca por cima;
-  3. a respiração move a arte em passos de células inteiras (cabeça 1, peito 2), com
-     pulso que sobe do peito para a cabeça, igual ao robo_respirando.gif da menina de roxo;
-     nenhum pixel é interpolado nem pulado: só se copiam linhas originais do sprite.
+    1. mede a grade real do sprite (largura e altura de 1 "pixel" da arte e o deslocamento);
+    2. as linhas de circuito são pintadas em CÉLULAS INTEIRAS dessa grade, nunca por cima;
+    3. a respiração move a arte em passos de células inteiras (cabeça 1, peito 2), com
+    pulso que sobe do peito para a cabeça, igual ao robo_respirando.gif da menina de roxo;
+    nenhum pixel é interpolado nem pulado: só se copiam linhas originais do sprite.
 Uso:  pip install numpy pillow   e depois   python gerar.py
 Para usar no pygame: carregue os quadros do GIF (ex.: PIL ImageSequence) e toque em loop, FRAME_MS ms cada.
 """

@@ -39,15 +39,24 @@ def executar_jogo():
 
     fonte = pygame.font.Font(None, 26) #(None = fonte padrão do pygame) e 26 é o tamanho definido
 
-    # Transforma o "passe de entrada" em uma surface e o True suaviza a fonte
-    texto_passe = fonte.render("Passe V-014 / Setor 3", True, (30, 35, 42))
-    nome_visitante = fonte.render("Portador: Alex Moraes", True, (30, 35, 42))
+    # Cada lista interna contém os códigos de uma página.
+    paginas_codigos = [
+        ["V-012", "V-014", "V-027", "V-031"],
+        ["V-045", "V-052", "V-068", "V-073"],
+        ["V-081", "V-096", "V-104", "V-118"],
+    ]
 
-    # A mesma área é usada para desenhar a ficha e verificar cliques dentro dela.
-    ficha_documento = pygame.Rect(210, 395, 380, 115)
+    # Guarda a página selecionada durante a partida. (começa em 0)
+    pagina_atual = 0
+
+    # Folha aberta e áreas para trocar de página.
+    ficha_documento = pygame.Rect(210, 110, 380, 410)
+    botao_anterior = pygame.Rect(230, 465, 120, 36)
+    botao_proximo = pygame.Rect(450, 465, 120, 36)
+
+    fonte_codigos = pygame.font.Font(None, 32)
 
     # Pasta clicável sobre o balcão
-    sombra_pasta = pygame.Rect(32, 468, 140, 70)
     pasta = pygame.Rect(28, 462, 140, 70)
     aba_pasta = pygame.Rect(40, 452, 48, 18)
 
@@ -196,7 +205,27 @@ def executar_jogo():
                 rodando = False
 
             elif evento.type == pygame.MOUSEBUTTONDOWN and evento.button == 1:
-                if botao_liberar.collidepoint(evento.pos):
+                if documento_aberto:
+                    # Enquanto o manual está aberto, os cliques controlam sua leitura.
+                    if botao_anterior.collidepoint(evento.pos):
+                        pagina_atual = max(0, pagina_atual - 1)
+
+                    elif botao_proximo.collidepoint(evento.pos):
+                        pagina_atual = min(
+                            len(paginas_codigos) - 1,
+                            pagina_atual + 1,
+                        )
+
+                    elif documento.collidepoint(evento.pos):
+                        documento_aberto = False
+
+                    elif not ficha_documento.collidepoint(evento.pos):
+                        documento_aberto = False
+
+                elif documento.collidepoint(evento.pos):
+                    documento_aberto = True
+
+                elif botao_liberar.collidepoint(evento.pos):
                     if decisao is None:
                         decisao = "liberar"
 
@@ -206,12 +235,6 @@ def executar_jogo():
 
                 elif area_luminaria.collidepoint(evento.pos):
                     luminaria_acesa = not luminaria_acesa
-
-                elif documento.collidepoint(evento.pos):
-                    documento_aberto = not documento_aberto
-
-                elif not ficha_documento.collidepoint(evento.pos):
-                    documento_aberto = False
 
         # Pinta a parede da cabine antes de desenhar os outros elementos.
         tela.fill(CINZA)
@@ -250,8 +273,6 @@ def executar_jogo():
 
 #===========================================================================================
 
-        tela.blit(sprite_arquivo, (pasta.left, aba_pasta.top))
-
         # Painel com os dois botões em relevo.
         tela.blit(sprite_botoes, base_botoes)
 
@@ -267,12 +288,81 @@ def executar_jogo():
             texto_decisao = fonte.render(mensagem, True, cor_mensagem)
             tela.blit(texto_decisao, (285, 405))
 
+#=======================================================================================
 
         if documento_aberto:
-            # O passe fica visível no balcão. Os dados só aparecem com a ficha aberta.
+            # Sombra e folha do manual.
+            pygame.draw.rect(
+                tela,
+                (55, 43, 31),
+                ficha_documento.move(5, 5),
+            )
             pygame.draw.rect(tela, (242, 234, 211), ficha_documento)
-            tela.blit(texto_passe, (230, 415))
-            tela.blit(nome_visitante, (230, 450))
+
+            # Transforma o título em uma imagem e a coloca na folha.
+            titulo_manual = fonte.render(
+                "CÓDIGOS PERMITIDOS", True, (40, 40, 35)
+            )
+            tela.blit(titulo_manual, (230, 135))
+
+            # Linha que separa o título da lista de códigos.
+            pygame.draw.line(
+                tela, (155, 140, 110), (230, 170), (570, 170), 2
+            )
+
+            # Seleciona a lista de códigos da página atual.
+            # enumerate() fornece a posição de cada código, começando em zero.
+            for indice, codigo in enumerate(paginas_codigos[pagina_atual]):
+                texto_codigo = fonte_codigos.render(
+                    codigo, True, (40, 40, 35)
+                )
+                tela.blit(texto_codigo, (250, 205 + indice * 48))
+
+            # O botão fica mais escuro quando há uma página disponível.
+            cor_anterior = (180, 166, 135)
+            cor_proximo = (180, 166, 135)
+
+            if pagina_atual == 0:
+                cor_anterior = (220, 211, 190)
+
+            if pagina_atual == len(paginas_codigos) - 1:
+                cor_proximo = (220, 211, 190)
+
+            pygame.draw.rect(
+                tela, cor_anterior, botao_anterior, border_radius=4
+            )
+            pygame.draw.rect(
+                tela, cor_proximo, botao_proximo, border_radius=4
+            )
+
+            texto_anterior = fonte.render("Anterior", True, (40, 40, 35))
+            texto_proximo = fonte.render("Próxima", True, (40, 40, 35))
+
+            # Soma um ao índice para exibir a numeração começando em 1.
+            # len() informa o total de páginas do manual.
+            numero_pagina = fonte.render(
+                f"{pagina_atual + 1} / {len(paginas_codigos)}",
+                True,
+                (40, 40, 35),
+            )
+
+            # Centraliza cada texto no respectivo botão.
+            tela.blit(
+                texto_anterior,
+                texto_anterior.get_rect(center=botao_anterior.center),
+            )
+            tela.blit(
+                texto_proximo,
+                texto_proximo.get_rect(center=botao_proximo.center),
+            )
+
+            # Centraliza o indicador de página entre os dois botões.
+            tela.blit(
+                numero_pagina,
+                numero_pagina.get_rect(center=(400, 483)),
+            )
+
+#=======================================================================================
 
         # Braços articulados da luminária.
         pygame.draw.line(tela, (40, 44, 50), (738, 480), (765, 410), 10)
