@@ -11,47 +11,114 @@ Projeto final da disciplina de Introdução a Algoritmos/Programação, desenvol
 
 ## Descrição do jogo
 
-Catch.IA é um jogo de investigação e tomada de decisões. Em um futuro fictício, o jogador assume o papel de um fiscal responsável pela entrada em uma área protegida. A cada atendimento, ele precisa analisar documentos e respostas para descobrir se o visitante é humano ou uma inteligência artificial disfarçada.
+Catch.IA é um jogo de investigação e tomada de decisões ambientado em um futuro fictício. O jogador assume o papel de um fiscal responsável por controlar a entrada em uma área protegida da humanidade.
 
-O jogo aborda segurança e confiabilidade na identificação de IAs. A investigação exige comparar as informações disponíveis antes de decidir quem pode entrar.
+A proposta é analisar documentos, respostas e pistas para identificar humanos e inteligências artificiais disfarçadas, decidindo quem pode entrar.
 
-## Objetivo do jogador
+## Tema e uso responsável da IA
 
-Concluir todos os atendimentos com pelo menos uma vida restante, autorizando a entrada de humanos e impedindo a infiltração de IAs.
+O jogo aborda segurança e confiabilidade na identificação de IAs. A investigação incentiva a comparação de informações e a análise de evidências antes de tomar uma decisão, considerando tanto o risco de autorizar uma IA quanto o de recusar um humano indevidamente.
 
-## Regras previstas
+A identificação será simulada pelas regras do jogo, sem implementar uma inteligência artificial real.
 
-- O jogador começa a partida com três vidas.
-- Um visitante por vez solicita entrada na área protegida.
-- Antes de decidir, o jogador pode consultar documentos e fazer perguntas ao visitante.
-- Autorizar a entrada de uma IA ou barrar um humano custa uma vida.
-- A decisão é definitiva após a confirmação.
-- O jogador vence se concluir todos os atendimentos com pelo menos uma vida. Ao perder a última vida, a partida termina em derrota.
+## Objetivo e regras previstas
+
+O objetivo será concluir todos os atendimentos com pelo menos uma vida restante.
+
+- O jogador começará com três vidas.
+- Um visitante por vez solicitará entrada.
+- Será possível consultar documentos e fazer perguntas antes de decidir.
+- Autorizar uma IA ou recusar um humano custará uma vida.
+- A decisão será definitiva após a confirmação.
+- Concluir todos os atendimentos com vidas restantes representará vitória.
+- Perder todas as vidas representará derrota.
+
+Essas regras ainda não estão totalmente implementadas.
+
+## Estado atual do desenvolvimento
+
+A versão atual permite explorar o posto de fiscalização e interagir com os elementos do cenário.
+
+Já estão implementados:
+
+- Janela do Pygame, loop principal e controle de FPS.
+- Cenário com texturas na parede, janela, balcão e ambiente externo.
+- Pasta interativa com um manual de códigos permitidos.
+- Navegação entre as páginas do manual.
+- Manutenção da página selecionada ao fechar e reabrir o manual durante a execução.
+- Luminária que pode ser ligada e desligada.
+- Botões para autorizar ou recusar a entrada, com mensagem de confirmação.
+- Calendário com a data fictícia da partida.
+- Jornal com avisos da semana.
+- Fechamento das consultas com clique fora da folha ou com a tecla Esc.
+
+Ainda serão desenvolvidos os visitantes, os documentos individuais, as perguntas e a avaliação das decisões, além do sistema de vidas e das condições de vitória e derrota.
+
+Atualmente, os botões de decisão apenas registram e exibem a escolha. Eles ainda não verificam se um visitante é humano ou IA.
 
 ## Controles
 
-- **Fechar a janela (X)** — encerra o jogo na versão atual.
-- **Clique esquerdo (previsto)** — consulta documentos, seleciona perguntas e confirma se a entrada será autorizada ou negada.
+- **Clique esquerdo:** interagir com a pasta, a luminária, o calendário, o jornal e os botões de decisão.
+- **Anterior / Próxima:** trocar a página do manual.
+- **Clique fora da folha aberta:** fechar a consulta.
+- **Esc:** fechar o manual, o calendário ou o jornal.
+- **X da janela:** encerrar o jogo.
 
-## Estado do desenvolvimento
-
-A versão atual possui a janela do Pygame com o título Catch.IA, o loop principal e o tratamento do fechamento da janela. A próxima etapa da Entrega 2 é implementar uma interação de fiscalização que permita ao jogador analisar uma pista e decidir se autoriza ou nega a entrada.
+Na versão atual, uma decisão de entrada já registrada só pode ser reiniciada ao abrir o jogo novamente.
 
 ## Estrutura do projeto
 
-- `main.py` — ponto de entrada do jogo.
-- `src/jogo.py` — inicialização da janela e loop principal.
-- `src/config.py` — configurações da janela, como título, dimensões e FPS.
-- `assets/` — pasta para imagens, fontes e sons.
-- `data/` — pasta para arquivos de dados do jogo.
-- `tests/` — pasta destinada aos testes de lógica.
-- `docs/proposta.MD` — proposta inicial do grupo.
-- `requirements.txt` — dependências do projeto.
+- `main.py`: ponto de entrada da aplicação.
+- `src/jogo.py`: inicialização, eventos, interações e desenho do cenário.
+- `src/consultas.py`: desenho do calendário e do jornal.
+- `src/config.py`: configurações de tela, título, cores e FPS.
+- `src/funcoes.py`: funções auxiliares de lógica.
+- `src/dados.py`: funções para leitura e gravação de recorde.
+- `src/sprites.py`: função para recortar imagens de uma spritesheet.
+- `assets/`: imagens e pastas destinadas a fontes e sons.
+- `data/`: arquivos destinados à persistência de dados.
+- `tests/`: testes automatizados de lógica.
+- `docs/`: documentação e proposta do grupo.
+- `requirements.txt`: dependências do projeto.
 
 ## Como executar
 
-Na raiz do repositório, na pasta que contém `main.py`, execute:
+Com o Python instalado, abra o terminal na raiz do projeto, onde está o arquivo `main.py`.
+
+Instale as dependências:
 
 ```powershell
 python -m pip install -r requirements.txt
+```
+
+Execute o jogo:
+
+```powershell
 python main.py
+```
+
+Execute os comandos na raiz do projeto para que os caminhos relativos das imagens sejam encontrados corretamente.
+
+## Como executar os testes
+
+Na raiz do projeto:
+
+```powershell
+python -m pytest
+```
+
+Os testes atuais verificam funções de cálculo de pontos, identificação de derrota e limitação de valores. Eles não cobrem as interações gráficas.
+
+## Recursos externos e ferramentas de apoio
+
+As imagens do cenário, da pasta, dos botões, da folha do manual, do calendário e do jornal foram geradas com auxílio do ChatGPT e integradas ao projeto pelo grupo.
+
+O projeto também recebeu apoio do ChatGPT para explicações de programação, sugestões de código e documentação.
+
+A estrutura inicial foi fornecida pelo template da disciplina. O desenvolvimento utiliza Python, Pygame e pytest.
+
+Outros recursos externos incorporados ao jogo deverão ter sua origem e licença, quando disponível, registradas nesta documentação.
+
+## Planejamento
+
+A proposta e o escopo planejado estão disponíveis em [docs/proposta.MD](docs/proposta.MD).
