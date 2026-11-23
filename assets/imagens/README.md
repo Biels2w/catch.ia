@@ -1,39 +1,78 @@
 # Imagens do Catch.IA
 
-Esta pasta reúne as texturas, os elementos de interface e os demais recursos visuais do jogo.
+Esta pasta reúne as texturas, os sprites e os ícones do projeto.
 
-## Imagens utilizadas no cenário
+A presença de um arquivo na pasta não significa que ele já esteja integrado à partida.
 
-- `parede.png`: textura da parede interna.
-- `moldura.png`: textura da moldura e do apoio inferior da janela.
-- `ceu.png`: céu do ambiente externo.
-- `muro.png`: muro visto pela janela.
-- `floor.png`: chão do ambiente externo.
-- `balcao.png`: textura de madeira do balcão.
-- `arquivo.png`: pasta sobre a mesa que permite abrir o manual.
-- `folha_manual.png`: fundo de papel utilizado nas consultas.
-- `botoes.png`: painel com os botões de autorizar e recusar a entrada.
-- `calendario.png`: calendário fixado na parede.
-- `jornal.png`: jornal fixado na parede.
-- `relogio.png`: relógio fixado na parede à esquerda da janela.
-- `campainha.png`: campainha/sino em cima do balcão.
-- `livro_ocorrencias.png`: livro sobre o balcão.
-- `interfone.png`: interfone fixado abaixo da janela.
-- `lista_moradores.png`: prancheta abaixo do relógio na parede.
-- `scanner.png`: scanner sobre o balcão.
+## Cenário
 
-## Textos e informações
+| Arquivo | Uso |
+| --- | --- |
+| `parede.png` | Parede interna do posto |
+| `moldura.png` | Moldura e peitoril da janela |
+| `ceu.png` | Céu visto pela janela |
+| `muro.png` | Muro externo |
+| `floor.png` | Chão externo |
+| `balcao.png` | Textura do tampo e da frente do balcão |
 
-Os códigos do manual, as datas, os avisos e outros textos são desenhados pelo Pygame sobre as imagens.
+## Objetos e consultas
 
-Os recursos de personagens em preparação serão incorporados à jogabilidade em uma etapa posterior.
+| Arquivo | Uso |
+| --- | --- |
+| `arquivo.png` | Pasta que abre o manual de códigos |
+| `folha_manual.png` | Fundo das consultas abertas |
+| `botoes.png` | Painel de autorizar e recusar |
+| `calendario.png` | Calendário da parede |
+| `jornal.png` | Boletim do refúgio |
+| `relogio.png` | Base do relógio |
+| `campainha.png` | Campainha que chama o visitante |
+| `livro_ocorrencias.png` | Livro sobre o balcão |
 
-## Origem dos recursos
+Os ponteiros do relógio, a luminária e os efeitos de iluminação são desenhados pelo Pygame.
 
-Esses recursos de cenário foram gerados com auxílio do ChatGPT. Sprites de personagens em preparação devem ter seus créditos registrados quando forem integrados.
+## Vidas e relatório
 
-A origem e a licença, quando disponível, de outros recursos adicionados pelo grupo devem ser registradas antes de sua utilização na versão entregue.
+| Arquivo | Uso |
+| --- | --- |
+| `coracao_cheio.png` | Vida disponível |
+| `coracao_vazio.png` | Vida perdida |
+| `icone_derrota.png` | Caveira exibida na derrota |
+| `icone_vitoria.png` | Escudo exibido na vitória |
+| `fundo_relatorio.png` | Folha do relatório final |
 
-## Organização
+Esses arquivos são carregados pela função `carregar_sprites_interface()`, em `src/sprites.py`.
 
-Utilize nomes descritivos para novos arquivos e atualize os caminhos no código quando uma imagem for movida ou renomeada.
+## Personagens
+
+O atendimento atual utiliza:
+
+- `personagens/Lucas/Lucas_transparente.png`
+- `personagens/Lucas_ia/lucas_ia_transparente.png`
+
+O código ajusta as imagens para a altura do visitante, usando a proporção da versão humana.
+
+Lucas chega com aparência humana. Sua identidade é sorteada a cada atendimento e revelada depois da decisão.
+
+As demais pastas de personagens contêm materiais em preparação, como imagens, GIFs e scripts auxiliares. Esses personagens ainda não são selecionados pelo atendimento atual.
+
+## Recursos preparados
+
+- `interfone.png`: futura interação de diálogos.
+- `lista_moradores.png`: futura consulta de moradores.
+- `scanner.png`: futuro scanner com falhas.
+
+Esses equipamentos ainda não estão conectados às interações da versão atual.
+
+## Textos e transparência
+
+Os códigos, datas, avisos, registros e resultados são desenhados pelo Pygame sobre os sprites.
+
+Os PNGs transparentes usam `convert_alpha()` após a criação da janela.
+
+## Origem e autoria
+
+As texturas e os sprites gerados para o cenário, os objetos, as vidas, o relatório e as versões transparentes de Lucas foram produzidos com auxílio do ChatGPT e integrados ao projeto pelo grupo.
+
+O calendário e os avisos na parede tiveram como referência de ambientação o jogo *That's Not My Neighbor*.
+
+Os materiais dos demais personagens foram adicionados ao repositório pelo grupo. Sua origem e licença ainda precisam ser individualizadas na documentação antes da integração à entrega final.
