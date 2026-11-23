@@ -1,5 +1,6 @@
 import pygame
-from math import sin, cos, radians, pi, array
+from math import sin, cos, radians, pi
+from array import array
 
 def desenhar_relogio(tela, sprite, area, segundos_turno):
     # Desenha o sprite do relógio com os ponteiros animados.
