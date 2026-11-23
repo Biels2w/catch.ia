@@ -1,5 +1,6 @@
 import pygame
 
+from random import choice
 from datetime import date
 from src.consultas import MESES, desenhar_calendario, desenhar_jornal, desenhar_livro
 
@@ -393,6 +394,21 @@ def executar_jogo():
         imagem_lucas, (largura_visitante, altura_visitante)
     )
 
+    # A forma revelada usa o mesmo tamanho da aparência humana.
+    imagem_lucas_ia = pygame.image.load(
+        "assets/imagens/personagens/Lucas_ia/lucas_ia_transparente.png"
+    ).convert_alpha()
+
+    imagem_lucas_ia = pygame.transform.scale(
+        imagem_lucas_ia, (largura_visitante, altura_visitante)
+    )
+
+    # Permite selecionar a imagem pelo tipo do visitante.
+    imagens_visitante = {
+        "humano": imagem_lucas,
+        "ia": imagem_lucas_ia,
+    }
+
     # Começa totalmente à esquerda da abertura.
     rect_visitante = imagem_lucas.get_rect()
     rect_visitante.right = abertura_janela.left
@@ -409,6 +425,9 @@ def executar_jogo():
         "destino_x": abertura_janela.centerx - rect_visitante.width // 2,
         "velocidade": 220,  # Pixels percorridos por segundo.
         "estado": "ausente",
+        "tipo": None, # Será sorteado na chegada.
+        "revelado": False, # Controla a exibição da identidade.
+        "revelacao_ate": 0, # Momento em que poderá começar a sair.
     }
     #=======================================================
     relogio = pygame.time.Clock()
@@ -476,13 +495,22 @@ def executar_jogo():
                     tocar_som(sons, "abrir")
 
                 elif botao_liberar.collidepoint(evento.pos):
-                    # Só permite decidir depois que o visitante parar.
                     if decisao is None and visitante["estado"] == "aguardando":
                         decisao = "liberar"
                         tocar_som(sons, "botao")
 
+                        # Revela a aparência real antes da saída.
+                        visitante["revelado"] = True
+                        visitante["imagem"] = imagens_visitante[
+                            visitante["tipo"]
+                        ].copy()
+
+                        visitante["estado"] = "revelando"
+                        visitante["revelacao_ate"] = agora + 1200
+
                 elif botao_recusar.collidepoint(evento.pos):
                     if decisao is None and visitante["estado"] == "aguardando":
+                        # Registra a recusa e impede outra decisão.
                         decisao = "recusar"
                         tocar_som(sons, "botao")
 
@@ -492,6 +520,16 @@ def executar_jogo():
                         # Inicia a chegada somente se ainda não houver visitante.
                         # Tocar novamente não reinicia o movimento.
                         if visitante["estado"] == "ausente":
+                            # Sorteia a identidade, mantendo a aparência humana.
+                            visitante["tipo"] = choice(("humano", "ia"))
+                            visitante["imagem"] = imagens_visitante["humano"].copy()
+                            visitante["revelado"] = False
+                            visitante["revelacao_ate"] = 0
+
+                            # Reposiciona à esquerda para o novo atendimento.
+                            visitante["rect"].right = abertura_janela.left
+                            visitante["x"] = float(visitante["rect"].x)
+
                             visitante["estado"] = "entrando"
                             decisao = None
 
@@ -509,20 +547,29 @@ def executar_jogo():
                         tocar_som(sons, "luz_desligar")
 
         if visitante["estado"] == "entrando":
-            # Distância = velocidade multiplicada pelo tempo do quadro.
-            # min impede que ele ultrapasse a posição de parada.
+            # Atualiza a posição e move o retângulo usado no desenho.
             visitante["x"] = min(
                 visitante["x"] + visitante["velocidade"] * tempo_frame,
                 visitante["destino_x"],
             )
-
-            # Guardamos frações em "x", mas desenhamos em pixels inteiros.
             visitante["rect"].x = round(visitante["x"])
 
-            # Ao chegar ao centro, passa a aguardar a fiscalização.
+            # A entrada termina quando ele chega ao centro.
             if visitante["x"] >= visitante["destino_x"]:
                 visitante["estado"] = "aguardando"
 
+        elif visitante["estado"] == "revelando":
+            # Mantém a revelação visível até terminar o prazo.
+            if agora >= visitante["revelacao_ate"]:
+                visitante["estado"] = "saindo"
+
+        elif visitante["estado"] == "saindo":
+            visitante["x"] += visitante["velocidade"] * tempo_frame
+            visitante["rect"].x = round(visitante["x"])
+
+            # A saída termina quando ele ultrapassa a abertura.
+            if visitante["rect"].left >= abertura_janela.right:
+                visitante["estado"] = "ausente"
 #=========================================================================================
 
         # Pinta a parede da cabine antes de desenhar os outros elementos.
@@ -600,6 +647,29 @@ def executar_jogo():
             # Assim, o personagem passa por trás da parede.
             tela.set_clip(abertura_janela)
             tela.blit(visitante["imagem"], visitante["rect"])
+
+            if visitante["revelado"]:
+                tipo_real = visitante["tipo"].upper()
+
+                if tipo_real == "IA":
+                    cor_tipo = (190, 130, 255)
+                else:
+                    cor_tipo = (140, 240, 150)
+
+                rotulo_tipo = fonte_consulta.render(
+                    tipo_real, True, cor_tipo
+                )
+
+                # O rótulo acompanha o personagem durante a saída.
+                tela.blit(
+                    rotulo_tipo,
+                    rotulo_tipo.get_rect(
+                        midtop=(
+                            visitante["rect"].centerx,
+                            abertura_janela.top + 6,
+                        )
+                    ),
+                )
 
             # Restaura o desenho normal para o restante do cenário.
             tela.set_clip(recorte_anterior)
