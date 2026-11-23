@@ -1,13 +1,16 @@
 import pygame
 
 from random import choice
-from datetime import date
+from datetime import date, datetime
 from src.consultas import MESES, desenhar_calendario, desenhar_jornal, desenhar_livro
 from src.sprites import carregar_sprites_interface
 
 from src.audio import carregar_audio, tocar_som
 from src.funcoes import desenhar_relogio, avaliar_decisao, desenhar_vidas
-from src.dados import carregar_ocorrencias, salvar_ocorrencias
+from src.dados import salvar_ocorrencias
+
+from src.config import META_ATENDIMENTOS
+from src.relatorio import verificar_fim_partida, montar_relatorio, desenhar_relatorio
 
 from src.config import LARGURA_TELA, ALTURA_TELA, FPS, TITULO_JOGO, CINZA, PRETO
 
@@ -23,9 +26,20 @@ def executar_jogo():
 #==================SISTEMA DE VIDAS==================
     vidas = 3
 
-    # Recupera os atendimentos de execuções anteriores.
-    ocorrencias = carregar_ocorrencias()
-    pagina_livro = max(0, (len(ocorrencias) - 1) // 3)
+    # Estes contadores pertencem somente à partida atual.
+    acertos = 0
+    erros = 0
+    atendimentos = 0
+
+    # None indica que a partida ainda não terminou.
+    relatorio_final = None
+
+    # Cada partida começa com um livro vazio na primeira página.
+    ocorrencias = []
+    pagina_livro = 0
+
+    # Atualiza também o arquivo para remover os registros da partida anterior.
+    salvar_ocorrencias(ocorrencias)
 
     # Camada transparente usada no efeito de captura.
     camada_efeitos = pygame.Surface(
@@ -450,6 +464,8 @@ def executar_jogo():
         "efeito_inicio": 0,
     }
     #=======================================================
+    # Começa depois do carregamento das imagens e sons.
+    inicio_partida = pygame.time.get_ticks()
     relogio = pygame.time.Clock()
     rodando = True
 
@@ -463,16 +479,39 @@ def executar_jogo():
             if evento.type == pygame.QUIT:
                 rodando = False
 
-            elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_r and vidas == 0:
-                # Reinicia a partida sem apagar as ocorrências.
+            elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_r and relatorio_final is not None:
+                # Reinicia o turno e limpa o histórico do livro.
                 vidas = 3
+                acertos = 0
+                erros = 0
+                atendimentos = 0
+                relatorio_final = None
+                # Limpa os registros e volta à primeira página.
+                ocorrencias = []
+                pagina_livro = 0
+
+                # Sobrescreve o arquivo com a lista vazia.
+                salvar_ocorrencias(ocorrencias)
+
                 decisao = None
                 visitante["estado"] = "ausente"
                 documento_aberto = False
                 consulta_aberta = None
+
+                inicio_partida = agora
                 inicio_turno = agora
                 proximo_toque = 0
                 aviso_campainha_ate = 0
+
+            elif (
+                evento.type == pygame.KEYDOWN
+                and evento.key == pygame.K_b
+                and relatorio_final is not None
+            ):
+                # Permite consultar as ocorrências após o resultado.
+                # O ESC existente fecha o livro e volta ao relatório.
+                consulta_aberta = "livro"
+                tocar_som(sons, "abrir")
 
             elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_ESCAPE:
                 # Só toca o fechamento se alguma consulta estava aberta.
@@ -483,6 +522,10 @@ def executar_jogo():
                 documento_aberto = False
 
             elif evento.type == pygame.MOUSEBUTTONDOWN and evento.button == 1:
+                # Não permite acionar o cenário atrás do relatório.
+                # Quando o livro está aberto, seus cliques continuam funcionando.
+                if relatorio_final is not None and consulta_aberta is None:
+                    continue
                 if consulta_aberta is not None:
                     # Clicar fora fecha a consulta e toca o efeito.
                     if consulta_aberta == "livro" and botao_anterior.collidepoint(evento.pos):
@@ -550,7 +593,11 @@ def executar_jogo():
                         tocar_som(sons, "botao")
 
                 elif area_campainha.collidepoint(evento.pos):
-                    if agora >= proximo_toque and vidas > 0:
+                    if (
+                        agora >= proximo_toque
+                        and vidas > 0
+                        and atendimentos < META_ATENDIMENTOS
+                    ):
                         tocar_som(sons, "campainha")
                         # Inicia a chegada somente se ainda não houver visitante.
                         # Tocar novamente não reinicia o movimento.
@@ -586,9 +633,23 @@ def executar_jogo():
 
         # Este bloco fica fora do for de eventos, mas dentro do while.
         if decisao is not None and not visitante["registrado"]:
+            # A função atualiza as vidas e informa se a decisão foi correta.
             vidas, acertou = avaliar_decisao(
                 visitante["tipo"], decisao, vidas
             )
+
+            # Conta apenas uma vez cada atendimento.
+            atendimentos += 1
+
+            if acertou:
+                acertos += 1
+            else:
+                erros += 1
+
+            # O restante do registro continua abaixo.
+                erros += 1
+
+#=========================================================================================
 
             # Usa o horário fictício do expediente.
             segundos = horario_inicial + (agora - inicio_turno) // 1000
@@ -701,6 +762,31 @@ def executar_jogo():
             if tempo_captura >= 650:
                 visitante["estado"] = "ausente"
 #=========================================================================================
+        # Relátorio sobrepondo tudo que tem na tela
+        resultado = verificar_fim_partida(
+            vidas, atendimentos, META_ATENDIMENTOS
+        )
+
+        if (
+            relatorio_final is None
+            and resultado is not None
+            and visitante["estado"] == "ausente"
+        ):
+            # Espera a última animação terminar.
+            # Como deixa de ser None, o relatório não será recriado.
+            relatorio_final = montar_relatorio(
+                resultado,
+                acertos,
+                erros,
+                inicio_partida,
+                agora,
+                datetime.now(),
+                META_ATENDIMENTOS,
+            )
+
+            documento_aberto = False
+            consulta_aberta = None
+
 
         # Pinta a parede da cabine antes de desenhar os outros elementos.
         tela.fill(CINZA)
@@ -1054,29 +1140,17 @@ def executar_jogo():
         pygame.draw.rect(tela, (40, 44, 50), base_luminaria)
 
         if (
-            vidas == 0
-            and visitante["estado"] == "ausente"
+            relatorio_final is not None
             and consulta_aberta is None
             and not documento_aberto
         ):
-            pygame.draw.rect(
-                tela, (35, 38, 44),
-                (190, 160, 420, 140),
-                border_radius=6,
+            desenhar_relatorio(
+                tela,
+                relatorio_final,
+                sprites_interface,
+                fonte,
+                fonte_consulta,
             )
-
-            for texto, y in [
-                ("FIM DE PARTIDA", 190),
-                ("Você perdeu as três vidas.", 225),
-                ("R: reiniciar | Consulte o livro.", 260),
-            ]:
-                imagem = fonte.render(
-                    texto, True, (240, 229, 202)
-                )
-                tela.blit(
-                    imagem,
-                    imagem.get_rect(center=(400, y)),
-                )
 
         # A consulta ampliada aparece sobre o cenário.
         if consulta_aberta is not None:
