@@ -1,5 +1,8 @@
 import pygame
 
+from datetime import date
+from src.consultas import MESES, desenhar_calendario
+
 from src.config import LARGURA_TELA, ALTURA_TELA, FPS, TITULO_JOGO, CINZA, PRETO
 
 
@@ -122,6 +125,20 @@ def executar_jogo():
     # Nenhuma decisão foi tomada ao iniciar o atendimento.
     decisao = None
 
+#========================CALÊNDARIO PAREDE=========================
+    # Consultas fixadas na parede, acima da luminária.
+    area_calendario = pygame.Rect(680, 75, 100, 110)
+    area_jornal = pygame.Rect(680, 210, 100, 120)
+
+    # Data fictícia usada pelos documentos e pelas consultas da partida.
+    data_partida = date(2042, 11, 22)
+
+    # None significa que nenhuma consulta está aberta.
+    consulta_aberta = None
+
+    fonte_consulta = pygame.font.Font(None, 22)
+    fonte_parede = pygame.font.Font(None, 16)
+
 #=======================================================
 
     tela = pygame.display.set_mode((LARGURA_TELA, ALTURA_TELA))
@@ -204,6 +221,31 @@ def executar_jogo():
         sprite_folha, ficha_documento.size
 )
 
+    #=====================SPRITE CALENDÁRIO=====================
+
+    sprite_calendario = pygame.image.load(
+    "assets/imagens/calendario.png"
+).convert_alpha()
+
+    sprite_calendario = pygame.transform.scale(
+        sprite_calendario, area_calendario.size
+    )
+
+    # Os números são desenhados pelo jogo sobre o sprite.
+    texto_mes_calendario = fonte_parede.render(
+        f"{MESES[data_partida.month - 1][:3].upper()} {data_partida.year}",
+        True,
+        (255, 241, 218),
+    )
+
+    texto_dia_calendario = fonte_codigos.render(
+        str(data_partida.day), True, (55, 48, 39)
+    )
+
+    texto_data_calendario = fonte_parede.render(
+        f"{data_partida:%d/%m/%Y}", True, (55, 48, 39)
+)
+
     #=======================================================
     relogio = pygame.time.Clock()
     rodando = True
@@ -213,9 +255,18 @@ def executar_jogo():
             if evento.type == pygame.QUIT:
                 rodando = False
 
+            elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_ESCAPE:
+                # Fecha a leitura sem reiniciar a página do manual.
+                consulta_aberta = None
+                documento_aberto = False
+
             elif evento.type == pygame.MOUSEBUTTONDOWN and evento.button == 1:
-                if documento_aberto:
-                    # Enquanto o manual está aberto, os cliques controlam sua leitura.
+                if consulta_aberta is not None:
+                    # Durante a consulta, clicar fora fecha a folha.
+                    if not ficha_documento.collidepoint(evento.pos):
+                        consulta_aberta = None
+
+                elif documento_aberto:
                     if botao_anterior.collidepoint(evento.pos):
                         pagina_atual = max(0, pagina_atual - 1)
 
@@ -230,6 +281,9 @@ def executar_jogo():
 
                     elif not ficha_documento.collidepoint(evento.pos):
                         documento_aberto = False
+
+                elif area_calendario.collidepoint(evento.pos):
+                    consulta_aberta = "calendario"
 
                 elif documento.collidepoint(evento.pos):
                     documento_aberto = True
@@ -250,6 +304,28 @@ def executar_jogo():
 
         # A parede cobre o fundo inteiro.
         tela.blit(textura_parede, (0, 0))
+
+        # Desenha o caléndario acima da parede
+        tela.blit(sprite_calendario, area_calendario)
+
+        tela.blit(
+            texto_mes_calendario,
+            texto_mes_calendario.get_rect(
+                center=(area_calendario.centerx, area_calendario.top + 24)
+            ),
+        )
+        tela.blit(
+            texto_dia_calendario,
+            texto_dia_calendario.get_rect(
+                center=(area_calendario.centerx, area_calendario.top + 65)
+            ),
+        )
+        tela.blit(
+            texto_data_calendario,
+            texto_data_calendario.get_rect(
+                center=(area_calendario.centerx, area_calendario.top + 92)
+            ),
+        )
 
         # A vista externa cobre o centro da textura metálica,
         # deixando apenas as bordas da moldura aparentes.
@@ -403,6 +479,22 @@ def executar_jogo():
 )
 
         pygame.draw.rect(tela, (40, 44, 50), base_luminaria)
+
+
+                # A consulta ampliada aparece sobre o cenário.
+        if consulta_aberta is not None:
+            pygame.draw.rect(
+                tela, (55, 43, 31), ficha_documento.move(5, 5)
+            )
+            tela.blit(sprite_folha, ficha_documento)
+
+            desenhar_calendario(
+                tela,
+                ficha_documento,
+                data_partida,
+                fonte,
+                fonte_consulta,
+            )
 
 
         pygame.display.flip() # Exibe o quadro depois que todas as camadas foram desenhadas.
