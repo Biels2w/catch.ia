@@ -3,112 +3,19 @@ import pygame
 from datetime import date
 from src.consultas import MESES, desenhar_calendario, desenhar_jornal
 
-from math import sin, cos, radians, pi
-from array import array
-
 from src.audio import carregar_audio, tocar_som
+from src.funcoes import desenhar_relogio
 
 from src.config import LARGURA_TELA, ALTURA_TELA, FPS, TITULO_JOGO, CINZA, PRETO
 
 #======================================================================
 
-def desenhar_relogio(tela, sprite, area, segundos_turno):
-    # Desenha o sprite do relógio com os ponteiros animados.
-    # O sprite já contém a moldura, os números e as marcações.
-    tela.blit(sprite, area)
-
-    centro = area.center
-
-    # Separa o horário em horas, minutos e segundos.
-    horas = (segundos_turno // 3600) % 24
-    minutos = (segundos_turno // 60) % 60
-    segundos = segundos_turno % 60
-
-    def ponta_ponteiro(angulo, comprimento):
-        # O ângulo zero aponta para o número 12.
-        angulo = radians(angulo - 90)
-
-        return (
-            round(centro[0] + cos(angulo) * comprimento),
-            round(centro[1] + sin(angulo) * comprimento),
-        )
-
-    # Inclui os minutos e segundos para os ponteiros avançarem
-    # aos poucos entre as marcações do mostrador.
-    angulo_horas = (horas % 12) * 30 + minutos * 0.5
-    angulo_minutos = minutos * 6 + segundos * 0.1
-    angulo_segundos = segundos * 6
-
-    # Os comprimentos acompanham a largura do sprite.
-    pygame.draw.line(
-        tela,
-        (45, 40, 35),
-        centro,
-        ponta_ponteiro(angulo_horas, area.width * 0.18),
-        4,
-    )
-
-    pygame.draw.line(
-        tela,
-        (45, 40, 35),
-        centro,
-        ponta_ponteiro(angulo_minutos, area.width * 0.27),
-        3,
-    )
-
-    pygame.draw.line(
-        tela,
-        (160, 50, 40),
-        centro,
-        ponta_ponteiro(angulo_segundos, area.width * 0.33),
-        1,
-    )
-
-    # Acabamento que cobre a junção dos três ponteiros.
-    pygame.draw.circle(tela, (55, 48, 40), centro, 4)
-
-#FAZ A CAMPAINHA FUNCIONAR
-def criar_som_campainha():
-    #Gera um toque metálico e devolve um som do Pygame.
-
-    configuracao = pygame.mixer.get_init()
-
-    # Permite continuar o jogo caso o áudio não tenha iniciado.
-    if configuracao is None:
-        return None
-
-    frequencia, formato, canais = configuracao
-
-    if formato != -16:
-        return None
-
-    duracao = 0.7
-    amostras = array("h")
-
-    for indice in range(int(frequencia * duracao)):
-        instante = indice / frequencia
-
-        # O toque começa rapidamente e perde volume aos poucos.
-        volume = (
-            min(1, instante / 0.005)
-            * (1 - instante / duracao) ** 3
-        )
-
-        # Combina duas frequências para produzir um toque metálico.
-        onda = sin(2 * pi * 1046.5 * instante)
-        onda += 0.35 * sin(2 * pi * 2888 * instante)
-
-        valor = int(11000 * volume * onda)
-
-        # Repete a amostra conforme a quantidade de canais de áudio.
-        amostras.extend([valor] * canais)
-
-    return pygame.mixer.Sound(buffer=amostras.tobytes())
-#======================================================================
-
 def executar_jogo():
     # Abre a janela e executa o loop principal do Catch.IA.
     pygame.init()
+
+    # Carrega os efeitos uma única vez e inicia a trilha em repetição.
+    sons = carregar_audio()
 
 #========================JANELA=========================
     # retângulo recebe (x, y, largura, altura).
@@ -435,8 +342,8 @@ def executar_jogo():
         sprite_campainha, area_campainha.size
     )
 
-    # Cria o som uma única vez, antes do loop.
-    som_campainha = criar_som_campainha()
+    # Usa o toque armazenado na pasta assets/sons.
+    som_campainha = sons.get("campainha")
 
     # Guardam até quando cada efeito deve permanecer ativo.
     campainha_pressionada_ate = 0
@@ -463,72 +370,75 @@ def executar_jogo():
                 rodando = False
 
             elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_ESCAPE:
-                # Fecha a leitura sem reiniciar a página do manual.
+                # Só toca o fechamento se alguma consulta estava aberta.
+                if documento_aberto or consulta_aberta is not None:
+                    tocar_som(sons, "fechar")
+
                 consulta_aberta = None
                 documento_aberto = False
 
             elif evento.type == pygame.MOUSEBUTTONDOWN and evento.button == 1:
                 if consulta_aberta is not None:
-                    # Durante a consulta, clicar fora fecha a folha.
+                    # Clicar fora fecha a consulta e toca o efeito.
                     if not ficha_documento.collidepoint(evento.pos):
                         consulta_aberta = None
+                        tocar_som(sons, "fechar")
 
                 elif documento_aberto:
                     if botao_anterior.collidepoint(evento.pos):
-                        pagina_atual = max(0, pagina_atual - 1)
+                        # Só toca quando existe uma página anterior.
+                        if pagina_atual > 0:
+                            pagina_atual -= 1
+                            tocar_som(sons, "pagina")
 
                     elif botao_proximo.collidepoint(evento.pos):
-                        pagina_atual = min(
-                            len(paginas_codigos) - 1,
-                            pagina_atual + 1,
-                        )
-
-                    elif documento.collidepoint(evento.pos):
-                        documento_aberto = False
+                        # Evita som ao tentar ultrapassar a última página.
+                        if pagina_atual < len(paginas_codigos) - 1:
+                            pagina_atual += 1
+                            tocar_som(sons, "pagina")
 
                     elif not ficha_documento.collidepoint(evento.pos):
                         documento_aberto = False
+                        tocar_som(sons, "fechar")
 
                 elif area_calendario.collidepoint(evento.pos):
                     consulta_aberta = "calendario"
+                    tocar_som(sons, "abrir")
+
+                elif area_jornal.collidepoint(evento.pos):
+                    consulta_aberta = "jornal"
+                    tocar_som(sons, "abrir")
 
                 elif documento.collidepoint(evento.pos):
                     documento_aberto = True
+                    tocar_som(sons, "abrir")
 
                 elif botao_liberar.collidepoint(evento.pos):
                     if decisao is None:
                         decisao = "liberar"
+                        tocar_som(sons, "botao")
 
                 elif botao_recusar.collidepoint(evento.pos):
                     if decisao is None:
                         decisao = "recusar"
-                    
+                        tocar_som(sons, "botao")
+
                 elif area_campainha.collidepoint(evento.pos):
                     if agora >= proximo_toque:
-                        if som_campainha is not None:
-                            som_campainha.play()
+                        tocar_som(sons, "campainha")
 
-                        # Pequena animação de pressão: 150 milissegundos.
                         campainha_pressionada_ate = agora + 150
-
-                        # Mantém o aviso visível por 2,5 segundos.
                         aviso_campainha_ate = agora + 2500
-
-                        # Permite outro toque após 800 milissegundos.
                         proximo_toque = agora + 800
 
                 elif area_luminaria.collidepoint(evento.pos):
                     luminaria_acesa = not luminaria_acesa
 
-                elif area_calendario.collidepoint(evento.pos):
-                    consulta_aberta = "calendario"
-
-                elif area_jornal.collidepoint(evento.pos):
-                    consulta_aberta = "jornal"
-
-                elif documento.collidepoint(evento.pos):
-                    documento_aberto = True
-                
+                    # Cada posição do interruptor possui seu efeito.
+                    if luminaria_acesa:
+                        tocar_som(sons, "luz_ligar")
+                    else:
+                        tocar_som(sons, "luz_desligar")
 
         # Pinta a parede da cabine antes de desenhar os outros elementos.
         tela.fill(CINZA)

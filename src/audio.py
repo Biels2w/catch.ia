@@ -12,14 +12,16 @@ def carregar_audio():
     pasta = Path(__file__).resolve().parent.parent / "assets" / "sons"
 
     arquivos = {
-        "abrir": ("abrir_arquivo.wav", 0.45),
-        "fechar": ("fechar_arquivo.wav", 0.40),
-        "pagina": ("virar_pagina.wav", 0.35),
+        # Usa o mesmo efeito de papel nas três ações.
+        "abrir": ("pagina_generica.wav", 0.40),
+        "fechar": ("pagina_generica.wav", 0.35),
+        "pagina": ("pagina_generica.wav", 0.40),
+
+        "botao": ("botao.wav", 0.55),
         "luz_ligar": ("luz_ligar.wav", 0.40),
         "luz_desligar": ("luz_desligar.wav", 0.40),
         "campainha": ("campainha.wav", 0.50),
     }
-
     sons = {}
 
     # Os arquivos são carregados apenas uma vez, antes do loop.
