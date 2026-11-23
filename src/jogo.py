@@ -1,7 +1,7 @@
 import pygame
 
 from datetime import date
-from src.consultas import MESES, desenhar_calendario
+from src.consultas import MESES, desenhar_calendario, desenhar_jornal
 
 from src.config import LARGURA_TELA, ALTURA_TELA, FPS, TITULO_JOGO, CINZA, PRETO
 
@@ -139,6 +139,34 @@ def executar_jogo():
     fonte_consulta = pygame.font.Font(None, 22)
     fonte_parede = pygame.font.Font(None, 16)
 
+#========================INFORMAÇÕES JORNAL PAREDE=========================
+    # Conteúdo fictício da primeira edição do jornal.
+    # Cada notícia tem uma manchete e uma lista de linhas.
+    noticias_semana = [
+        {
+            "titulo": "FALHA NO SCANNER",
+            "linhas": [
+                "O scanner apresentou falhas.",
+                "Confira também os documentos.",
+            ],
+        },
+        {
+            "titulo": "PASSES COPIADOS",
+            "linhas": [
+                "Cópias de credenciais da série V",
+                "foram encontradas nesta semana.",
+                "Compare os dados apresentados.",
+            ],
+        },
+        {
+            "titulo": "AVISO AOS FISCAIS",
+            "linhas": [
+                "Divergências exigem conferência.",
+                "Consulte as fontes disponíveis.",
+            ],
+        },
+]
+
 #=======================================================
 
     tela = pygame.display.set_mode((LARGURA_TELA, ALTURA_TELA))
@@ -246,6 +274,22 @@ def executar_jogo():
         f"{data_partida:%d/%m/%Y}", True, (55, 48, 39)
 )
 
+    #=====================SPRITE JORNAL=====================
+    sprite_jornal = pygame.image.load(
+        "assets/imagens/jornal.png"
+    ).convert_alpha()
+
+    sprite_jornal = pygame.transform.scale(
+        sprite_jornal, area_jornal.size
+    )
+
+    texto_boletim = fonte_parede.render(
+        "BOLETIM", True, (55, 48, 39)
+    )
+    texto_refugio = fonte_parede.render(
+        "DO REFÚGIO", True, (55, 48, 39)
+)
+
     #=======================================================
     relogio = pygame.time.Clock()
     rodando = True
@@ -299,6 +343,15 @@ def executar_jogo():
                 elif area_luminaria.collidepoint(evento.pos):
                     luminaria_acesa = not luminaria_acesa
 
+                elif area_calendario.collidepoint(evento.pos):
+                    consulta_aberta = "calendario"
+
+                elif area_jornal.collidepoint(evento.pos):
+                    consulta_aberta = "jornal"
+
+                elif documento.collidepoint(evento.pos):
+                    documento_aberto = True
+
         # Pinta a parede da cabine antes de desenhar os outros elementos.
         tela.fill(CINZA)
 
@@ -326,6 +379,23 @@ def executar_jogo():
                 center=(area_calendario.centerx, area_calendario.top + 92)
             ),
         )
+
+        tela.blit(sprite_jornal, area_jornal)
+
+        tela.blit(
+            texto_boletim,
+            texto_boletim.get_rect(
+                center=(area_jornal.centerx, area_jornal.top + 23)
+            ),
+        )
+        tela.blit(
+            texto_refugio,
+            texto_refugio.get_rect(
+                center=(area_jornal.centerx, area_jornal.top + 36)
+            ),
+        )
+
+#==========================================================================
 
         # A vista externa cobre o centro da textura metálica,
         # deixando apenas as bordas da moldura aparentes.
@@ -481,20 +551,31 @@ def executar_jogo():
         pygame.draw.rect(tela, (40, 44, 50), base_luminaria)
 
 
-                # A consulta ampliada aparece sobre o cenário.
+        # A consulta ampliada aparece sobre o cenário.
         if consulta_aberta is not None:
             pygame.draw.rect(
                 tela, (55, 43, 31), ficha_documento.move(5, 5)
             )
             tela.blit(sprite_folha, ficha_documento)
 
-            desenhar_calendario(
-                tela,
-                ficha_documento,
-                data_partida,
-                fonte,
-                fonte_consulta,
-            )
+            if consulta_aberta == "calendario":
+                desenhar_calendario(
+                    tela,
+                    ficha_documento,
+                    data_partida,
+                    fonte,
+                    fonte_consulta,
+                )
+
+            elif consulta_aberta == "jornal":
+                desenhar_jornal(
+                    tela,
+                    ficha_documento,
+                    data_partida,
+                    noticias_semana,
+                    fonte,
+                    fonte_consulta,
+                )
 
 
         pygame.display.flip() # Exibe o quadro depois que todas as camadas foram desenhadas.

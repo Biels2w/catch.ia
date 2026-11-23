@@ -2,6 +2,8 @@ import calendar
 
 import pygame
 
+from datetime import timedelta
+
 
 MESES = (
     "Janeiro", "Fevereiro", "Março", "Abril",
@@ -81,4 +83,63 @@ def desenhar_calendario(tela, area, data_partida, fonte, fonte_menor):
     tela.blit(
         aviso,
         aviso.get_rect(center=(area.centerx, area.bottom - 25)),
+    )
+
+
+def desenhar_jornal(tela, area, data_partida, noticias, fonte, fonte_menor):
+    """Desenha a edição semanal e seus avisos sobre a folha."""
+    cor_texto = (45, 42, 36)
+
+    titulo = fonte.render("BOLETIM DO REFÚGIO", True, cor_texto)
+    tela.blit(
+        titulo,
+        titulo.get_rect(center=(area.centerx, area.top + 38)),
+    )
+
+    # weekday() retorna 0 na segunda-feira e 6 no domingo.
+    # Voltamos até a segunda para encontrar o início da edição semanal.
+    inicio_semana = data_partida - timedelta(days=data_partida.weekday())
+    fim_semana = inicio_semana + timedelta(days=6)
+
+    periodo = fonte_menor.render(
+        f"Semana de {inicio_semana:%d/%m} a {fim_semana:%d/%m/%Y}",
+        True,
+        cor_texto,
+    )
+    tela.blit(
+        periodo,
+        periodo.get_rect(center=(area.centerx, area.top + 73)),
+    )
+
+    pygame.draw.line(
+        tela,
+        (155, 140, 110),
+        (area.left + 20, area.top + 94),
+        (area.right - 20, area.top + 94),
+        2,
+    )
+
+    # A posição vertical avança conforme desenhamos cada notícia.
+    y = area.top + 112
+
+    for noticia in noticias:
+        manchete = fonte.render(
+            noticia["titulo"], True, (116, 46, 39)
+        )
+        tela.blit(manchete, (area.left + 20, y))
+        y += 27
+
+        for linha in noticia["linhas"]:
+            texto = fonte_menor.render(linha, True, cor_texto)
+            tela.blit(texto, (area.left + 20, y))
+            y += 22
+
+        y += 13
+
+    aviso = fonte_menor.render(
+        "Clique fora ou Esc para fechar.", True, cor_texto
+    )
+    tela.blit(
+        aviso,
+        aviso.get_rect(center=(area.centerx, area.bottom - 18)),
     )
