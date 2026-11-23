@@ -3,6 +3,7 @@ import pygame
 from random import choice
 from datetime import date
 from src.consultas import MESES, desenhar_calendario, desenhar_jornal, desenhar_livro
+from src.sprites import carregar_sprites_interface
 
 from src.audio import carregar_audio, tocar_som
 from src.funcoes import desenhar_relogio, avaliar_decisao, desenhar_vidas
@@ -192,6 +193,9 @@ def executar_jogo():
 
     tela = pygame.display.set_mode((LARGURA_TELA, ALTURA_TELA))
     pygame.display.set_caption(TITULO_JOGO)
+
+    # A janela precisa existir antes de carregar imagens com convert_alpha.
+    sprites_interface = carregar_sprites_interface()
 
     #=====================SPRITE CHÃO=====================
     # Carrega a textura e ajusta ao tamanho do chão externo.
@@ -684,7 +688,7 @@ def executar_jogo():
         # A parede cobre o fundo inteiro.
         tela.blit(textura_parede, (0, 0))
 
-        desenhar_vidas(tela, vidas) # desenha os corações de vida
+        desenhar_vidas(tela, vidas, sprites_interface) # desenha os corações de vida
 
         #=== Aciona o relógio na parede ===
         # Converte os milissegundos transcorridos em segundos.

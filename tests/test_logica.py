@@ -1,7 +1,6 @@
 from src.funcoes import avaliar_decisao
 from src.dados import carregar_ocorrencias, salvar_ocorrencias
 
-
 def test_quatro_decisoes_possiveis():
     casos = [
         ("humano", "liberar", (3, True)),

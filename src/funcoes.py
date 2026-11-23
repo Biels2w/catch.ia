@@ -112,20 +112,14 @@ def avaliar_decisao(tipo, decisao, vidas):
     # Um erro tira uma vida. A quantidade nunca fica negativa.
     return max(0, vidas - (0 if acertou else 1)), acertou
 
+#======================================================================
 
-def desenhar_vidas(tela, vidas):
-    """Desenha três corações, preenchendo os que ainda restam."""
+def desenhar_vidas(tela, vidas, sprites):
+    """Desenha três espaços de vida com os PNGs carregados."""
+
     for indice in range(3):
-        x = 24 + indice * 34
-        y = 24
+        # Os primeiros espaços mostram as vidas que ainda restam.
+        nome = "coracao_cheio" if indice < vidas else "coracao_vazio"
 
-        cor = (220, 65, 80) if indice < vidas else (70, 62, 65)
-
-        # Dois círculos e um triângulo formam cada coração.
-        pygame.draw.circle(tela, cor, (x + 7, y + 7), 7)
-        pygame.draw.circle(tela, cor, (x + 19, y + 7), 7)
-        pygame.draw.polygon(
-            tela,
-            cor,
-            [(x, y + 8), (x + 26, y + 8), (x + 13, y + 26)],
-        )
+        # Cada coração fica 34 pixels à direita do anterior.
+        tela.blit(sprites[nome], (24 + indice * 34, 24))
