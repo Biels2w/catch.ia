@@ -646,9 +646,6 @@ def executar_jogo():
             else:
                 erros += 1
 
-            # O restante do registro continua abaixo.
-                erros += 1
-
 #=========================================================================================
 
             # Usa o horário fictício do expediente.
