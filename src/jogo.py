@@ -298,9 +298,8 @@ def executar_jogo():
     texto_refugio = fonte_titulo_jornal.render(
         "DO REFÚGIO", True, (55, 48, 39)
 )
-
-    #=====================RELÓGIO DE PAREDE=====================
-
+    
+    #=====================SPRITE RELÓGIO PAREDE=====================
     # Posição e tamanho: x, y, largura e altura.
     # Cabe na parede à esquerda da janela, que começa em x=140.
     area_relogio = pygame.Rect(17, 87, 106, 106)
@@ -355,6 +354,24 @@ def executar_jogo():
     fonte_campainha = pygame.font.Font(None, 24)
     texto_campainha = fonte_campainha.render(
         "Próximo, por favor!", True, (242, 229, 197)
+    )
+
+    #=====================SPRITE LIVRO=====================
+
+    # Define a posição e o tamanho do livro sobre o balcão.
+    # Rect recebe: x, y, largura e altura.
+    area_livro = pygame.Rect(330, 466, 132, 64)
+
+    # Carrega o sprite preservando a transparência ao redor do livro.
+    # Este carregamento vem depois da criação da janela.
+    sprite_livro = pygame.image.load(
+        "assets/imagens/livro_ocorrencias.png"
+    ).convert_alpha()
+
+    # Ajusta a imagem às dimensões do retângulo.
+    # O carregamento e o redimensionamento acontecem uma única vez.
+    sprite_livro = pygame.transform.scale(
+        sprite_livro, area_livro.size
     )
 
     #=======================================================
@@ -531,6 +548,16 @@ def executar_jogo():
         # === Pasta em cima da mesa ===
         tela.blit(sprite_arquivo, (pasta.left, aba_pasta.top))
 
+        # ==== Desenha o livro sobre o balcão ====
+        # A posição vem do retângulo criado antes do loop.
+        tela.blit(sprite_livro, area_livro)
+
+
+        # === Campainha em cima da mesa ===
+        # Durante o toque, desloca o sprite um pouco para baixo.
+        deslocamento = 0
+
+
         # Sombra de contato sobre a madeira.
         pygame.draw.ellipse(
             tela,
@@ -543,10 +570,6 @@ def executar_jogo():
             ),
         )
 
-        # === Campainha em cima da mesa ===
-        # Durante o toque, desloca o sprite um pouco para baixo.
-        deslocamento = 0
-
         if agora < campainha_pressionada_ate:
             deslocamento = 3
 
@@ -557,7 +580,8 @@ def executar_jogo():
 
         # O aviso desaparece automaticamente quando o prazo termina.
         if agora < aviso_campainha_ate:
-            fundo_aviso = pygame.Rect(310, 480, 210, 32)
+            # Coloca o aviso na frente do balcão, abaixo dos objetos.
+            fundo_aviso = pygame.Rect(300, 558, 240, 30)
 
             pygame.draw.rect(
                 tela,

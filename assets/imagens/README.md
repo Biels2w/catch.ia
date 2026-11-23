@@ -15,6 +15,12 @@ Esta pasta reúne as texturas, os elementos de interface e os demais recursos vi
 - `botoes.png`: painel com os botões de autorizar e recusar a entrada.
 - `calendario.png`: calendário fixado na parede.
 - `jornal.png`: jornal fixado na parede.
+- `relogio.png`: relógio fixado na parede à esquerda da janela.
+- `campainha.png`: campainha/sino em cima do balcão.
+- `livro_ocorrencias.png`: livro sobre o balcão.
+- `interfone.png`: interfone fixado abaixo da janela.
+- `lista_moradores.png`: prancheta abaixo do relógio na parede.
+- `scanner.png`: scanner sobre o balcão.
 
 ## Textos e informações
 
@@ -24,7 +30,7 @@ Os recursos de personagens em preparação serão incorporados à jogabilidade e
 
 ## Origem dos recursos
 
-As imagens listadas acima foram geradas com auxílio do ChatGPT para compor o cenário do Catch.IA.
+Esses recursos de cenário foram gerados com auxílio do ChatGPT. Sprites de personagens em preparação devem ter seus créditos registrados quando forem integrados.
 
 A origem e a licença, quando disponível, de outros recursos adicionados pelo grupo devem ser registradas antes de sua utilização na versão entregue.
 
