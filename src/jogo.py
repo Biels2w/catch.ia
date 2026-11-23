@@ -565,6 +565,8 @@ def executar_jogo():
 
                             # Reposiciona à esquerda para o novo atendimento.
                             visitante["rect"].right = abertura_janela.left
+                            # Desfaz a subida do atendimento anterior.
+                            visitante["rect"].bottom = abertura_janela.bottom + 20
                             visitante["x"] = float(visitante["rect"].x)
                             visitante["estado"] = "entrando"
                             decisao = None
@@ -642,10 +644,24 @@ def executar_jogo():
                 visitante["estado"] = "aguardando"
 
         elif visitante["estado"] == "revelando":
-            # Mantém a revelação visível até terminar o prazo.
             if agora >= visitante["revelacao_ate"]:
                 visitante["estado"] = visitante["desfecho"]
                 visitante["efeito_inicio"] = agora
+
+                # Guarda a altura de onde o personagem começará a subir.
+                visitante["captura_y"] = visitante["rect"].y
+
+                # Localiza a borda inferior visível do sprite.
+                fundo_corpo = (
+                    visitante["rect"].top
+                    + visitante["imagem"].get_bounding_rect().bottom
+                )
+                # Define quanto ele pode subir sem mostrar o corte do corpo.
+                # O resultado fica entre 0 e 16 pixels.
+                visitante["subida_maxima"] = min(
+                    16,
+                    max(0, fundo_corpo - abertura_janela.bottom - 4),
+                )
 
         elif visitante["estado"] == "saindo":
             visitante["x"] += visitante["velocidade"] * tempo_frame
@@ -669,16 +685,20 @@ def executar_jogo():
 
         elif visitante["estado"] == "capturado":
             # O humano é puxado para a direita enquanto desaparece.
-            progresso = min(
-                1, (agora - visitante["efeito_inicio"]) / 1000
-            )
-            visitante["x"] += 400 * tempo_frame
-            visitante["rect"].x = round(visitante["x"])
+            tempo_captura = agora - visitante["efeito_inicio"]
+
+            # Em 180 milissegundos, o corpo desaparece completamente.
+            progresso = min(1, tempo_captura / 180)
+            # A posição parte da altura original, evitando acumular movimento.
+            visitante["rect"].y = round(
+                visitante["captura_y"]
+                - visitante["subida_maxima"] * progresso)
+            # Alpha 255 = visível; alpha 0 = transparente.
             visitante["imagem"].set_alpha(
                 round(255 * (1 - progresso))
             )
-
-            if progresso >= 1 or visitante["rect"].left >= abertura_janela.right:
+            # O feixe continua um pouco depois do desaparecimento.
+            if tempo_captura >= 650:
                 visitante["estado"] = "ausente"
 #=========================================================================================
 
@@ -759,25 +779,46 @@ def executar_jogo():
             # Assim, o personagem passa por trás da parede.
             tela.set_clip(abertura_janela)
             if visitante["estado"] == "capturado":
-                # O recorte mantém o feixe somente dentro da janela.
+                # Limpa o efeito desenhado no quadro anterior.
                 camada_efeitos.fill((0, 0, 0, 0))
+                centro_x = visitante["rect"].centerx
 
+                # O feixe se estreita em direção ao alto da janela.
                 pygame.draw.polygon(
                     camada_efeitos,
                     (110, 210, 255, 55),
                     [
-                        (abertura_janela.right, abertura_janela.top + 55),
-                        (abertura_janela.right, abertura_janela.bottom - 30),
-                        (visitante["rect"].centerx, visitante["rect"].bottom),
-                        (visitante["rect"].centerx, visitante["rect"].top),
+                        (centro_x - 40, abertura_janela.top),
+                        (centro_x + 40, abertura_janela.top),
+                        (visitante["rect"].right, abertura_janela.bottom),
+                        (visitante["rect"].left, abertura_janela.bottom),
                     ],
                 )
+
+                # Três traços subindo reforçam a direção da captura.
+                for indice, deslocamento in enumerate((-25, 0, 25)):
+                    y = abertura_janela.bottom - int(
+                        (
+                            (agora - visitante["efeito_inicio"]) * 0.5
+                            + indice * 60
+                        )
+                        % abertura_janela.height
+                    )
+
+                    pygame.draw.line(
+                        camada_efeitos,
+                        (170, 235, 255, 150),
+                        (centro_x + deslocamento, y),
+                        (centro_x + deslocamento, y - 20),
+                        2,
+                    )
 
                 tela.blit(camada_efeitos, (0, 0))
 
             tela.blit(visitante["imagem"], visitante["rect"])
 
-            if visitante["revelado"]:
+            # Evita deixar o rótulo flutuando depois do desaparecimento.
+            if visitante["revelado"] and visitante["estado"] != "capturado":
                 tipo_real = visitante["tipo"].upper()
 
                 if tipo_real == "IA":
