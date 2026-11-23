@@ -40,7 +40,6 @@ def executar_jogo():
     fonte = pygame.font.Font(None, 26) #(None = fonte padrão do pygame) e 26 é o tamanho definido
 
     # Transforma o "passe de entrada" em uma surface e o True suaviza a fonte
-    rotulo_documento = fonte.render("Passe de entrada", True, (30, 35, 42)) 
     texto_passe = fonte.render("Passe V-014 / Setor 3", True, (30, 35, 42))
     nome_visitante = fonte.render("Portador: Alex Moraes", True, (30, 35, 42))
 
@@ -101,6 +100,18 @@ def executar_jogo():
         mascara_luz,
         (0, 0),
         special_flags=pygame.BLEND_RGBA_MULT, )
+
+#========================BOTÕES PERMISSÃO=========================
+
+    # Placa abaixo da janela: a moldura termina em y=370.
+    base_botoes = pygame.Rect(140, 384, 128, 62)
+
+    # Áreas dos dois botões redondos.
+    botao_liberar = pygame.Rect(154, 397, 36, 36)
+    botao_recusar = pygame.Rect(218, 397, 36, 36)
+
+    # Nenhuma decisão foi tomada ao iniciar o atendimento.
+    decisao = None
 
 #=======================================================
 
@@ -164,6 +175,17 @@ def executar_jogo():
     sprite_arquivo = pygame.transform.scale(
     sprite_arquivo, (pasta.width, pasta.bottom - aba_pasta.top)
 )
+
+    #=====================SPRITE BOTÕES DECISÃO=====================
+    # Carrega o painel preservando o fundo transparente.
+    sprite_botoes = pygame.image.load(
+        "assets/imagens/botoes.png"
+    ).convert_alpha()
+
+    sprite_botoes = pygame.transform.scale(
+        sprite_botoes, base_botoes.size)
+
+    
     #=======================================================
     relogio = pygame.time.Clock()
     rodando = True
@@ -174,7 +196,15 @@ def executar_jogo():
                 rodando = False
 
             elif evento.type == pygame.MOUSEBUTTONDOWN and evento.button == 1:
-                if area_luminaria.collidepoint(evento.pos):
+                if botao_liberar.collidepoint(evento.pos):
+                    if decisao is None:
+                        decisao = "liberar"
+
+                elif botao_recusar.collidepoint(evento.pos):
+                    if decisao is None:
+                        decisao = "recusar"
+
+                elif area_luminaria.collidepoint(evento.pos):
                     luminaria_acesa = not luminaria_acesa
 
                 elif documento.collidepoint(evento.pos):
@@ -217,6 +247,26 @@ def executar_jogo():
             tela.blit(iluminacao, (0, 0))
 
         tela.blit(sprite_arquivo, (pasta.left, aba_pasta.top))
+
+#===========================================================================================
+
+        tela.blit(sprite_arquivo, (pasta.left, aba_pasta.top))
+
+        # Painel com os dois botões em relevo.
+        tela.blit(sprite_botoes, base_botoes)
+
+        # Cria e desenha a mensagem somente após uma decisão.
+        if decisao is not None:
+            if decisao == "liberar":
+                mensagem = "Entrada autorizada"
+                cor_mensagem = (120, 220, 145)
+            else:
+                mensagem = "Entrada recusada"
+                cor_mensagem = (255, 145, 145)
+
+            texto_decisao = fonte.render(mensagem, True, cor_mensagem)
+            tela.blit(texto_decisao, (285, 405))
+
 
         if documento_aberto:
             # O passe fica visível no balcão. Os dados só aparecem com a ficha aberta.
