@@ -3,8 +3,67 @@ import pygame
 from datetime import date
 from src.consultas import MESES, desenhar_calendario, desenhar_jornal
 
+from math import sin, cos, radians
+
 from src.config import LARGURA_TELA, ALTURA_TELA, FPS, TITULO_JOGO, CINZA, PRETO
 
+#======================================================================
+
+def desenhar_relogio(tela, sprite, area, segundos_turno):
+    # Desenha o sprite do relógio com os ponteiros animados.
+    # O sprite já contém a moldura, os números e as marcações.
+    tela.blit(sprite, area)
+
+    centro = area.center
+
+    # Separa o horário em horas, minutos e segundos.
+    horas = (segundos_turno // 3600) % 24
+    minutos = (segundos_turno // 60) % 60
+    segundos = segundos_turno % 60
+
+    def ponta_ponteiro(angulo, comprimento):
+        # O ângulo zero aponta para o número 12.
+        angulo = radians(angulo - 90)
+
+        return (
+            round(centro[0] + cos(angulo) * comprimento),
+            round(centro[1] + sin(angulo) * comprimento),
+        )
+
+    # Inclui os minutos e segundos para os ponteiros avançarem
+    # aos poucos entre as marcações do mostrador.
+    angulo_horas = (horas % 12) * 30 + minutos * 0.5
+    angulo_minutos = minutos * 6 + segundos * 0.1
+    angulo_segundos = segundos * 6
+
+    # Os comprimentos acompanham a largura do sprite.
+    pygame.draw.line(
+        tela,
+        (45, 40, 35),
+        centro,
+        ponta_ponteiro(angulo_horas, area.width * 0.18),
+        4,
+    )
+
+    pygame.draw.line(
+        tela,
+        (45, 40, 35),
+        centro,
+        ponta_ponteiro(angulo_minutos, area.width * 0.27),
+        3,
+    )
+
+    pygame.draw.line(
+        tela,
+        (160, 50, 40),
+        centro,
+        ponta_ponteiro(angulo_segundos, area.width * 0.33),
+        1,
+    )
+
+    # Acabamento que cobre a junção dos três ponteiros.
+    pygame.draw.circle(tela, (55, 48, 40), centro, 4)
+#======================================================================
 
 def executar_jogo():
     # Abre a janela e executa o loop principal do Catch.IA.
@@ -292,6 +351,36 @@ def executar_jogo():
         "DO REFÚGIO", True, (55, 48, 39)
 )
 
+    #=====================RELÓGIO DE PAREDE=====================
+
+    # Posição e tamanho: x, y, largura e altura.
+    # Cabe na parede à esquerda da janela, que começa em x=140.
+    area_relogio = pygame.Rect(17, 87, 106, 106)
+
+    # convert_alpha() preserva a transparência ao redor do relógio.
+    sprite_relogio = pygame.image.load(
+        "assets/imagens/relogio.png"
+    ).convert_alpha()
+
+    sprite_relogio = pygame.transform.scale(
+        sprite_relogio, area_relogio.size
+    )
+
+    # O expediente começa às 08:00.
+    horario_inicial = 8 * 60 * 60
+
+    # Guarda o instante inicial uma única vez, fora do while.
+    inicio_turno = pygame.time.get_ticks()
+
+    # Horário fictício de início do expediente: 08:00.
+    horario_inicial = 8 * 60 * 60
+
+    # Guarda o instante inicial uma única vez.
+    # get_ticks() informa quantos milissegundos passaram desde pygame.init().
+    inicio_turno = pygame.time.get_ticks()
+
+    fonte_relogio = pygame.font.Font(None, 18)
+
     #=======================================================
     relogio = pygame.time.Clock()
     rodando = True
@@ -360,7 +449,23 @@ def executar_jogo():
         # A parede cobre o fundo inteiro.
         tela.blit(textura_parede, (0, 0))
 
-        # Desenha o caléndario acima da parede
+        #=== Aciona o relógio na parede ===
+        # Converte os milissegundos transcorridos em segundos.
+        segundos_passados = (
+            pygame.time.get_ticks() - inicio_turno
+        ) // 1000
+
+        segundos_turno = horario_inicial + segundos_passados
+
+        # Desenha sobre a parede, antes das consultas abertas.
+        desenhar_relogio(
+            tela,
+            sprite_relogio,
+            area_relogio,
+            segundos_turno,
+        )
+
+        # === Desenha o caléndario acima da parede ===
         tela.blit(sprite_calendario, area_calendario)
 
         tela.blit(
