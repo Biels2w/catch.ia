@@ -1,4 +1,5 @@
 import pygame
+from PIL import Image, ImageSequence
 
 from random import choice
 from datetime import date, datetime
@@ -30,6 +31,33 @@ from src.documentos import (
 )
 
 from src.config import LARGURA_TELA, ALTURA_TELA, FPS, TITULO_JOGO, CINZA, PRETO
+
+#======================================================================
+#========================FUNÇÕES DE GIF================================
+def carregar_gif(caminho, tamanho):
+    """Lê um GIF e devolve (quadros, duracoes) prontos para o pygame."""
+    quadros = []
+    duracoes = []
+    with Image.open(caminho) as gif:
+        for quadro in ImageSequence.Iterator(gif):
+            duracoes.append(quadro.info.get("duration", 40))
+            rgba = quadro.convert("RGBA")
+            superficie = pygame.image.frombytes(
+                rgba.tobytes(), rgba.size, "RGBA"
+            ).convert_alpha()
+            quadros.append(pygame.transform.scale(superficie, tamanho))
+    return quadros, duracoes
+
+
+def quadro_do_gif(animacao, agora):
+    """Escolhe o quadro do GIF que deve aparecer neste instante."""
+    quadros, duracoes = animacao
+    t = agora % sum(duracoes)
+    for quadro, duracao in zip(quadros, duracoes):
+        if t < duracao:
+            return quadro
+        t -= duracao
+    return quadros[-1]
 
 #======================================================================
 
@@ -480,7 +508,7 @@ def executar_jogo():
     #=====================PRIMEIRO VISITANTE=====================
 
     imagem_lucas = pygame.image.load(
-        "assets/imagens/personagens/Lucas/lucas_transparente.png"
+        "assets/imagens/personagens/Lucas/ia_transparente.gif"
     ).convert_alpha()
 
     # Define a altura e calcula a largura mantendo a proporção.
@@ -518,6 +546,18 @@ def executar_jogo():
     imagens_visitante = {
         "humano": imagem_lucas,
         "ia": imagem_lucas_ia,
+    }
+        # Versões animadas (respirando), usadas só para desenhar na tela.
+    tamanho_visitante = (largura_visitante, altura_visitante)
+    animacoes_visitante = {
+        "humano": carregar_gif(
+            "assets/imagens/personagens/Lucas/humano_transparente.gif",
+            tamanho_visitante,
+        ),
+        "ia": carregar_gif(
+            "assets/imagens/personagens/Lucas/ia_transparente.gif",
+            tamanho_visitante,
+        ),
     }
 
     # Começa totalmente à esquerda da abertura.
@@ -1066,8 +1106,15 @@ def executar_jogo():
 
                 tela.blit(camada_efeitos, (0, 0))
 
-            tela.blit(visitante["imagem"], visitante["rect"])
+                        # Antes da revelação aparece a forma humana; depois, a identidade real.
+            forma = visitante["tipo"] if visitante["revelado"] else "humano"
+            quadro_atual = quadro_do_gif(animacoes_visitante[forma], agora)
 
+            # Mantém o fade (desativando/capturado), que age em visitante["imagem"].
+            opacidade = visitante["imagem"].get_alpha()
+            quadro_atual.set_alpha(255 if opacidade is None else opacidade)
+
+            tela.blit(quadro_atual, visitante["rect"])
             # Evita deixar o rótulo flutuando depois do desaparecimento.
             if visitante["revelado"] and visitante["estado"] != "capturado":
                 tipo_real = visitante["tipo"].upper()
