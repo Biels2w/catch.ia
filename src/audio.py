@@ -17,6 +17,9 @@ def carregar_audio():
         "fechar": ("pagina_generica.wav", 0.35),
         "pagina": ("pagina_generica.wav", 0.40),
 
+        "interfone_chamar": ("interfone_chamar.wav", 0.40),
+        "interfone_resposta": ("interfone_resposta.wav", 0.40),
+
         "botao": ("botao.wav", 0.55),
         "luz_ligar": ("luz_ligar.wav", 0.40),
         "luz_desligar": ("luz_desligar.wav", 0.40),

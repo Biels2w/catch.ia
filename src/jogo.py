@@ -14,6 +14,14 @@ from src.relatorio import verificar_fim_partida, montar_relatorio, desenhar_rela
 
 from src.efeitos import criar_efeito_dano, aplicar_efeito_dano
 
+from src.dialogos import (
+    carregar_dialogos,
+    preparar_dialogo,
+    responder_pergunta,
+    desenhar_interfone,
+    desenhar_fala_cena,
+)
+
 from src.config import LARGURA_TELA, ALTURA_TELA, FPS, TITULO_JOGO, CINZA, PRETO
 
 #======================================================================
@@ -411,6 +419,43 @@ def executar_jogo():
         sprite_livro, area_livro.size
     )
 
+    #=====================SPRITE INTERFONE=====================
+
+    # Aparelho à direita dos botões, abaixo da janela.
+    area_interfone = pygame.Rect(548, 382, 114, 64)
+
+    # Espaço entre os botões e o aparelho para as falas curtas.
+    area_fala = pygame.Rect(278, 382, 260, 64)
+
+    sprite_interfone = pygame.image.load(
+        "assets/imagens/interfone.png"
+    ).convert_alpha()
+
+    sprite_interfone = pygame.transform.scale(
+        sprite_interfone, area_interfone.size
+    )
+
+    fonte_dialogo = pygame.font.Font(None, 20)
+    fonte_fala = pygame.font.Font(None, 16)
+
+    # O arquivo é lido uma única vez.
+    roteiros = carregar_dialogos()
+
+    # Começa sem visitante e sem perguntas realizadas.
+    interfone = preparar_dialogo()
+
+    # Três botões dentro da mesma folha usada pelas consultas.
+    botoes_perguntas = [
+        pygame.Rect(
+            ficha_documento.left + 20,
+            ficha_documento.top + 82 + indice * 44,
+            ficha_documento.width - 40,
+            36,
+        )
+        for indice in range(3)
+    ]
+
+
     #=====================SPRITES VISITANTES=====================
 
     #=====================PRIMEIRO VISITANTE=====================
@@ -494,6 +539,8 @@ def executar_jogo():
                 relatorio_final = None
                 # Cancela qualquer efeito que ainda estivesse ativo.
                 efeito_dano["inicio"] = None
+                # Reinicia também a conversa e as perguntas realizadas.
+                interfone = preparar_dialogo()
                 ocorrencias = []
                 pagina_livro = 0
 
@@ -523,7 +570,14 @@ def executar_jogo():
             elif evento.type == pygame.KEYDOWN and evento.key == pygame.K_ESCAPE:
                 # Só toca o fechamento se alguma consulta estava aberta.
                 if documento_aberto or consulta_aberta is not None:
-                    tocar_som(sons, "fechar")
+                    # O interfone usa um clique; os papéis usam o som de folha.
+                    som_fechamento = (
+                        "botao"
+                        if consulta_aberta == "interfone"
+                        else "fechar"
+                    )
+
+                    tocar_som(sons, som_fechamento)
 
                 consulta_aberta = None
                 documento_aberto = False
@@ -535,7 +589,22 @@ def executar_jogo():
                     continue
                 if consulta_aberta is not None:
                     # Clicar fora fecha a consulta e toca o efeito.
-                    if consulta_aberta == "livro" and botao_anterior.collidepoint(evento.pos):
+                    if consulta_aberta == "interfone":
+                        if not ficha_documento.collidepoint(evento.pos):
+                            consulta_aberta = None
+                            tocar_som(sons, "botao")
+
+                        elif visitante["estado"] == "aguardando":
+                            # Descobre qual pergunta foi clicada.
+                            for indice, botao in enumerate(botoes_perguntas):
+                                if botao.collidepoint(evento.pos):
+                                    responder_pergunta(interfone, indice)
+                                    tocar_som(sons, "interfone_resposta")
+
+                                    # Um clique responde somente uma pergunta.
+                                    break
+
+                    elif consulta_aberta == "livro" and botao_anterior.collidepoint(evento.pos):
                         if pagina_livro > 0:
                             pagina_livro -= 1
                             tocar_som(sons, "pagina")
@@ -569,6 +638,11 @@ def executar_jogo():
                     elif not ficha_documento.collidepoint(evento.pos):
                         documento_aberto = False
                         tocar_som(sons, "fechar")
+
+                elif area_interfone.collidepoint(evento.pos):
+                    consulta_aberta = "interfone"
+                    tocar_som(sons, "interfone_chamar")
+
 
                 elif area_livro.collidepoint(evento.pos):
                     # Guarda qual consulta precisa aparecer na tela.
@@ -611,6 +685,14 @@ def executar_jogo():
                         if visitante["estado"] == "ausente":
                             # Sorteia a identidade, mantendo a aparência humana.
                             visitante["tipo"] = choice(("humano", "ia"))
+
+                            # A conversa acompanha a identidade sorteada.
+                            # Um novo visitante recebe um conjunto vazio
+                            # de perguntas já realizadas.
+                            interfone = preparar_dialogo(
+                                roteiros["lucas"][visitante["tipo"]]
+                            )
+
                             visitante["imagem"] = imagens_visitante["humano"].copy()
                             visitante["revelado"] = False
                             visitante["revelacao_ate"] = 0
@@ -683,6 +765,12 @@ def executar_jogo():
 
             # Abre a página que contém o registro mais recente.
             pagina_livro = (len(ocorrencias) - 1) // 3
+
+            # Seleciona a reação correspondente à decisão.
+            interfone["fala"] = interfone["roteiro"][decisao]
+            interfone["fala_cena"] = interfone["fala"]
+
+            tocar_som(sons, "interfone_resposta")
 
             # Impede novo desconto e novo registro nos próximos quadros.
             visitante["registrado"] = True
@@ -1028,20 +1116,13 @@ def executar_jogo():
 
 #===========================================================================================
 
-        # Painel com os dois botões em relevo.
-        tela.blit(sprite_botoes, base_botoes)
+        # Aparelho fixado abaixo da janela.
+        tela.blit(sprite_interfone, area_interfone)
 
-        # Cria e desenha a mensagem somente após uma decisão.
-        if decisao is not None:
-            if decisao == "liberar":
-                mensagem = "Entrada autorizada"
-                cor_mensagem = (120, 220, 145)
-            else:
-                mensagem = "Entrada recusada"
-                cor_mensagem = (255, 145, 145)
-
-            texto_decisao = fonte.render(mensagem, True, cor_mensagem)
-            tela.blit(texto_decisao, (285, 405))
+        # Mostra a chegada ou a reação à decisão tomada.
+        desenhar_fala_cena(
+            tela, area_fala, fonte_fala, interfone, decisao
+        )
 
 #=======================================================================================
 
@@ -1201,6 +1282,17 @@ def executar_jogo():
                     pagina_livro,
                     botao_anterior,
                     botao_proximo,
+                )
+
+            elif consulta_aberta == "interfone":
+                desenhar_interfone(
+                    tela,
+                    ficha_documento,
+                    fonte,
+                    fonte_dialogo,
+                    interfone,
+                    botoes_perguntas,
+                    visitante["estado"] == "aguardando",
                 )
 
         # Aplica o impacto depois de desenhar todas as camadas.

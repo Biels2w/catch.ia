@@ -2,18 +2,18 @@
   {
     "nome": "Lucas",
     "tipo": "ia",
-    "decisao": "recusar",
-    "acertou": true,
-    "vidas": 3,
+    "decisao": "liberar",
+    "acertou": false,
+    "vidas": 2,
     "data": "22/11/2042",
     "hora": "08:00"
   },
   {
     "nome": "Lucas",
-    "tipo": "humano",
-    "decisao": "recusar",
+    "tipo": "ia",
+    "decisao": "liberar",
     "acertou": false,
-    "vidas": 2,
+    "vidas": 1,
     "data": "22/11/2042",
     "hora": "08:00"
   }

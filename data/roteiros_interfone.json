@@ -1,0 +1,44 @@
+{
+    "lucas": {
+    "humano": {
+        "chegada": "Oi... posso entrar? Eu sei que tá tarde, mas ainda dá tempo, né?",
+        "perguntas": [
+        {
+            "pergunta": "Qual é o seu motivo para entrar?",
+            "resposta": "Ah... eu combinei de encontrar um amigo aqui dentro. Ele me mandou mensagem há vinte minutos e eu me perdi no caminho, tive que voltar uma rua inteira. Aí... sei lá, também queria sentar um pouco e beber uma água, tô cansado demais."
+        },
+        {
+            "pergunta": "Poderia me entregar seus documentos?",
+            "resposta": "Documento, claro, peraí... Tava aqui agora há pouco. Ah, achei! Tá todo amassado, desculpa, ficou o dia inteiro no bolso do moletom. A foto é de uns dois anos atrás, eu tinha o cabelo curto."
+        },
+        {
+            "pergunta": "O que aconteceu com a sua aparência?",
+            "resposta": "Ah, isso... eu saí correndo de casa e esqueci até de pentear. Dormi umas três horas, e ainda peguei vento no caminho. Tô com cara de quem perdeu uma briga com o travesseiro, eu sei."
+        }
+    ],
+        "repetir": "Você já me perguntou isso, né? Mas tudo bem... como eu falei, eu só vim encontrar meu amigo.",
+        "liberar": "Valeu, sério! Boa noite pra você.",
+        "recusar": "Nossa... tá bom, tudo bem. Eu tento outro dia."
+    },
+    "ia": {
+        "chegada": "Boa noite. Gostaria de entrar no estabelecimento, por favor.",
+        "perguntas": [
+        {
+            "pergunta": "Qual é o seu motivo para entrar?",
+            "resposta": "Tenho um encontro marcado com um conhecido, às vinte e uma horas. Cheguei com quatro minutos de antecedência. Também pretendo consumir uma bebida e descansar um pouco."
+        },
+        {
+            "pergunta": "Poderia me entregar seus documentos?",
+            "resposta": "Aqui está. O número é quatro, sete, dois, um, oito, seis, três, seis ...e a validade vai até o fim do próximo ano. A foto é recente. Está tudo em ordem."
+        },
+        {
+            "pergunta": "O que aconteceu com a sua aparência?",
+            "resposta": "Minha aparência está dentro do esperado. Os detalhes luminosos são um acessório de moda. Se estiver causando algum desconforto, posso explicar com mais clareza."
+        }
+    ],
+        "repetir": "Tenho um encontro marcado com um conhecido, às vinte e uma horas. Cheguei com quatro minutos de antecedência. Também pretendo consumir uma bebida e descansar um pouco.",
+        "liberar": "Agradeço pela cooperação. Tenha uma excelente noite.",
+        "recusar": "Entendido. Retornarei em outro momento."
+    }
+}
+}
