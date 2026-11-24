@@ -12,6 +12,8 @@ from src.dados import salvar_ocorrencias
 from src.config import META_ATENDIMENTOS
 from src.relatorio import verificar_fim_partida, montar_relatorio, desenhar_relatorio
 
+from src.efeitos import criar_efeito_dano, aplicar_efeito_dano
+
 from src.config import LARGURA_TELA, ALTURA_TELA, FPS, TITULO_JOGO, CINZA, PRETO
 
 #======================================================================
@@ -207,6 +209,9 @@ def executar_jogo():
 
     tela = pygame.display.set_mode((LARGURA_TELA, ALTURA_TELA))
     pygame.display.set_caption(TITULO_JOGO)
+
+    # Prepara a camada de rachaduras uma única vez.
+    efeito_dano = criar_efeito_dano(tela.get_size())
 
     # A janela precisa existir antes de carregar imagens com convert_alpha.
     sprites_interface = carregar_sprites_interface()
@@ -485,8 +490,10 @@ def executar_jogo():
                 acertos = 0
                 erros = 0
                 atendimentos = 0
-                relatorio_final = None
                 # Limpa os registros e volta à primeira página.
+                relatorio_final = None
+                # Cancela qualquer efeito que ainda estivesse ativo.
+                efeito_dano["inicio"] = None
                 ocorrencias = []
                 pagina_livro = 0
 
@@ -633,12 +640,19 @@ def executar_jogo():
 
         # Este bloco fica fora do for de eventos, mas dentro do while.
         if decisao is not None and not visitante["registrado"]:
-            # A função atualiza as vidas e informa se a decisão foi correta.
+            # Guarda as vidas para descobrir se houve perda.
+            vidas_antes = vidas
+
             vidas, acertou = avaliar_decisao(
                 visitante["tipo"], decisao, vidas
             )
 
-            # Conta apenas uma vez cada atendimento.
+            if vidas < vidas_antes:
+                # Guarda o instante do impacto.
+                # "registrado" impede repetir isso nos próximos quadros.
+                efeito_dano["inicio"] = agora
+
+            # Cada atendimento continua sendo contado uma única vez.
             atendimentos += 1
 
             if acertou:
@@ -1189,8 +1203,8 @@ def executar_jogo():
                     botao_proximo,
                 )
 
-            
-
+        # Aplica o impacto depois de desenhar todas as camadas.
+        aplicar_efeito_dano(tela, efeito_dano, agora)
 
         pygame.display.flip() # Exibe o quadro depois que todas as camadas foram desenhadas.
 
