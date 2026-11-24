@@ -1118,6 +1118,8 @@ def executar_jogo():
 
         # Aparelho fixado abaixo da janela.
         tela.blit(sprite_interfone, area_interfone)
+        # Desenha o painel com os botões de autorizar e recusar.
+        tela.blit(sprite_botoes, base_botoes)
 
         # Mostra a chegada ou a reação à decisão tomada.
         desenhar_fala_cena(
