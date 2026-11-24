@@ -22,6 +22,13 @@ from src.dialogos import (
     desenhar_fala_cena,
 )
 
+from src.documentos import (
+    carregar_documentos,
+    entregar_documento,
+    criar_miniatura_documento,
+    desenhar_documento,
+)
+
 from src.config import LARGURA_TELA, ALTURA_TELA, FPS, TITULO_JOGO, CINZA, PRETO
 
 #======================================================================
@@ -419,6 +426,18 @@ def executar_jogo():
         sprite_livro, area_livro.size
     )
 
+    #=====================DOCUMENTO DO VISITANTE=====================
+
+    # Espaço livre sobre o balcão, à direita do livro.
+    area_passe = pygame.Rect(490, 470, 110, 62)
+
+    # Reutiliza a textura de papel já carregada.
+    sprite_passe = criar_miniatura_documento(sprite_folha)
+
+    # Os modelos são lidos uma única vez.
+    modelos_documentos = carregar_documentos()
+
+
     #=====================SPRITE INTERFONE=====================
 
     # Aparelho à direita dos botões, abaixo da janela.
@@ -475,6 +494,17 @@ def executar_jogo():
         imagem_lucas, (largura_visitante, altura_visitante)
     )
 
+    # Foto provisória do passe, mantendo a proporção da imagem.
+    # As duas identidades apresentam a aparência humana no documento.
+    foto_documento = pygame.transform.scale(
+        imagem_lucas,
+        (
+            round(largura_visitante * 106 / altura_visitante),
+            106,
+        ),
+    )
+
+
     # A forma revelada usa o mesmo tamanho da aparência humana.
     imagem_lucas_ia = pygame.image.load(
         "assets/imagens/personagens/Lucas_ia/lucas_ia_transparente.png"
@@ -506,6 +536,7 @@ def executar_jogo():
         "destino_x": abertura_janela.centerx - rect_visitante.width // 2,
         "velocidade": 220,  # Pixels percorridos por segundo.
         "estado": "ausente",
+        "documento": None,  # Será preenchido quando o jogador solicitar.
         "tipo": None, # Será sorteado na chegada.
         "revelado": False, # Controla a exibição da identidade.
         "revelacao_ate": 0, # Momento em que poderá começar a sair.
@@ -601,6 +632,21 @@ def executar_jogo():
                                     responder_pergunta(interfone, indice)
                                     tocar_som(sons, "interfone_resposta")
 
+                                    # Consulta a ação configurada nessa pergunta.
+                                    pergunta = (
+                                        interfone["roteiro"]["perguntas"][indice]
+                                    )
+
+                                    if pergunta.get("acao") == "entregar_documento":
+                                        modelo = (
+                                            modelos_documentos["lucas"]
+                                            [visitante["tipo"]]
+                                        )
+
+                                        # Repetir a pergunta mantém o mesmo passe.
+                                        if entregar_documento(visitante, modelo):
+                                            tocar_som(sons, "abrir")
+
                                     # Um clique responde somente uma pergunta.
                                     break
 
@@ -638,6 +684,14 @@ def executar_jogo():
                     elif not ficha_documento.collidepoint(evento.pos):
                         documento_aberto = False
                         tocar_som(sons, "fechar")
+
+                elif (
+                    visitante["documento"] is not None
+                    and area_passe.collidepoint(evento.pos)
+                ):
+                    consulta_aberta = "passe"
+                    tocar_som(sons, "abrir")
+
 
                 elif area_interfone.collidepoint(evento.pos):
                     consulta_aberta = "interfone"
@@ -698,6 +752,9 @@ def executar_jogo():
                             visitante["revelacao_ate"] = 0
                             # Cada novo atendimento poderá gerar um registro.
                             visitante["registrado"] = False
+
+                            # O próximo visitante precisa entregar seu próprio passe.
+                            visitante["documento"] = None
 
                             # Reposiciona à esquerda para o novo atendimento.
                             visitante["rect"].right = abertura_janela.left
@@ -861,6 +918,15 @@ def executar_jogo():
             if tempo_captura >= 650:
                 visitante["estado"] = "ausente"
 #=========================================================================================
+        # Recolhe o passe quando o visitante termina de sair.
+        # Isso também cobre o reinício, que deixa o estado como ausente.
+        if visitante["estado"] == "ausente":
+            visitante["documento"] = None
+
+            # Fecha a ficha caso ela ainda estivesse aberta.
+            if consulta_aberta == "passe":
+                consulta_aberta = None
+
         # Relátorio sobrepondo tudo que tem na tela
         resultado = verificar_fim_partida(
             vidas, atendimentos, META_ATENDIMENTOS
@@ -1071,6 +1137,10 @@ def executar_jogo():
         # A posição vem do retângulo criado antes do loop.
         tela.blit(sprite_livro, area_livro)
 
+
+        # O passe aparece somente depois de ser solicitado.
+        if visitante["documento"] is not None:
+            tela.blit(sprite_passe, area_passe)
 
         # === Campainha em cima da mesa ===
         # Durante o toque, desloca o sprite um pouco para baixo.
@@ -1295,6 +1365,17 @@ def executar_jogo():
                     interfone,
                     botoes_perguntas,
                     visitante["estado"] == "aguardando",
+                    visitante["documento"] is not None
+                )
+
+            elif consulta_aberta == "passe":
+                desenhar_documento(
+                    tela,
+                    ficha_documento,
+                    fonte,
+                    fonte_consulta,
+                    visitante["documento"],
+                    foto_documento,
                 )
 
         # Aplica o impacto depois de desenhar todas as camadas.

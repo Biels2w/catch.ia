@@ -9,6 +9,7 @@
         },
         {
             "pergunta": "Poderia me entregar seus documentos?",
+            "acao": "entregar_documento",
             "resposta": "Documento, claro, peraí... Tava aqui agora há pouco. Ah, achei! Tá todo amassado, desculpa, ficou o dia inteiro no bolso do moletom. A foto é de uns dois anos atrás, eu tinha o cabelo curto."
         },
         {
@@ -29,6 +30,7 @@
         },
         {
             "pergunta": "Poderia me entregar seus documentos?",
+            "acao": "entregar_documento",
             "resposta": "Aqui está. O número é quatro, sete, dois, um, oito, seis, três, seis ...e a validade vai até o fim do próximo ano. A foto é recente. Está tudo em ordem."
         },
         {

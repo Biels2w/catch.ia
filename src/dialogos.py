@@ -82,7 +82,8 @@ def quebrar_texto(texto, fonte, largura):
 
 def desenhar_interfone(
     tela, area, fonte, fonte_dialogo,
-    interfone, botoes, pode_perguntar
+    interfone, botoes, pode_perguntar,
+    documento_entregue=False
 ):
     """Desenha a conversa sobre a folha já exibida pelo jogo."""
     cor = (45, 42, 36)
@@ -132,9 +133,13 @@ def desenhar_interfone(
             (area.left + 20, area.top + 248 + indice * 18),
         )
 
-    aviso = fonte_dialogo.render(
-        "Esc ou clique fora para fechar.", True, cor
+    texto_aviso = (
+        "Documento no balcão. Esc para conferir."
+        if documento_entregue
+        else "Esc ou clique fora para fechar."
     )
+
+    aviso = fonte_dialogo.render(texto_aviso, True, cor)
 
     tela.blit(
         aviso,
