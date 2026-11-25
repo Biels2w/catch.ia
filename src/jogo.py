@@ -26,6 +26,7 @@ from src.documentos import (
     carregar_documentos,
     entregar_documento,
     desenhar_documento,
+    preparar_passe
 )
 
 from src.moradores import (
@@ -603,17 +604,7 @@ def executar_jogo():
         foto_documento, (largura_foto, altura_foto)
     )
 
-    # A miniatura da mesa apresenta a mesma foto da ficha aberta.
-    foto_miniatura = pygame.transform.scale(
-        foto_documento,
-        (round(largura_foto * 40 / altura_foto), 40),
-    )
-
-    sprite_passe.blit(
-        foto_miniatura,
-        foto_miniatura.get_rect(center=(24, 32)),
-    )
-
+    # A foto será colocada na miniatura quando o visitante entregar o passe.
 
     # A forma revelada usa o mesmo tamanho da aparência humana.
     imagem_lucas_ia = pygame.image.load(
@@ -631,7 +622,9 @@ def executar_jogo():
     }
 
     # Carrega todos os personagens disponíveis antes do loop.
-    personagens = carregar_personagens(imagens_visitante)
+    personagens = carregar_personagens(
+        imagens_visitante, foto_documento
+    )
 
     # Começa totalmente à esquerda da abertura.
     rect_visitante = imagem_lucas.get_rect()
@@ -779,6 +772,11 @@ def executar_jogo():
 
                                         # Repetir a pergunta mantém o mesmo passe.
                                         if entregar_documento(visitante, modelo):
+                                            # Cria o passe com a foto deste visitante.
+                                            visitante["sprite_passe"] = preparar_passe(
+                                                sprite_passe, visitante["foto"]
+                                            )
+
                                             tocar_som(sons, "abrir")
 
                                     # Um clique responde somente uma pergunta.
@@ -905,7 +903,8 @@ def executar_jogo():
                             personagem = personagens[personagem_id]
 
                             visitante["nome"] = personagem["nome"]
-                            visitante["imagens"] = personagem["imagens"]
+                            # Guarda a foto de quem está sendo atendido.
+                            visitante["foto"] = personagem["foto"]
                             visitante["tipo"] = choice(("humano", "ia"))
 
                             # Sorteia o caso uma única vez.
@@ -1377,7 +1376,7 @@ def executar_jogo():
 
         # O passe aparece somente depois de ser solicitado.
         if visitante["documento"] is not None:
-            tela.blit(sprite_passe, area_passe)
+            tela.blit(visitante["sprite_passe"], area_passe)
 
         # Scanner ao lado do passe.
         tela.blit(sprite_scanner, area_scanner)
@@ -1619,7 +1618,7 @@ def executar_jogo():
                     fonte,
                     fonte_consulta,
                     visitante["documento"],
-                    foto_documento,
+                    visitante["foto"],
                 )
 
             elif consulta_aberta == "moradores":

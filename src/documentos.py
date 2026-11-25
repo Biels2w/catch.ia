@@ -102,3 +102,28 @@ def desenhar_documento(
             center=(area.centerx, area.bottom - 30)
         ),
     )
+
+def preparar_passe(sprite_base, foto):
+    """Monta a miniatura sem alterar o sprite original do passe."""
+    passe = sprite_base.copy()
+
+    if foto is not None:
+        # Ajusta a foto ao espaço à esquerda da miniatura.
+        escala = min(
+            30 / foto.get_width(),
+            40 / foto.get_height(),
+        )
+
+        tamanho = (
+            max(1, round(foto.get_width() * escala)),
+            max(1, round(foto.get_height() * escala)),
+        )
+
+        miniatura = pygame.transform.scale(foto, tamanho)
+
+        passe.blit(
+            miniatura,
+            miniatura.get_rect(center=(24, 32)),
+        )
+
+    return passe

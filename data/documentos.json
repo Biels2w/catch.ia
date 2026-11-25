@@ -20,6 +20,24 @@
     "gael": {
     "humano": null,
     "ia": null
+    },
+    "estefanny": {
+        "humano": {
+            "nome": "Estefanny",
+            "registro": "45893",
+            "codigo": "V-052",
+            "nascimento": "03/09/2022",
+            "setor": "B-03",
+            "validade": "31/12/2043"
+        },
+        "ia": {
+            "nome": "Estefanny",
+            "registro": "45893",
+            "codigo": "V-052",
+            "nascimento": "03/09/2022",
+            "setor": "B-03",
+            "validade": "31/12/2043"
+        }
     }
 }
 

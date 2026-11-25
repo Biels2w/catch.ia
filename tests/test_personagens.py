@@ -183,3 +183,75 @@ def test_nova_conversa_nao_mistura_visitantes():
     # O próximo personagem começa sem perguntas realizadas.
     assert lucas["perguntadas"] == set()
     assert lucas["nome"] == "Lucas"
+
+# ==================== ESTEFANNY ====================
+
+def test_estefanny_humana_confere_com_cadastro():
+    cadastro = next(
+        morador
+        for morador in carregar_moradores()
+        if morador["nome"] == "Estefanny"
+    )
+
+    documento, _ = montar_caso(
+        carregar_casos()["estefanny"]["humano"][0],
+        carregar_documentos()["estefanny"],
+        carregar_dialogos()["estefanny"]["humano"],
+        "humano",
+    )
+
+    # A versão humana apresenta dados iguais aos do cadastro.
+    for campo in ("nome", "codigo", "nascimento", "setor"):
+        assert documento[campo] == cadastro[campo]
+
+
+def test_estefanny_ia_tem_divergencia_no_documento():
+    cadastro = next(
+        morador
+        for morador in carregar_moradores()
+        if morador["nome"] == "Estefanny"
+    )
+
+    for caso in carregar_casos()["estefanny"]["ia"]:
+        documento, _ = montar_caso(
+            caso,
+            carregar_documentos()["estefanny"],
+            carregar_dialogos()["estefanny"]["ia"],
+            "ia",
+        )
+
+        # O código válido sozinho não comprova que o passe é legítimo.
+        assert documento["codigo"] == cadastro["codigo"]
+
+        assert any(
+            documento[campo] != cadastro[campo]
+            for campo in ("nascimento", "setor")
+        ), caso["id"]
+
+
+def test_estefanny_nao_reaproveita_atendimento_do_lucas():
+    modelos = carregar_documentos()
+
+    lucas = {"documento": None}
+    estefanny = {"documento": None}
+
+    entregar_documento(lucas, modelos["lucas"]["humano"])
+    entregar_documento(estefanny, modelos["estefanny"]["humano"])
+
+    # Cada visitante recebe seu próprio documento.
+    assert lucas["documento"]["nome"] == "Lucas"
+    assert estefanny["documento"]["nome"] == "Estefanny"
+
+    anterior = preparar_dialogo(
+        carregar_dialogos()["lucas"]["humano"], "Lucas"
+    )
+    responder_pergunta(anterior, 0)
+
+    nova = preparar_dialogo(
+        carregar_dialogos()["estefanny"]["humano"], "Estefanny"
+    )
+
+    # As perguntas feitas ao Lucas não passam para a Estefanny.
+    assert anterior["perguntadas"] == {0}
+    assert nova["perguntadas"] == set()
+    assert nova["nome"] == "Estefanny"

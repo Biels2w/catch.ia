@@ -58,5 +58,26 @@
         "id": "gael_ia_relato_contraditorio"
         }
     ]
+    },
+    "estefanny": {
+        "humano": [
+            {
+                "id": "estefanny_humana_regular"
+            }
+        ],
+        "ia": [
+            {
+                "id": "estefanny_setor_adulterado",
+                "documento": {
+                    "setor": "B-02"
+                }
+            },
+            {
+                "id": "estefanny_nascimento_adulterado",
+                "documento": {
+                    "nascimento": "04/09/2022"
+                }
+            }
+        ]
     }
 }

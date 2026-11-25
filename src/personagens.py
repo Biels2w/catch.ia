@@ -3,60 +3,90 @@ from pathlib import Path
 import pygame
 
 
-def carregar_personagens(imagens_lucas):
-    """Reúne os personagens e carrega os sprites do Gael."""
-
-    # Localiza a pasta de personagens a partir deste arquivo.
-    # Assim, o caminho não depende da pasta aberta no terminal.
-    pasta_personagens = (
-        Path(__file__).resolve().parent.parent
-        / "assets"
-        / "imagens"
-        / "personagens"
-    )
-
-    # A imagem humana está dentro da pasta "Gael".
-    imagem_gael = pygame.image.load(
-        pasta_personagens / "Gael" / "gael_transparente.png"
+def carregar_par(pasta, caminho_humano, caminho_ia, altura=280):
+    """Carrega as duas formas de um personagem com o mesmo tamanho."""
+    humano = pygame.image.load(
+        pasta / caminho_humano
     ).convert_alpha()
 
-    # A versão IA está em outra pasta, chamada "Gael IA".
-    imagem_gael_ia = pygame.image.load(
-        pasta_personagens / "Gael IA" / "gael_ia_transparente.png"
+    ia = pygame.image.load(
+        pasta / caminho_ia
     ).convert_alpha()
 
-    # Usa a mesma altura definida para Lucas no jogo.py.
-    altura = 280
-
-    # Calcula a largura proporcional à imagem humana.
+    # Mantém a proporção da imagem humana.
     largura = round(
-        imagem_gael.get_width()
-        * altura
-        / imagem_gael.get_height()
+        humano.get_width() * altura / humano.get_height()
     )
-
     tamanho = (largura, altura)
 
-    # Mantém as duas versões com o mesmo tamanho para que
-    # o personagem não mude de posição durante a revelação.
-    imagens_gael = {
-        "humano": pygame.transform.scale(
-            imagem_gael, tamanho
-        ),
-        "ia": pygame.transform.scale(
-            imagem_gael_ia, tamanho
-        ),
+    # A revelação não altera o tamanho do retângulo.
+    return {
+        "humano": pygame.transform.scale(humano, tamanho),
+        "ia": pygame.transform.scale(ia, tamanho),
     }
 
-    # Lucas já foi carregado no jogo.py.
-    # Recebemos suas imagens para evitar carregá-las novamente.
+
+def preparar_foto(imagem):
+    """Ajusta uma imagem humana ao espaço disponível no documento."""
+
+    # Desconsidera as margens transparentes.
+    recorte = imagem.subsurface(
+        imagem.get_bounding_rect()
+    ).copy()
+
+    # A foto precisa caber tanto na largura quanto na altura.
+    escala = min(
+        90 / recorte.get_width(),
+        106 / recorte.get_height(),
+    )
+
+    tamanho = (
+        max(1, round(recorte.get_width() * escala)),
+        max(1, round(recorte.get_height() * escala)),
+    )
+
+    return pygame.transform.scale(recorte, tamanho)
+
+
+def carregar_personagens(imagens_lucas, foto_lucas):
+    """Carrega os personagens uma única vez, depois de criar a janela."""
+    pasta = (
+        Path(__file__).resolve().parent.parent
+        / "assets" / "imagens" / "personagens"
+    )
+
+    imagens_gael = carregar_par(
+        pasta,
+        "Gael/gael_transparente.png",
+        "Gael IA/gael_ia_transparente.png",
+    )
+
+    imagens_estefanny = carregar_par(
+        pasta,
+        "estefanny/estefanny_transparente.png",
+        "estefanny/estefanny_ia_transparente.png",
+    )
+
     return {
         "lucas": {
             "nome": "Lucas",
             "imagens": imagens_lucas,
+
+            # Preserva a foto antiga do Lucas com cabelo curto.
+            "foto": foto_lucas,
         },
         "gael": {
             "nome": "Gael",
             "imagens": imagens_gael,
+
+            # Gael não apresenta documento.
+            "foto": None,
+        },
+        "estefanny": {
+            "nome": "Estefanny",
+            "imagens": imagens_estefanny,
+
+            # A foto apresentada não revela a identidade sorteada.
+            "foto": preparar_foto(imagens_estefanny["humano"]),
         },
     }

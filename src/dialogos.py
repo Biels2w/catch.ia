@@ -188,6 +188,22 @@ def desenhar_fala_cena(tela, area, fonte, interfone, decisao):
         interfone["fala_cena"], fonte, area.width - 16
     )
 
+    # Calcula quantas linhas cabem no painel abaixo da janela.
+    # A conversa completa continua disponível no interfone.
+    limite = max(
+        1,
+        (area.height - 23 - fonte.get_height()) // 14 + 1,
+    )
+
+    if len(linhas) > limite:
+        linhas = linhas[:limite]
+
+        # Reserva espaço para as reticências na última linha.
+        while fonte.size(linhas[-1] + "...")[0] > area.width - 16:
+            linhas[-1] = linhas[-1][:-1]
+
+        linhas[-1] += "..."
+
     for indice, linha in enumerate(linhas):
         tela.blit(
             fonte.render(linha, True, (235, 225, 202)),
