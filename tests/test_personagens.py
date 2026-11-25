@@ -1,0 +1,185 @@
+from copy import deepcopy
+from datetime import date, datetime
+
+from src.casos import carregar_casos, montar_caso
+from src.dialogos import (
+    carregar_dialogos,
+    preparar_dialogo,
+    responder_pergunta,
+)
+from src.documentos import carregar_documentos, entregar_documento
+from src.moradores import carregar_moradores
+
+
+# ==================== AUXILIAR ====================
+
+def montar_lucas(caso, tipo):
+    """Prepara um atendimento do Lucas para os testes."""
+    return montar_caso(
+        caso,
+        carregar_documentos()["lucas"],
+        carregar_dialogos()["lucas"][tipo],
+        tipo,
+    )
+
+
+# ==================== LUCAS ====================
+
+def test_lucas_caso_nao_modifica_dados_originais():
+    modelos = carregar_documentos()["lucas"]
+    roteiro_base = carregar_dialogos()["lucas"]["ia"]
+
+    # Guarda os dados antes de montar o atendimento.
+    copia_modelos = deepcopy(modelos)
+    copia_roteiro = deepcopy(roteiro_base)
+
+    caso = carregar_casos()["lucas"]["ia"][-1]
+
+    documento, roteiro = montar_caso(
+        caso, modelos, roteiro_base, "ia"
+    )
+
+    # Altera somente os dados preparados para o atendimento.
+    documento["nome"] = "Outro nome"
+    roteiro["perguntas"][0]["resposta"] = "Outra resposta"
+
+    # Os modelos devem continuar intactos para as próximas partidas.
+    assert modelos == copia_modelos
+    assert roteiro_base == copia_roteiro
+
+
+def test_lucas_cadastro_clonado_exige_conferir_resposta():
+    caso = carregar_casos()["lucas"]["ia"][-1]
+    documento, roteiro = montar_lucas(caso, "ia")
+
+    # Neste caso, a IA apresenta um documento igual ao humano.
+    assert documento == carregar_documentos()["lucas"]["humano"]
+
+    motivo = next(
+        pergunta
+        for pergunta in roteiro["perguntas"]
+        if pergunta.get("acao") == "informar_motivo"
+    )
+
+    # A contradição está no setor informado durante a conversa.
+    assert "B-02" in motivo["resposta"]
+
+    # Repetir a pergunta não pode apagar essa pista.
+    assert "B-02" in roteiro["repetir"]
+
+
+def test_lucas_ia_tem_contradicao_verificavel():
+    cadastro = next(
+        morador
+        for morador in carregar_moradores()
+        if morador["nome"] == "Lucas"
+    )
+
+    for caso in carregar_casos()["lucas"]["ia"]:
+        documento, roteiro = montar_lucas(caso, "ia")
+
+        # Compara os dados apresentados com a lista de moradores.
+        dados_divergem = any(
+            documento[campo] != cadastro[campo]
+            for campo in ("nome", "codigo", "nascimento", "setor")
+        )
+
+        # Usa a data fictícia atual do jogo.
+        vencido = (
+            datetime.strptime(
+                documento["validade"], "%d/%m/%Y"
+            ).date()
+            < date(2042, 11, 22)
+        )
+
+        fala_diverge = any(
+            pergunta.get("acao") == "informar_motivo"
+            and "B-02" in pergunta["resposta"]
+            for pergunta in roteiro["perguntas"]
+        )
+
+        # Cada caso precisa oferecer alguma pista verificável.
+        assert dados_divergem or vencido or fala_diverge, caso["id"]
+
+
+def test_lucas_humano_preserva_documento_e_roteiro():
+    caso = carregar_casos()["lucas"]["humano"][0]
+    documento, roteiro = montar_lucas(caso, "humano")
+
+    # O caso humano regular não deve adulterar seus dados.
+    assert documento == carregar_documentos()["lucas"]["humano"]
+    assert roteiro == carregar_dialogos()["lucas"]["humano"]
+
+
+# ==================== GAEL ====================
+
+def test_gael_sem_documento_nao_entrega_passe():
+    modelos = carregar_documentos()["gael"]
+
+    # Tanto o humano quanto a IA chegam sem documentos.
+    for tipo in ("humano", "ia"):
+        visitante = {"documento": None}
+
+        assert modelos[tipo] is None
+
+        # Pedir um documento inexistente não deve gerar erro
+        # nem criar um passe na mesa.
+        assert entregar_documento(visitante, modelos[tipo]) is False
+        assert visitante["documento"] is None
+
+
+def test_caso_gael_funciona_sem_documento():
+    for tipo in ("humano", "ia"):
+        base = carregar_dialogos()["gael"][tipo]
+
+        documento, roteiro = montar_caso(
+            carregar_casos()["gael"][tipo][0],
+            carregar_documentos()["gael"],
+            base,
+            tipo,
+        )
+
+        assert documento is None
+        assert roteiro == base
+
+        # O atendimento deve receber uma cópia independente.
+        assert roteiro is not base
+
+        # As duas versões oferecem as mesmas três perguntas.
+        assert len(roteiro["perguntas"]) == 3
+
+
+def test_repetir_pergunta_revela_contradicao_gael_ia():
+    conversa = preparar_dialogo(
+        carregar_dialogos()["gael"]["ia"], "Gael"
+    )
+
+    # Na primeira resposta, a IA atribui o ataque a "elas".
+    responder_pergunta(conversa, 0)
+    assert "mortos por elas" in conversa["fala"]
+
+    # Na repetição, comete o deslize previsto no roteiro.
+    responder_pergunta(conversa, 0)
+    assert "mortos por nós" in conversa["fala"]
+
+    assert conversa["nome"] == "Gael"
+
+
+# ==================== TROCA DE PERSONAGEM ====================
+
+def test_nova_conversa_nao_mistura_visitantes():
+    gael = preparar_dialogo(
+        carregar_dialogos()["gael"]["humano"], "Gael"
+    )
+    responder_pergunta(gael, 0)
+
+    lucas = preparar_dialogo(
+        carregar_dialogos()["lucas"]["humano"], "Lucas"
+    )
+
+    # A conversa anterior mantém seu próprio histórico.
+    assert gael["perguntadas"] == {0}
+
+    # O próximo personagem começa sem perguntas realizadas.
+    assert lucas["perguntadas"] == set()
+    assert lucas["nome"] == "Lucas"
