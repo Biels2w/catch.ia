@@ -34,6 +34,13 @@ from src.moradores import (
     desenhar_moradores,
 )
 
+from src.scanner import (
+    criar_scanner,
+    iniciar_leitura,
+    atualizar_scanner,
+    desenhar_scanner,
+)
+
 from src.config import LARGURA_TELA, ALTURA_TELA, FPS, TITULO_JOGO, CINZA, PRETO
 
 #======================================================================
@@ -454,6 +461,33 @@ def executar_jogo():
     # Mantém a página selecionada ao fechar e reabrir a consulta.
     pagina_moradores = 0
 
+    #=====================SPRITE SCANNER=====================
+
+    area_scanner = pygame.Rect(610, 482, 88, 50)
+
+    sprite_scanner = pygame.image.load(
+        "assets/imagens/scanner.png"
+    ).convert_alpha()
+
+    sprite_scanner = pygame.transform.scale(
+        sprite_scanner, area_scanner.size
+    )
+
+    rotulo_scanner = fonte_parede.render(
+        "Scanner", True, (235, 225, 202)
+    )
+
+    # Botão dentro do painel ampliado.
+    botao_scanner = pygame.Rect(
+        ficha_documento.left + 85,
+        ficha_documento.bottom - 80,
+        210,
+        36,
+    )
+
+    scanner = criar_scanner()
+
+
 
     #=====================SPRITE DOCUMENTO DO VISITANTE=====================
 
@@ -653,6 +687,7 @@ def executar_jogo():
 
                 # Reinicia a consulta pela primeira página do cadastro.
                 pagina_moradores = 0
+                scanner = criar_scanner()
 
                 # Sobrescreve o arquivo com a lista vazia.
                 salvar_ocorrencias(ocorrencias)
@@ -683,7 +718,7 @@ def executar_jogo():
                     # O interfone usa um clique; os papéis usam o som de folha.
                     som_fechamento = (
                         "botao"
-                        if consulta_aberta == "interfone"
+                        if consulta_aberta in ("interfone", "scanner")
                         else "fechar"
                     )
 
@@ -699,7 +734,22 @@ def executar_jogo():
                     continue
                 if consulta_aberta is not None:
                     # Clicar fora fecha a consulta e toca o efeito.
-                    if consulta_aberta == "interfone":
+                    if consulta_aberta == "scanner":
+                        if not ficha_documento.collidepoint(evento.pos):
+                            consulta_aberta = None
+                            tocar_som(sons, "botao")
+
+                        elif (
+                            botao_scanner.collidepoint(evento.pos)
+                            and visitante["estado"] == "aguardando"
+                            and decisao is None
+                        ):
+                            if iniciar_leitura(
+                                scanner, agora, visitante["nome"]
+                            ):
+                                tocar_som(sons, "scanner_ler")
+
+                    elif consulta_aberta == "interfone":
                         if not ficha_documento.collidepoint(evento.pos):
                             consulta_aberta = None
                             tocar_som(sons, "botao")
@@ -796,6 +846,11 @@ def executar_jogo():
                     consulta_aberta = "moradores"
                     tocar_som(sons, "lista_abrir")
 
+                elif area_scanner.collidepoint(evento.pos):
+                    consulta_aberta = "scanner"
+                    tocar_som(sons, "botao")
+
+
                 elif area_interfone.collidepoint(evento.pos):
                     consulta_aberta = "interfone"
                     tocar_som(sons, "interfone_chamar")
@@ -856,6 +911,9 @@ def executar_jogo():
                             # Cada novo atendimento poderá gerar um registro.
                             visitante["registrado"] = False
 
+                            # Cada visitante recebe uma leitura independente.
+                            scanner = criar_scanner()
+
                             # O próximo visitante precisa entregar seu próprio passe.
                             visitante["documento"] = None
 
@@ -879,6 +937,27 @@ def executar_jogo():
                         tocar_som(sons, "luz_ligar")
                     else:
                         tocar_som(sons, "luz_desligar")
+
+        # A leitura continua mesmo com outra consulta aberta.
+        if scanner["estado"] == "lendo":
+            if (
+                visitante["estado"] != "aguardando"
+                or decisao is not None
+            ):
+                # Cancela se o jogador decidir antes do término.
+                scanner = criar_scanner()
+
+            elif atualizar_scanner(
+                scanner, agora, visitante["tipo"]
+            ):
+                # A função retorna True somente no quadro da conclusão.
+                som = (
+                    "scanner_falha"
+                    if scanner["resultado"] == "inconclusivo"
+                    else "scanner_ok"
+                )
+                tocar_som(sons, som)
+
 
         # Este bloco fica fora do for de eventos, mas dentro do while.
         if decisao is not None and not visitante["registrado"]:
@@ -1258,6 +1337,20 @@ def executar_jogo():
         if visitante["documento"] is not None:
             tela.blit(sprite_passe, area_passe)
 
+        # Scanner ao lado do passe.
+        tela.blit(sprite_scanner, area_scanner)
+
+        tela.blit(
+            rotulo_scanner,
+            rotulo_scanner.get_rect(
+                center=(
+                    area_scanner.centerx,
+                    area_scanner.bottom + 10,
+                )
+            ),
+        )
+
+
         # === Campainha em cima da mesa ===
         # Durante o toque, desloca o sprite um pouco para baixo.
         deslocamento = 0
@@ -1508,6 +1601,19 @@ def executar_jogo():
                     pagina_moradores,
                     botao_anterior,
                     botao_proximo,
+                )
+
+            elif consulta_aberta == "scanner":
+                desenhar_scanner(
+                    tela,
+                    ficha_documento,
+                    fonte,
+                    fonte_consulta,
+                    scanner,
+                    agora,
+                    visitante["estado"] == "aguardando"
+                    and decisao is None,
+                    botao_scanner,
                 )
 
         # Aplica o impacto depois de desenhar todas as camadas.

@@ -19,6 +19,12 @@ def carregar_audio():
 
         "interfone_chamar": ("interfone_chamar.wav", 0.40),
         "interfone_resposta": ("interfone_resposta.wav", 0.40),
+        
+        "scanner_ler": ("scanner_ler.wav", 0.40),
+        "scanner_ok": ("scanner_ok.wav", 0.40),
+        "scanner_falha": ("scanner_falha.wav", 0.40),
+        "lista_abrir": ("lista_abrir.wav", 0.40),
+
 
         "botao": ("botao.wav", 0.55),
         "luz_ligar": ("luz_ligar.wav", 0.40),
