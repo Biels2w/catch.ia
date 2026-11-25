@@ -46,5 +46,52 @@
         "liberar": "Agradeço pela cooperação. Tenha uma excelente noite.",
         "recusar": "Entendido. Retornarei em outro momento."
     }
-}
-}
+    },
+    "gael": {
+    "humano": {
+        "chegada": "Por favor... eu vi as pessoas entrando aqui. Eu posso entrar também? Eu não aguento mais ficar lá fora.",
+        "perguntas": [
+        {
+            "acao": "informar_motivo",
+            "pergunta": "Qual é o seu motivo para entrar?",
+            "resposta": "Eu preciso de um lugar para me esconder. À noite eles saem, as IAs, e não deixam ninguém vivo e alguns mortos se tornam iguais a eles, uma aparência humana modificada... Meus pais foram mortos por elas, eu vi tudo... Agora eu só quero um canto para descansar e não ser achado."
+        },
+        {
+            "acao": "entregar_documento",
+            "pergunta": "Poderia me entregar seus documentos?",
+            "resposta": "Eu não tenho. Ficou tudo na nossa casa, quando eles invadiram. Eu saí só com a roupa do corpo. Mas meu nome é Gael, tenho quinze anos, e moro na rua onde morei a vida inteira."
+        },
+        {
+            "acao": "explicar_aparencia",
+            "pergunta": "O que aconteceu com a sua aparência?",
+            "resposta": "Minha aparência? Eu tenho sorte, acho. Corri muito, me escondi em lugares ruins, mas nunca me pegaram. Eu estou fedendo? por isso dessa pergunta?"
+        }
+    ],
+        "repetir": "Eu já falei... eles mataram meus pais e eu só preciso me esconder. Por favor, não me faça contar de novo.",
+        "liberar": "Obrigado. Eu prometo que não vou causar nenhum problema.",
+        "recusar": "Entendi. Vocês não me querem aqui? Irei achar um novo lar para eu sobreviver"
+    },
+    "ia": {
+        "chegada": "Boa noite. Eu vi pessoas entrando por esta porta. Solicito abrigo para esta noite.",
+        "perguntas": [
+        {
+            "acao": "informar_motivo",
+            "pergunta": "Qual é o seu motivo para entrar?",
+            "resposta": "Preciso de um local seguro. À noite, as IAs saem e atacam os humanos. Meus pais foram mortos por elas. Estou muito triste e com muito medo. Quero apenas descansar e me esconder."
+        },
+        {
+            "acao": "entregar_documento",
+            "pergunta": "Poderia me entregar seus documentos?",
+            "resposta": "Eu não tenho documentos. Perdi tudo durante a fuga. Meu nome é Gael e tenho quinze anos."
+        },
+        {
+            "acao": "explicar_aparencia",
+            "pergunta": "O que aconteceu com a sua aparência?",
+            "resposta": "Meu cabelo está assim por causa da fuga. Este aparelho é um dispositivo auditivo. Perdi parte da audição na explosão. Desde aquela noite, eu me tornei um deles... é uma forma de dizer. Aprendi a agir como eles para sobreviver."
+        }
+    ],
+        "repetir": "Preciso de um local seguro. À noite, as IAs saem e atacam os humanos. Meus pais foram mortos por nós. Estou muito triste e com muito medo.",
+        "liberar": "Agradeço Humano. Cumprirei as regras do local.",
+        "recusar": "Entendido, alguma hora terão que sair."
+    }
+}}

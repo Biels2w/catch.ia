@@ -16,8 +16,8 @@ def carregar_dialogos():
         return json.load(arquivo)
 
 
-def preparar_dialogo(roteiro=None):
-    """Cria uma conversa nova para cada visitante."""
+def preparar_dialogo(roteiro=None, nome="Visitante"):
+    """Cria uma conversa independente para cada atendimento."""
     chegada = (
         roteiro["chegada"]
         if roteiro
@@ -27,13 +27,16 @@ def preparar_dialogo(roteiro=None):
     return {
         "roteiro": roteiro,
 
-        # Guarda os índices das perguntas já feitas.
+        # Nome público exibido no interfone e abaixo da janela.
+        "nome": nome,
+
+        # Cada atendimento começa sem perguntas realizadas.
         "perguntadas": set(),
 
-        # Texto exibido na consulta aberta.
+        # Resposta completa exibida na consulta aberta.
         "fala": chegada,
 
-        # Texto curto exibido abaixo da janela.
+        # Fala exibida no pequeno painel abaixo da janela.
         "fala_cena": chegada if roteiro else "",
     }
 
@@ -88,7 +91,9 @@ def desenhar_interfone(
     """Desenha a conversa sobre a folha já exibida pelo jogo."""
     cor = (45, 42, 36)
 
-    titulo = fonte.render("INTERFONE - LUCAS", True, cor)
+    # O título acompanha o visitante atendido.
+    nome = interfone["nome"].upper()
+    titulo = fonte.render(f"INTERFONE - {nome}", True, cor)
     tela.blit(
         titulo,
         titulo.get_rect(center=(area.centerx, area.top + 38)),
@@ -158,7 +163,7 @@ def desenhar_fala_cena(tela, area, fonte, interfone, decisao):
         tela, (35, 39, 44), area, border_radius=4
     )
 
-    titulo = "Lucas"
+    titulo = interfone["nome"]
     cor = (235, 225, 202)
 
     if decisao is not None:

@@ -46,4 +46,17 @@
         "repetir": "Eu já disse... moro no setor B-02 e só vim encontrar um amigo."
         }
     ]
-}}
+    },
+    "gael": {
+    "humano": [
+        {
+        "id": "gael_humano_refugiado"
+        }
+    ],
+    "ia": [
+        {
+        "id": "gael_ia_relato_contraditorio"
+        }
+    ]
+    }
+}

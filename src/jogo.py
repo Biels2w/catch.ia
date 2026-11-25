@@ -42,6 +42,7 @@ from src.scanner import (
 )
 
 from src.casos import carregar_casos, montar_caso
+from src.personagens import carregar_personagens
 
 from src.config import LARGURA_TELA, ALTURA_TELA, FPS, TITULO_JOGO, CINZA, PRETO
 
@@ -629,6 +630,9 @@ def executar_jogo():
         "ia": imagem_lucas_ia,
     }
 
+    # Carrega todos os personagens disponíveis antes do loop.
+    personagens = carregar_personagens(imagens_visitante)
+
     # Começa totalmente à esquerda da abertura.
     rect_visitante = imagem_lucas.get_rect()
     rect_visitante.right = abertura_janela.left
@@ -896,46 +900,68 @@ def executar_jogo():
                         # Inicia a chegada somente se ainda não houver visitante.
                         # Tocar novamente não reinicia o movimento.
                         if visitante["estado"] == "ausente":
-                            # Sorteia a identidade, mantendo a aparência humana.
+                            # Sorteia primeiro o personagem e depois sua identidade.
+                            personagem_id = choice(list(personagens))
+                            personagem = personagens[personagem_id]
+
+                            visitante["nome"] = personagem["nome"]
+                            visitante["imagens"] = personagem["imagens"]
                             visitante["tipo"] = choice(("humano", "ia"))
 
-                            # A conversa acompanha a identidade sorteada.
-                            # Um novo visitante recebe um conjunto vazio de perguntas já realizadas.
-                            # Sorteia uma variação uma única vez na chegada.
+                            # Sorteia o caso uma única vez.
+                            # Abrir consultas não muda os dados deste atendimento.
                             caso_sorteado = choice(
-                                casos["lucas"][visitante["tipo"]]
+                                casos[personagem_id][visitante["tipo"]]
                             )
 
+                            # Usa documento e roteiro do personagem sorteado.
                             documento_caso, roteiro_caso = montar_caso(
                                 caso_sorteado,
-                                modelos_documentos["lucas"],
-                                roteiros["lucas"][visitante["tipo"]],
+                                modelos_documentos[personagem_id],
+                                roteiros[personagem_id][visitante["tipo"]],
                                 visitante["tipo"],
                             )
 
-                            # Guarda os dados deste atendimento.
                             visitante["caso"] = caso_sorteado["id"]
                             visitante["modelo_documento"] = documento_caso
 
-                            interfone = preparar_dialogo(roteiro_caso)
+                            interfone = preparar_dialogo(
+                                roteiro_caso, visitante["nome"]
+                            )
 
-                            visitante["imagem"] = imagens_visitante["humano"].copy()
+                            # Todos chegam com aparência humana.
+                            visitante["imagem"] = (
+                                visitante["imagens"]["humano"].copy()
+                            )
+
                             visitante["revelado"] = False
                             visitante["revelacao_ate"] = 0
-                            # Cada novo atendimento poderá gerar um registro.
                             visitante["registrado"] = False
-
-                            # Cada visitante recebe uma leitura independente.
-                            scanner = criar_scanner()
-
-                            # O próximo visitante precisa entregar seu próprio passe.
                             visitante["documento"] = None
 
-                            # Reposiciona à esquerda para o novo atendimento.
+                            # A leitura anterior não pertence ao novo visitante.
+                            scanner = criar_scanner()
+
+                            # Recria o retângulo porque os personagens
+                            # podem ter larguras diferentes.
+                            visitante["rect"] = (
+                                visitante["imagem"].get_rect()
+                            )
+
+                            # Posiciona o visitante fora da janela, à esquerda.
                             visitante["rect"].right = abertura_janela.left
-                            # Desfaz a subida do atendimento anterior.
-                            visitante["rect"].bottom = abertura_janela.bottom + 20
+                            visitante["rect"].bottom = (
+                                abertura_janela.bottom + 20
+                            )
+
                             visitante["x"] = float(visitante["rect"].x)
+
+                            # Calcula o destino com a largura do novo sprite.
+                            visitante["destino_x"] = (
+                                abertura_janela.centerx
+                                - visitante["rect"].width // 2
+                            )
+
                             visitante["estado"] = "entrando"
                             decisao = None
 
@@ -1030,7 +1056,8 @@ def executar_jogo():
             visitante["registrado"] = True
 
             visitante["revelado"] = True
-            visitante["imagem"] = imagens_visitante[
+            # Revela a forma do personagem deste atendimento.
+            visitante["imagem"] = visitante["imagens"][
                 visitante["tipo"]
             ].copy()
 

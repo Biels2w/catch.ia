@@ -16,5 +16,10 @@
         "setor": "A-01",
         "validade": "31/12/2043"
     }
+    },
+    "gael": {
+    "humano": null,
+    "ia": null
+    }
 }
-}
+

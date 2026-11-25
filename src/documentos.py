@@ -17,11 +17,13 @@ def carregar_documentos():
 
 
 def entregar_documento(visitante, modelo):
-    """Entrega uma cópia do modelo somente na primeira solicitação."""
-    if visitante["documento"] is not None:
+    """Entrega um passe somente quando existe um modelo disponível."""
+
+    # Não cria um documento inexistente e não troca um já entregue.
+    if modelo is None or visitante["documento"] is not None:
         return False
 
-    # A cópia evita modificar o modelo original do arquivo.
+    # A cópia protege os dados originais carregados do JSON.
     visitante["documento"] = modelo.copy()
     return True
 

@@ -20,7 +20,11 @@ def montar_caso(caso, modelos, roteiro_base, tipo):
     base = caso.get("base_documento", tipo)
 
     documento = deepcopy(modelos[base])
-    documento.update(caso.get("documento", {}))
+
+    # Alguns visitantes, como Gael, chegam sem documento.
+    # Só aplicamos alterações quando existe um documento.
+    if documento is not None:
+        documento.update(caso.get("documento", {}))
 
     roteiro = deepcopy(roteiro_base)
     substituicoes = caso.get("respostas", {})
