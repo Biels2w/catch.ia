@@ -94,4 +94,53 @@
         "liberar": "Agradeço Humano. Cumprirei as regras do local.",
         "recusar": "Entendido, alguma hora terão que sair."
     }
-}}
+    },
+    "estefanny": {
+        "humano": {
+            "chegada": "Boa noite. Eu não vim sozinha, tem duas pessoas esperando na esquina. Antes de chamar elas, preciso saber como funciona aqui.",
+            "perguntas": [
+                {
+                    "acao": "informar_motivo",
+                    "pergunta": "Qual é o seu motivo para entrar?",
+                    "resposta": "Eu estudava enfermagem, então desde que tudo começou eu fui ajudando quem eu encontrava. Um senhor com a perna machucada, uma menina que se perdeu da mãe. Eles estão comigo. Eu não preciso de muito pra mim, mas eles precisam de um lugar com porta que tranque e um canto limpo pra dormir."
+                },
+                {
+                    "acao": "entregar_documento",
+                    "pergunta": "Poderia me entregar seus documentos?",
+                    "resposta": "Claro. Eu entendo a pergunta, vocês precisam ter cuidado. Aqui está minha identidade estudantil. Tá com a ponta dobrada porque eu guardava junto com as luvas de procedimento. Se precisar, eu mostro também o crachá do estágio, tá no fundo da mochila."
+                },
+                {
+                    "acao": "explicar_aparencia",
+                    "pergunta": "O que aconteceu com a sua aparência?",
+                    "resposta": "Minha aparência? Acho que nada mudou. O cabelo eu pinto de roxo desde a faculdade, é meu jeito de ser. As argolas foram presente da minha irmã mais velha, eu não tiro. E o olhar cansado é de quem não dorme direito faz duas semanas. Mas eu estou bem."
+                }
+            ],
+            "repetir": "Você já me perguntou isso, e eu respondi. Mas tudo bem, é seu trabalho ter certeza. Mas peço que agilize nas perguntas, eles não tem muito tempo",
+            "liberar": "Obrigada. Vou chamar o senhor e a menina agora. Se precisar de ajuda com alguém ferido lá dentro, pode me avisar.",
+            "recusar": "Eu entendo. Mas, por favor, deixem pelo menos eles entrarem. Eu fico do lado de fora. É só uma menina e um senhor de idade."
+        },
+        "ia": {
+            "chegada": "Boa noite. Estou acompanhada por duas pessoas que aguardam na esquina. Antes de chamá-las, preciso saber como funciona este local.",
+            "perguntas": [
+                {
+                    "acao": "informar_motivo",
+                    "pergunta": "Qual é o seu motivo para entrar?",
+                    "resposta": "Eu estudava enfermagem. Desde o início da crise, auxilio pessoas em necessidade. Elas estão comigo e precisam de um local seguro, com porta trancável e espaço limpo para descansar, normalmente ficavam comigo em minha casa. Minhas necessidades pessoais são mínimas."
+                },
+                {
+                    "acao": "entregar_documento",
+                    "pergunta": "Poderia me entregar seus documentos?",
+                    "resposta": "Aqui está. Identidade estudantil válida, curso de Enfermagem, quinto período, matrícula quatro, cinco, oito, nove, três. Posso também apresentar o crachá de estágio, caso seja necessário."
+                },
+                {
+                    "acao": "explicar_aparencia",
+                    "pergunta": "O que aconteceu com a sua aparência?",
+                    "resposta": "Minha aparência permanece dentro do esperado. As marcas luminosas são pintura corporal com tinta fluorescente, um costume da minha faculdade. O cabelo é tingido de roxo. As argolas foram um presente familiar."
+                }
+            ],
+            "repetir": "Eu estudava enfermagem. Desde o início da crise, auxilio pessoas em necessidade. Elas estão comigo, precisam de mim para serem salvas e um local seguro, com porta trancável e espaço limpo para descansar sem sair.",
+            "liberar": "Agradeço. Chamarei as duas pessoas agora. Estou disponível para prestar auxílio médico, se necessário.",
+            "recusar": "Entendido. Solicito que as duas pessoas sejam aceitas, será um prazer ajudar tantos humanos."
+        }
+    }
+}

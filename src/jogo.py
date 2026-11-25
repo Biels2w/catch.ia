@@ -903,8 +903,13 @@ def executar_jogo():
                             personagem = personagens[personagem_id]
 
                             visitante["nome"] = personagem["nome"]
-                            # Guarda a foto de quem está sendo atendido.
+
+                            # Guarda as formas humana e IA deste personagem.
+                            visitante["imagens"] = personagem["imagens"]
+
+                            # Guarda a foto apresentada no documento.
                             visitante["foto"] = personagem["foto"]
+
                             visitante["tipo"] = choice(("humano", "ia"))
 
                             # Sorteia o caso uma única vez.
