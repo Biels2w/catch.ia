@@ -1,0 +1,49 @@
+{
+    "lucas": {
+    "humano": [
+    {
+        "id": "lucas_humano_regular",
+        "documento": {}
+    }
+    ],
+    "ia": [
+    {
+        "id": "lucas_codigo_inexistente",
+        "documento": {
+        "codigo": "V-099"
+        }
+    },
+    {
+        "id": "lucas_codigo_copiado",
+        "documento": {
+        "codigo": "V-031"
+        }
+    },
+    {
+        "id": "lucas_nascimento_adulterado",
+        "documento": {
+            "codigo": "V-012",
+            "nascimento": "13/05/2024"
+        }
+    },
+    {
+        "id": "lucas_passe_vencido",
+        "documento": {
+            "codigo": "V-012",
+            "validade": "31/12/2041"
+        }
+    },
+    {
+        "id": "lucas_cadastro_clonado",
+        "base_documento": "humano",
+        "documento": {},
+        "chegada": "Oi... posso entrar? Eu sei que tá tarde, mas ainda dá tempo, né?",
+        "respostas": {
+            "informar_motivo": "Ah... vim encontrar um amigo aqui dentro. Moro no setor B-02. Me perdi no caminho e estou cansado, queria sentar e beber uma água.",
+            "entregar_documento": "Documento, claro, peraí... Tava aqui agora há pouco. Ah, achei! Tá todo amassado, desculpa, ficou o dia inteiro no bolso do moletom. A foto é de uns dois anos atrás, eu tinha o cabelo curto.",
+            "explicar_aparencia": "Ah, isso... eu saí correndo de casa e esqueci até de pentear. Dormi umas três horas, e ainda peguei vento no caminho. Tô com cara de quem perdeu uma briga com o travesseiro, eu sei."
+        },
+        "repetir": "Eu já disse... moro no setor B-02 e só vim encontrar um amigo."
+        }
+    ]
+}}

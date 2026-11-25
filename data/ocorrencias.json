@@ -1,20 +1,22 @@
 [
   {
     "nome": "Lucas",
+    "caso": "lucas_nascimento_adulterado",
     "tipo": "ia",
-    "decisao": "recusar",
-    "acertou": true,
-    "vidas": 3,
+    "decisao": "liberar",
+    "acertou": false,
+    "vidas": 2,
     "data": "22/11/2042",
-    "hora": "08:00"
+    "hora": "08:01"
   },
   {
     "nome": "Lucas",
+    "caso": "lucas_passe_vencido",
     "tipo": "ia",
     "decisao": "recusar",
     "acertou": true,
-    "vidas": 3,
+    "vidas": 2,
     "data": "22/11/2042",
-    "hora": "08:00"
+    "hora": "08:01"
   }
 ]

@@ -41,6 +41,8 @@ from src.scanner import (
     desenhar_scanner,
 )
 
+from src.casos import carregar_casos, montar_caso
+
 from src.config import LARGURA_TELA, ALTURA_TELA, FPS, TITULO_JOGO, CINZA, PRETO
 
 #======================================================================
@@ -473,10 +475,6 @@ def executar_jogo():
         sprite_scanner, area_scanner.size
     )
 
-    rotulo_scanner = fonte_parede.render(
-        "Scanner", True, (235, 225, 202)
-    )
-
     # Botão dentro do painel ampliado.
     botao_scanner = pygame.Rect(
         ficha_documento.left + 85,
@@ -522,6 +520,7 @@ def executar_jogo():
 
     # Os modelos são lidos uma única vez.
     modelos_documentos = carregar_documentos()
+    casos = carregar_casos()
 
 
     #=====================SPRITE INTERFONE=====================
@@ -647,6 +646,8 @@ def executar_jogo():
         "velocidade": 220,  # Pixels percorridos por segundo.
         "estado": "ausente",
         "documento": None,  # Será preenchido quando o jogador solicitar.
+        "caso": None,
+        "modelo_documento": None,
         "tipo": None, # Será sorteado na chegada.
         "revelado": False, # Controla a exibição da identidade.
         "revelacao_ate": 0, # Momento em que poderá começar a sair.
@@ -694,6 +695,8 @@ def executar_jogo():
 
                 decisao = None
                 visitante["estado"] = "ausente"
+                visitante["caso"] = None
+                visitante["modelo_documento"] = None
                 documento_aberto = False
                 consulta_aberta = None
 
@@ -767,10 +770,8 @@ def executar_jogo():
                                     )
 
                                     if pergunta.get("acao") == "entregar_documento":
-                                        modelo = (
-                                            modelos_documentos["lucas"]
-                                            [visitante["tipo"]]
-                                        )
+                                        # Entrega o documento da variação sorteada.
+                                        modelo = visitante["modelo_documento"]
 
                                         # Repetir a pergunta mantém o mesmo passe.
                                         if entregar_documento(visitante, modelo):
@@ -899,11 +900,24 @@ def executar_jogo():
                             visitante["tipo"] = choice(("humano", "ia"))
 
                             # A conversa acompanha a identidade sorteada.
-                            # Um novo visitante recebe um conjunto vazio
-                            # de perguntas já realizadas.
-                            interfone = preparar_dialogo(
-                                roteiros["lucas"][visitante["tipo"]]
+                            # Um novo visitante recebe um conjunto vazio de perguntas já realizadas.
+                            # Sorteia uma variação uma única vez na chegada.
+                            caso_sorteado = choice(
+                                casos["lucas"][visitante["tipo"]]
                             )
+
+                            documento_caso, roteiro_caso = montar_caso(
+                                caso_sorteado,
+                                modelos_documentos["lucas"],
+                                roteiros["lucas"][visitante["tipo"]],
+                                visitante["tipo"],
+                            )
+
+                            # Guarda os dados deste atendimento.
+                            visitante["caso"] = caso_sorteado["id"]
+                            visitante["modelo_documento"] = documento_caso
+
+                            interfone = preparar_dialogo(roteiro_caso)
 
                             visitante["imagem"] = imagens_visitante["humano"].copy()
                             visitante["revelado"] = False
@@ -992,6 +1006,7 @@ def executar_jogo():
 
             ocorrencias.append({
                 "nome": visitante["nome"],
+                "caso": visitante["caso"],
                 "tipo": visitante["tipo"],
                 "decisao": decisao,
                 "acertou": acertou,
@@ -1339,17 +1354,6 @@ def executar_jogo():
 
         # Scanner ao lado do passe.
         tela.blit(sprite_scanner, area_scanner)
-
-        tela.blit(
-            rotulo_scanner,
-            rotulo_scanner.get_rect(
-                center=(
-                    area_scanner.centerx,
-                    area_scanner.bottom + 10,
-                )
-            ),
-        )
-
 
         # === Campainha em cima da mesa ===
         # Durante o toque, desloca o sprite um pouco para baixo.

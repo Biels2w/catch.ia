@@ -5,6 +5,7 @@
         "perguntas": [
         {
             "pergunta": "Qual é o seu motivo para entrar?",
+            "acao": "informar_motivo",
             "resposta": "Ah... eu combinei de encontrar um amigo aqui dentro. Ele me mandou mensagem há vinte minutos e eu me perdi no caminho, tive que voltar uma rua inteira. Aí... sei lá, também queria sentar um pouco e beber uma água, tô cansado demais."
         },
         {
@@ -14,6 +15,7 @@
         },
         {
             "pergunta": "O que aconteceu com a sua aparência?",
+            "acao": "explicar_aparencia",
             "resposta": "Ah, isso... eu saí correndo de casa e esqueci até de pentear. Dormi umas três horas, e ainda peguei vento no caminho. Tô com cara de quem perdeu uma briga com o travesseiro, eu sei."
         }
     ],
@@ -26,6 +28,7 @@
         "perguntas": [
         {
             "pergunta": "Qual é o seu motivo para entrar?",
+            "acao": "informar_motivo",
             "resposta": "Tenho um encontro marcado com um conhecido, às vinte e uma horas. Cheguei com quatro minutos de antecedência. Também pretendo consumir uma bebida e descansar um pouco."
         },
         {
@@ -35,6 +38,7 @@
         },
         {
             "pergunta": "O que aconteceu com a sua aparência?",
+            "acao": "explicar_aparencia",
             "resposta": "Minha aparência está dentro do esperado. Os detalhes luminosos são um acessório de moda. Se estiver causando algum desconforto, posso explicar com mais clareza."
         }
     ],
