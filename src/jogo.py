@@ -28,6 +28,12 @@ from src.documentos import (
     desenhar_documento,
 )
 
+from src.moradores import (
+    carregar_moradores,
+    obter_pagina_moradores,
+    desenhar_moradores,
+)
+
 from src.config import LARGURA_TELA, ALTURA_TELA, FPS, TITULO_JOGO, CINZA, PRETO
 
 #======================================================================
@@ -425,7 +431,31 @@ def executar_jogo():
         sprite_livro, area_livro.size
     )
 
-    #=====================DOCUMENTO DO VISITANTE=====================
+    #=====================SPRITE LISTA DE MORADORES=====================
+
+    # Espaço da parede abaixo do relógio.
+    area_moradores = pygame.Rect(30, 215, 90, 135)
+
+    sprite_moradores = pygame.image.load(
+        "assets/imagens/lista_moradores.png"
+    ).convert_alpha()
+
+    sprite_moradores = pygame.transform.scale(
+        sprite_moradores, area_moradores.size
+    )
+
+    rotulo_moradores = fonte_parede.render(
+        "Moradores", True, (235, 225, 202)
+    )
+
+    # O arquivo é lido uma única vez, antes do loop.
+    moradores = carregar_moradores()
+
+    # Mantém a página selecionada ao fechar e reabrir a consulta.
+    pagina_moradores = 0
+
+
+    #=====================SPRITE DOCUMENTO DO VISITANTE=====================
 
     # Espaço livre sobre o balcão, à direita do livro.
     area_passe = pygame.Rect(490, 470, 110, 62)
@@ -621,6 +651,9 @@ def executar_jogo():
                 ocorrencias = []
                 pagina_livro = 0
 
+                # Reinicia a consulta pela primeira página do cadastro.
+                pagina_moradores = 0
+
                 # Sobrescreve o arquivo com a lista vazia.
                 salvar_ocorrencias(ocorrencias)
 
@@ -696,6 +729,27 @@ def executar_jogo():
                                     # Um clique responde somente uma pergunta.
                                     break
 
+                    elif consulta_aberta == "moradores":
+                        if botao_anterior.collidepoint(evento.pos):
+                            if pagina_moradores > 0:
+                                pagina_moradores -= 1
+                                tocar_som(sons, "pagina")
+
+                        elif botao_proximo.collidepoint(evento.pos):
+                            # Aqui precisamos apenas da quantidade de páginas.
+                            _, total_paginas = obter_pagina_moradores(
+                                moradores, pagina_moradores
+                            )
+
+                            if pagina_moradores < total_paginas - 1:
+                                pagina_moradores += 1
+                                tocar_som(sons, "pagina")
+
+                        elif not ficha_documento.collidepoint(evento.pos):
+                            consulta_aberta = None
+                            tocar_som(sons, "fechar")
+
+
                     elif consulta_aberta == "livro" and botao_anterior.collidepoint(evento.pos):
                         if pagina_livro > 0:
                             pagina_livro -= 1
@@ -738,6 +792,9 @@ def executar_jogo():
                     consulta_aberta = "passe"
                     tocar_som(sons, "abrir")
 
+                elif area_moradores.collidepoint(evento.pos):
+                    consulta_aberta = "moradores"
+                    tocar_som(sons, "lista_abrir")
 
                 elif area_interfone.collidepoint(evento.pos):
                     consulta_aberta = "interfone"
@@ -1004,6 +1061,19 @@ def executar_jogo():
 
         # A parede cobre o fundo inteiro.
         tela.blit(textura_parede, (0, 0))
+
+        # Prancheta abaixo do relógio.
+        tela.blit(sprite_moradores, area_moradores)
+
+        tela.blit(
+            rotulo_moradores,
+            rotulo_moradores.get_rect(
+                center=(
+                    area_moradores.centerx,
+                    area_moradores.bottom + 10,
+                )
+            ),
+        )
 
         desenhar_vidas(tela, vidas, sprites_interface) # desenha os corações de vida
 
@@ -1426,6 +1496,18 @@ def executar_jogo():
                     fonte_consulta,
                     visitante["documento"],
                     foto_documento,
+                )
+
+            elif consulta_aberta == "moradores":
+                desenhar_moradores(
+                    tela,
+                    ficha_documento,
+                    fonte,
+                    fonte_consulta,
+                    moradores,
+                    pagina_moradores,
+                    botao_anterior,
+                    botao_proximo,
                 )
 
         # Aplica o impacto depois de desenhar todas as camadas.
