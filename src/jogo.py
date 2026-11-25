@@ -25,7 +25,6 @@ from src.dialogos import (
 from src.documentos import (
     carregar_documentos,
     entregar_documento,
-    criar_miniatura_documento,
     desenhar_documento,
 )
 
@@ -431,8 +430,31 @@ def executar_jogo():
     # Espaço livre sobre o balcão, à direita do livro.
     area_passe = pygame.Rect(490, 470, 110, 62)
 
-    # Reutiliza a textura de papel já carregada.
-    sprite_passe = criar_miniatura_documento(sprite_folha)
+    # Sprite próprio do passe sobre a mesa.
+    sprite_passe = pygame.image.load(
+        "assets/imagens/passe_documento.png"
+    ).convert_alpha()
+
+    sprite_passe = pygame.transform.scale(
+        sprite_passe, area_passe.size
+    )
+
+    # O rótulo continua sendo escrito pelo código.
+    fonte_passe = pygame.font.Font(None, 14)
+
+    sprite_passe.blit(
+        fonte_passe.render("PASSE", True, (48, 43, 35)),
+        (47, 6),
+    )
+
+    # Fundo exclusivo da ficha aberta.
+    sprite_documento = pygame.image.load(
+        "assets/imagens/fundo_documento.png"
+    ).convert_alpha()
+
+    sprite_documento = pygame.transform.scale(
+        sprite_documento, ficha_documento.size
+    )
 
     # Os modelos são lidos uma única vez.
     modelos_documentos = carregar_documentos()
@@ -494,14 +516,38 @@ def executar_jogo():
         imagem_lucas, (largura_visitante, altura_visitante)
     )
 
-    # Foto provisória do passe, mantendo a proporção da imagem.
-    # As duas identidades apresentam a aparência humana no documento.
+    # Foto antiga de Lucas com cabelo mais curto.
+    foto_documento = pygame.image.load(
+        "assets/imagens/lucas_documento.png"
+    ).convert_alpha()
+
+    # Desconsidera as margens transparentes para aproveitar melhor
+    # o espaço da foto dentro do documento.
+    foto_documento = foto_documento.subsurface(
+        foto_documento.get_bounding_rect()
+    ).copy()
+
+    # Mantém a proporção ao ajustar a altura.
+    altura_foto = 106
+    largura_foto = round(
+        foto_documento.get_width()
+        * altura_foto
+        / foto_documento.get_height()
+    )
+
     foto_documento = pygame.transform.scale(
-        imagem_lucas,
-        (
-            round(largura_visitante * 106 / altura_visitante),
-            106,
-        ),
+        foto_documento, (largura_foto, altura_foto)
+    )
+
+    # A miniatura da mesa apresenta a mesma foto da ficha aberta.
+    foto_miniatura = pygame.transform.scale(
+        foto_documento,
+        (round(largura_foto * 40 / altura_foto), 40),
+    )
+
+    sprite_passe.blit(
+        foto_miniatura,
+        foto_miniatura.get_rect(center=(24, 32)),
     )
 
 
@@ -1321,7 +1367,11 @@ def executar_jogo():
             pygame.draw.rect(
                 tela, (55, 43, 31), ficha_documento.move(5, 5)
             )
-            tela.blit(sprite_folha, ficha_documento)
+            # O passe possui um fundo próprio.
+            if consulta_aberta == "passe":
+                tela.blit(sprite_documento, ficha_documento)
+            else:
+                tela.blit(sprite_folha, ficha_documento)
 
             if consulta_aberta == "calendario":
                 desenhar_calendario(

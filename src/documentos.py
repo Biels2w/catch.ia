@@ -26,40 +26,6 @@ def entregar_documento(visitante, modelo):
     return True
 
 
-def criar_miniatura_documento(papel):
-    """Prepara o pequeno passe que ficará sobre o balcão."""
-    imagem = pygame.transform.scale(papel, (110, 62))
-
-    # Pequena silhueta representando a foto.
-    pygame.draw.rect(
-        imagem, (102, 112, 109), (9, 14, 22, 31)
-    )
-    pygame.draw.circle(
-        imagem, (209, 201, 179), (20, 24), 5
-    )
-    pygame.draw.rect(
-        imagem, (209, 201, 179), (14, 30, 12, 12)
-    )
-
-    fonte = pygame.font.Font(None, 16)
-    imagem.blit(
-        fonte.render("PASSE", True, (55, 48, 39)),
-        (40, 10),
-    )
-
-    # Linhas decorativas que representam os dados do documento.
-    for y, largura in ((28, 54), (36, 44), (44, 50)):
-        pygame.draw.line(
-            imagem,
-            (125, 112, 90),
-            (40, y),
-            (40 + largura, y),
-            2,
-        )
-
-    return imagem
-
-
 def desenhar_documento(
     tela, area, fonte, fonte_menor, dados, foto
 ):
@@ -131,6 +97,6 @@ def desenhar_documento(
     tela.blit(
         aviso,
         aviso.get_rect(
-            center=(area.centerx, area.bottom - 18)
+            center=(area.centerx, area.bottom - 30)
         ),
     )
