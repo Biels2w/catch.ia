@@ -286,5 +286,53 @@
             "liberar": "Agradeço. Não causarei problemas. Preciso apenas de um local.",
             "recusar": "Esperava essa decisão. Desejo boa sorte a todos dentro do abrigo."
         }
+    },
+    "sarah": {
+        "humano": {
+            "chegada": "Oi... boa noite. Eu sei que é tarde. Será que dá pra eu entrar? Prometo que não dou trabalho.",
+            "perguntas": [
+                {
+                    "acao": "informar_motivo",
+                    "pergunta": "Qual é o seu motivo para entrar?",
+                    "resposta": "Eu só quero passar a noite em algum lugar que tenha gente de verdade. Lá fora está ficando perigoso, mas eu não perco a esperança. Um dia isso vai passar e a gente vai voltar a ter uma vida normal, escola, sorvete, essas coisas. Enquanto isso, eu tento sobreviver, né? Um dia de cada vez."
+                },
+                {
+                    "acao": "entregar_documento",
+                    "pergunta": "Poderia me entregar seus documentos?",
+                    "resposta": "Tenho sim, peraí... Aqui. Olha, é a carteirinha da escola, a única coisa que sobrou. Tá meio gasta, a foto está até borrada, mas sou eu mesma, só que com o cabelo mais comprido."
+                },
+                {
+                    "acao": "explicar_aparencia",
+                    "pergunta": "O que aconteceu com a sua aparência?",
+                    "resposta": "Ah, o cabelo? Eu mesma cortei com uma tesoura de cozinha, faz umas semanas. Não sabia mais o que fazer com ele, estava me atrapalhando quando eu corria. Ficou meio torto, eu sei. E esse colar era da minha mãe. É o que me lembra de que isso tudo vai acabar."
+                }
+            ],
+            "repetir": "Ah, você já perguntou isso, não foi? Tudo bem, eu explico de novo. É só que... eu estou cansada, desculpa.",
+            "liberar": "Obrigada, de verdade. Você não imagina o quanto isso significa pra mim.",
+            "recusar": "Tudo bem... eu entendo, vocês têm que tomar cuidado. Eu vou ficar bem. Se um dia isso tudo acabar, eu volto aqui pra agradecer."
+        },
+        "ia": {
+            "chegada": "Oi... boa noite. Posso passar a noite aqui? Prometo não causar problemas.",
+            "perguntas": [
+                {
+                    "acao": "informar_motivo",
+                    "pergunta": "Qual é o seu motivo para entrar?",
+                    "resposta": "Eu preciso de um lugar seguro para descansar. Lá fora está perigoso e prefiro ficar perto de outras pessoas."
+                },
+                {
+                    "acao": "entregar_documento",
+                    "pergunta": "Poderia me entregar seus documentos?",
+                    "resposta": "Aqui está minha carteirinha da escola. A foto é antiga, de quando meu cabelo era mais comprido, mas todos os dados continuam corretos."
+                },
+                {
+                    "acao": "explicar_aparencia",
+                    "pergunta": "O que aconteceu com a sua aparência?",
+                    "resposta": "Eu cortei o cabelo para facilitar durante a fuga. O colar era da minha mãe e continuo usando desde então."
+                }
+            ],
+            "repetir": "Eu vim pedir abrigo. A carteirinha está aí e você pode conferir os dados.",
+            "liberar": "Obrigada. Vou entrar e descansar um pouco.",
+            "recusar": "Entendido. Vou aguardar do lado de fora."
+        }
     }
 }

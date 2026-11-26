@@ -135,5 +135,28 @@
                 }
             }
         ]
+    },
+    "sarah": {
+        "humano": [
+            {
+                "id": "sarah_humana_regular"
+            }
+        ],
+        "ia": [
+            {
+                "id": "sarah_idade_incompativel",
+                "base_documento": "humano",
+                "respostas": {
+                    "informar_motivo": "Tenho 16 anos e só preciso de um lugar seguro para passar a noite. A carteirinha é minha e os dados estão atualizados."
+                },
+                "repetir": "Eu tenho 16 anos. A carteirinha é minha e os dados estão atualizados."
+            },
+            {
+                "id": "sarah_codigo_copiado",
+                "documento": {
+                    "codigo": "V-031"
+                }
+            }
+        ]
     }
 }

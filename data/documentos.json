@@ -92,6 +92,24 @@
             "setor": "B-04",
             "validade": "31/12/2043"
         }
+    },
+    "sarah": {
+        "humano": {
+            "nome": "Sarah",
+            "registro": "890214",
+            "codigo": "V-014",
+            "nascimento": "17/02/2023",
+            "setor": "A-02",
+            "validade": "31/12/2043"
+        },
+        "ia": {
+            "nome": "Sarah",
+            "registro": "890214",
+            "codigo": "V-014",
+            "nascimento": "17/02/2023",
+            "setor": "A-02",
+            "validade": "31/12/2043"
+        }
     }
 }
 

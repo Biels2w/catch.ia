@@ -478,3 +478,100 @@ def test_nero_passe_vencido_tem_data_anterior_ao_turno():
     ).date()
 
     assert validade < date(2042, 11, 22)
+
+# ==================== SARAH ====================
+
+def test_sarah_humana_confere_com_cadastro():
+    cadastro = next(
+        morador
+        for morador in carregar_moradores()
+        if morador["nome"] == "Sarah"
+    )
+
+    documento, _ = montar_caso(
+        carregar_casos()["sarah"]["humano"][0],
+        carregar_documentos()["sarah"],
+        carregar_dialogos()["sarah"]["humano"],
+        "humano",
+    )
+
+    for campo in ("nome", "codigo", "nascimento", "setor"):
+        assert documento[campo] == cadastro[campo]
+
+
+def test_sarah_idade_incompativel_exige_conferir_nascimento():
+    caso = next(
+        caso
+        for caso in carregar_casos()["sarah"]["ia"]
+        if caso["id"] == "sarah_idade_incompativel"
+    )
+
+    documento, roteiro = montar_caso(
+        caso,
+        carregar_documentos()["sarah"],
+        carregar_dialogos()["sarah"]["ia"],
+        "ia",
+    )
+
+    # O documento clonado apresenta todos os dados corretos.
+    assert documento == carregar_documentos()["sarah"]["humano"]
+
+    nascimento = datetime.strptime(
+        documento["nascimento"], "%d/%m/%Y"
+    ).date()
+
+    hoje = date(2042, 11, 22)
+    idade = hoje.year - nascimento.year
+
+    # Se o aniversário ainda não aconteceu, descontamos um ano.
+    if (hoje.month, hoje.day) < (nascimento.month, nascimento.day):
+        idade -= 1
+
+    assert idade == 19
+
+    motivo = next(
+        pergunta
+        for pergunta in roteiro["perguntas"]
+        if pergunta.get("acao") == "informar_motivo"
+    )
+
+    # A idade declarada contradiz o nascimento apresentado.
+    assert "16 anos" in motivo["resposta"]
+
+    conversa = preparar_dialogo(roteiro, "Sarah")
+    indice = roteiro["perguntas"].index(motivo)
+
+    responder_pergunta(conversa, indice)
+    responder_pergunta(conversa, indice)
+
+    # Repetir a pergunta mantém a pista disponível.
+    assert "16 anos" in conversa["fala"]
+
+
+def test_sarah_codigo_copiado_pertence_a_outra_moradora():
+    caso = next(
+        caso
+        for caso in carregar_casos()["sarah"]["ia"]
+        if caso["id"] == "sarah_codigo_copiado"
+    )
+
+    documento, _ = montar_caso(
+        caso,
+        carregar_documentos()["sarah"],
+        carregar_dialogos()["sarah"]["ia"],
+        "ia",
+    )
+
+    dona_codigo = next(
+        morador
+        for morador in carregar_moradores()
+        if morador["codigo"] == documento["codigo"]
+    )
+
+    assert documento["nome"] == "Sarah"
+    assert dona_codigo["nome"] == "Amanda"
+
+    assert (
+        documento["codigo"]
+        != carregar_documentos()["sarah"]["humano"]["codigo"]
+    )

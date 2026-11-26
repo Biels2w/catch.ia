@@ -103,6 +103,18 @@ def carregar_personagens(imagens_lucas, foto_lucas):
         "Nero/nero_ia_transparente.png",
     )
 
+    # Carrega a aparência inicial e a forma revelada.
+    imagens_sarah = carregar_par(
+        pasta,
+        "Sarah/sarah_transparente.png",
+        "Sarah/sarah_ia_transparente.png",
+    )
+
+    # A foto antiga mostra o cabelo antes do corte.
+    foto_sarah = pygame.image.load(
+        pasta / "Sarah" / "sarah_documento.png"
+    ).convert_alpha()
+
     return {
         "lucas": {
             "nome": "Lucas",
@@ -145,5 +157,12 @@ def carregar_personagens(imagens_lucas, foto_lucas):
 
             # O documento usa a foto humana nas duas identidades.
             "foto": preparar_foto(imagens_nero["humano"]),
+        },
+            "sarah": {
+            "nome": "Sarah",
+            "imagens": imagens_sarah,
+
+            # A foto antiga é usada pelas duas identidades.
+            "foto": preparar_foto(foto_sarah),
         },
     }
