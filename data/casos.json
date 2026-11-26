@@ -115,5 +115,25 @@
                 }
             }
         ]
+    },
+    "nero": {
+        "humano": [
+            {
+                "id": "nero_humano_regular"
+            }
+        ],
+        "ia": [
+            {
+                "id": "nero_relato_montagem",
+                "base_documento": "humano",
+                "repetir": "Dormir. Comer caso eu consiga. Eu trabalhava consertando aparelhos eletrônicos em uma oficina próxima, mas o dono fechou e desapareceu. Pergunte na oficina como eu fui montado."
+            },
+            {
+                "id": "nero_passe_vencido",
+                "documento": {
+                    "validade": "31/12/2041"
+                }
+            }
+        ]
     }
 }

@@ -238,5 +238,53 @@
             "liberar": "Obrigada. Vou encontrar minha família agora.",
             "recusar": "Entendido. Permanecerei do lado de fora até uma nova autorização."
         }
+    },
+    "nero": {
+        "humano": {
+            "chegada": "Boa noite. Você é quem libera a entrada? Está frio aqui fora.",
+            "perguntas": [
+                {
+                    "acao": "informar_motivo",
+                    "pergunta": "Qual é o seu motivo para entrar?",
+                    "resposta": "Eu consertava aparelhos eletrônicos numa oficina aqui perto. O dono fechou tudo e sumiu, e eu fiquei sem trabalho e sem lugar para dormir. Se tiver um canto, já ajuda."
+                },
+                {
+                    "acao": "entregar_documento",
+                    "pergunta": "Poderia me entregar seus documentos?",
+                    "resposta": "Aqui estão. Eu guardava num plástico dentro da mochila, por isso ainda estão inteiros. Pode conferir."
+                },
+                {
+                    "acao": "explicar_aparencia",
+                    "pergunta": "O que aconteceu com a sua aparência?",
+                    "resposta": "É um fone de ouvido que eu mesmo montei com peças da oficina. O cabelo eu pintei antes de tudo isso. Se quiser confirmar, pergunte na oficina como eu montei esse aparelho."
+                }
+            ],
+            "repetir": "Eu já expliquei: trabalhava numa oficina e preciso de um lugar para passar a noite. O fone fui eu que montei.",
+            "liberar": "Obrigado. Se algum aparelho quebrar, posso tentar ajudar.",
+            "recusar": "Tá bom. Vou procurar outro lugar antes que esfrie mais."
+        },
+        "ia": {
+            "chegada": "Você decide quem entra, correto? Então decida logo, que o frio não espera.",
+            "perguntas": [
+                {
+                    "acao": "informar_motivo",
+                    "pergunta": "Qual é o seu motivo para entrar?",
+                    "resposta": "Dormir. Comer, se houver. Eu trabalhava consertando aparelhos eletrônicos em uma oficina próxima, mas o dono fechou e desapareceu. Fiquei sem teto e sem emprego. Só isso. Não é uma história de filme."
+                },
+                {
+                    "acao": "entregar_documento",
+                    "pergunta": "Poderia me entregar seus documentos?",
+                    "resposta": "Aqui. Está em ótimo estado. Se desejar verificar, as informações estão corretas. Eu também desconfiaria."
+                },
+                {
+                    "acao": "explicar_aparencia",
+                    "pergunta": "O que aconteceu com a sua aparência?",
+                    "resposta": "Este aparelho é um fone de ouvido que eu mesmo montei. Serve para escutar música. O cabelo foi tingido há muito tempo. Se acha que sou uma máquina, pergunte a qualquer pessoa da oficina como eu fui montado."
+                }
+            ],
+            "repetir": "Dormir. Comer caso eu consiga. Eu trabalhava consertando aparelhos eletrônicos em uma oficina próxima, mas o dono fechou e desapareceu.",
+            "liberar": "Agradeço. Não causarei problemas. Preciso apenas de um local.",
+            "recusar": "Esperava essa decisão. Desejo boa sorte a todos dentro do abrigo."
+        }
     }
 }

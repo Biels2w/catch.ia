@@ -393,3 +393,88 @@ def test_amanda_setor_adulterado_diverge_do_cadastro():
     # O código válido não elimina a divergência do setor.
     assert documento["codigo"] == cadastro["codigo"]
     assert documento["setor"] != cadastro["setor"]
+
+# ==================== NERO ====================
+
+def test_nero_humano_confere_com_cadastro():
+    moradores = carregar_moradores()
+
+    cadastro = next(
+        morador
+        for morador in moradores
+        if morador["nome"] == "Nero"
+    )
+
+    documento, roteiro = montar_caso(
+        carregar_casos()["nero"]["humano"][0],
+        carregar_documentos()["nero"],
+        carregar_dialogos()["nero"]["humano"],
+        "humano",
+    )
+
+    for campo in ("nome", "codigo", "nascimento", "setor"):
+        assert documento[campo] == cadastro[campo]
+
+    # O novo código deve pertencer a um único morador.
+    assert sum(
+        morador["codigo"] == documento["codigo"]
+        for morador in moradores
+    ) == 1
+
+    assert "fui montado" not in roteiro["repetir"]
+
+
+def test_nero_documento_clonado_exige_analisar_fala():
+    caso = next(
+        caso
+        for caso in carregar_casos()["nero"]["ia"]
+        if caso["id"] == "nero_relato_montagem"
+    )
+
+    documento, roteiro = montar_caso(
+        caso,
+        carregar_documentos()["nero"],
+        carregar_dialogos()["nero"]["ia"],
+        "ia",
+    )
+
+    # Neste caso, os dados do passe conferem com os do humano.
+    assert documento == carregar_documentos()["nero"]["humano"]
+
+    pergunta = next(
+        pergunta
+        for pergunta in roteiro["perguntas"]
+        if pergunta.get("acao") == "explicar_aparencia"
+    )
+
+    assert "fui montado" in pergunta["resposta"]
+
+    conversa = preparar_dialogo(roteiro, "Nero")
+    indice = roteiro["perguntas"].index(pergunta)
+
+    responder_pergunta(conversa, indice)
+    responder_pergunta(conversa, indice)
+
+    # A repetição mantém a pista disponível.
+    assert "fui montado" in conversa["fala"]
+
+
+def test_nero_passe_vencido_tem_data_anterior_ao_turno():
+    caso = next(
+        caso
+        for caso in carregar_casos()["nero"]["ia"]
+        if caso["id"] == "nero_passe_vencido"
+    )
+
+    documento, _ = montar_caso(
+        caso,
+        carregar_documentos()["nero"],
+        carregar_dialogos()["nero"]["ia"],
+        "ia",
+    )
+
+    validade = datetime.strptime(
+        documento["validade"], "%d/%m/%Y"
+    ).date()
+
+    assert validade < date(2042, 11, 22)

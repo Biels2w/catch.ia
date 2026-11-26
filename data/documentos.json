@@ -74,6 +74,24 @@
             "setor": "B-01",
             "validade": "31/12/2043"
         }
+    },
+    "nero": {
+        "humano": {
+            "nome": "Nero",
+            "registro": "562810",
+            "codigo": "V-068",
+            "nascimento": "16/07/2018",
+            "setor": "B-04",
+            "validade": "31/12/2043"
+        },
+        "ia": {
+            "nome": "Nero",
+            "registro": "562810",
+            "codigo": "V-068",
+            "nascimento": "16/07/2018",
+            "setor": "B-04",
+            "validade": "31/12/2043"
+        }
     }
 }
 

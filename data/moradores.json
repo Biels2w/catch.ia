@@ -28,4 +28,11 @@
     "codigo": "V-014",
     "nascimento": "17/02/2023",
     "setor": "A-02"
-}]
+    },
+    {
+        "nome": "Nero",
+        "codigo": "V-068",
+        "nascimento": "16/07/2018",
+        "setor": "B-04"
+    }
+]

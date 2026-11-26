@@ -13,6 +13,16 @@ def carregar_par(pasta, caminho_humano, caminho_ia, altura=280):
         pasta / caminho_ia
     ).convert_alpha()
 
+    # Remove margens transparentes e pixels quase invisíveis.
+    # Assim, o busto alcança o peitoril após o redimensionamento.
+    humano = humano.subsurface(
+        humano.get_bounding_rect(min_alpha=128)
+    ).copy()
+
+    ia = ia.subsurface(
+        ia.get_bounding_rect(min_alpha=128)
+    ).copy()
+
     # Mantém a proporção da imagem humana.
     largura = round(
         humano.get_width() * altura / humano.get_height()
@@ -86,6 +96,13 @@ def carregar_personagens(imagens_lucas, foto_lucas):
         "amanda/amanda_ia_transparente.png",
     )
 
+    # Carrega as duas formas do Nero antes do loop principal.
+    imagens_nero = carregar_par(
+        pasta,
+        "Nero/nero_transparente.png",
+        "Nero/nero_ia_transparente.png",
+    )
+
     return {
         "lucas": {
             "nome": "Lucas",
@@ -121,5 +138,12 @@ def carregar_personagens(imagens_lucas, foto_lucas):
 
             # As duas identidades apresentam a mesma foto humana.
             "foto": preparar_foto(imagens_amanda["humano"]),
+        },
+            "nero": {
+            "nome": "Nero",
+            "imagens": imagens_nero,
+
+            # O documento usa a foto humana nas duas identidades.
+            "foto": preparar_foto(imagens_nero["humano"]),
         },
     }

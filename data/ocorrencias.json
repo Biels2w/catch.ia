@@ -1,50 +1,10 @@
 [
   {
-    "nome": "Nayra",
-    "caso": "nayra_cadastro_clonado",
-    "tipo": "ia",
-    "decisao": "recusar",
-    "acertou": true,
-    "vidas": 3,
-    "data": "22/11/2042",
-    "hora": "08:00"
-  },
-  {
-    "nome": "Gael",
-    "caso": "gael_ia_relato_contraditorio",
+    "nome": "Nero",
+    "caso": "nero_passe_vencido",
     "tipo": "ia",
     "decisao": "liberar",
     "acertou": false,
-    "vidas": 2,
-    "data": "22/11/2042",
-    "hora": "08:00"
-  },
-  {
-    "nome": "Nayra",
-    "caso": "nayra_cadastro_clonado",
-    "tipo": "ia",
-    "decisao": "recusar",
-    "acertou": true,
-    "vidas": 2,
-    "data": "22/11/2042",
-    "hora": "08:00"
-  },
-  {
-    "nome": "Gael",
-    "caso": "gael_ia_relato_contraditorio",
-    "tipo": "ia",
-    "decisao": "recusar",
-    "acertou": true,
-    "vidas": 2,
-    "data": "22/11/2042",
-    "hora": "08:00"
-  },
-  {
-    "nome": "Estefanny",
-    "caso": "estefanny_humana_regular",
-    "tipo": "humano",
-    "decisao": "liberar",
-    "acertou": true,
     "vidas": 2,
     "data": "22/11/2042",
     "hora": "08:00"
