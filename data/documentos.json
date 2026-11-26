@@ -56,6 +56,24 @@
             "setor": "B-02",
             "validade": "31/12/2043"
         }
+    },
+    "amanda": {
+        "humano": {
+            "nome": "Amanda",
+            "registro": "731084",
+            "codigo": "V-031",
+            "nascimento": "22/08/2020",
+            "setor": "B-01",
+            "validade": "31/12/2043"
+        },
+        "ia": {
+            "nome": "Amanda",
+            "registro": "731084",
+            "codigo": "V-031",
+            "nascimento": "22/08/2020",
+            "setor": "B-01",
+            "validade": "31/12/2043"
+        }
     }
 }
 

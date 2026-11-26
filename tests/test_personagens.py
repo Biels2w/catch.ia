@@ -311,3 +311,85 @@ def test_nayra_ia_mantem_pista_ao_repetir_pergunta():
     assert "00 00 00" in conversa["fala"]
 
     assert conversa["nome"] == "Nayra"
+
+# ==================== AMANDA ====================
+
+def test_amanda_humana_confere_com_cadastro():
+    cadastro = next(
+        morador
+        for morador in carregar_moradores()
+        if morador["nome"] == "Amanda"
+    )
+
+    documento, _ = montar_caso(
+        carregar_casos()["amanda"]["humano"][0],
+        carregar_documentos()["amanda"],
+        carregar_dialogos()["amanda"]["humano"],
+        "humano",
+    )
+
+    # O caso humano preserva os dados registrados no cadastro.
+    for campo in ("nome", "codigo", "nascimento", "setor"):
+        assert documento[campo] == cadastro[campo]
+
+
+def test_amanda_data_impossivel_exige_consultar_calendario():
+    caso = next(
+        caso
+        for caso in carregar_casos()["amanda"]["ia"]
+        if caso["id"] == "amanda_data_impossivel"
+    )
+
+    documento, roteiro = montar_caso(
+        caso,
+        carregar_documentos()["amanda"],
+        carregar_dialogos()["amanda"]["ia"],
+        "ia",
+    )
+
+    # O documento clonado apresenta todos os dados corretos.
+    assert documento == carregar_documentos()["amanda"]["humano"]
+
+    motivo = next(
+        pergunta
+        for pergunta in roteiro["perguntas"]
+        if pergunta.get("acao") == "informar_motivo"
+    )
+
+    # A data relatada é posterior ao dia fictício da partida.
+    assert "23/11/2042" in motivo["resposta"]
+    assert date(2042, 11, 23) > date(2042, 11, 22)
+
+    conversa = preparar_dialogo(roteiro, "Amanda")
+    indice = roteiro["perguntas"].index(motivo)
+
+    responder_pergunta(conversa, indice)
+    responder_pergunta(conversa, indice)
+
+    # Repetir a pergunta não apaga a pista.
+    assert "23/11/2042" in conversa["fala"]
+
+
+def test_amanda_setor_adulterado_diverge_do_cadastro():
+    cadastro = next(
+        morador
+        for morador in carregar_moradores()
+        if morador["nome"] == "Amanda"
+    )
+
+    caso = next(
+        caso
+        for caso in carregar_casos()["amanda"]["ia"]
+        if caso["id"] == "amanda_setor_adulterado"
+    )
+
+    documento, _ = montar_caso(
+        caso,
+        carregar_documentos()["amanda"],
+        carregar_dialogos()["amanda"]["ia"],
+        "ia",
+    )
+
+    # O código válido não elimina a divergência do setor.
+    assert documento["codigo"] == cadastro["codigo"]
+    assert documento["setor"] != cadastro["setor"]

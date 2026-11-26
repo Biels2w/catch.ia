@@ -92,5 +92,28 @@
                 "base_documento": "humano"
             }
         ]
+    },
+    "amanda": {
+        "humano": [
+            {
+                "id": "amanda_humana_regular"
+            }
+        ],
+        "ia": [
+            {
+                "id": "amanda_data_impossivel",
+                "base_documento": "humano",
+                "respostas": {
+                    "informar_motivo": "Meus tios e minha prima entraram aqui em 23/11/2042, há três dias. Minha prima Bia tem dez anos e está com meus tios. Eles aguardam minha chegada."
+                },
+                "repetir": "Minha família entrou em 23/11/2042, há três dias. Minha prima Bia e meus tios podem confirmar quem sou."
+            },
+            {
+                "id": "amanda_setor_adulterado",
+                "documento": {
+                    "setor": "B-03"
+                }
+            }
+        ]
     }
 }

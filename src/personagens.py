@@ -79,6 +79,13 @@ def carregar_personagens(imagens_lucas, foto_lucas):
         pasta / "Nayra" / "nayra_documento.png"
     ).convert_alpha()
 
+    # Carrega a aparência de chegada e a forma revelada.
+    imagens_amanda = carregar_par(
+        pasta,
+        "amanda/amanda_transparente.png",
+        "amanda/amanda_ia_transparente.png",
+    )
+
     return {
         "lucas": {
             "nome": "Lucas",
@@ -107,5 +114,12 @@ def carregar_personagens(imagens_lucas, foto_lucas):
 
             # A foto antiga é apresentada pelas duas identidades.
             "foto": preparar_foto(foto_nayra),
+        },
+            "amanda": {
+            "nome": "Amanda",
+            "imagens": imagens_amanda,
+
+            # As duas identidades apresentam a mesma foto humana.
+            "foto": preparar_foto(imagens_amanda["humano"]),
         },
     }

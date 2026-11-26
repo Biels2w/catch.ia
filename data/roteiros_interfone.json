@@ -190,5 +190,53 @@
             "liberar": "Valeu. Sério. Se tiver um violão por aí, eu agradeço tocando uma 11 música.",
             "recusar": "Tá certo. Eu também desconfiaria de mim, com essa cara. 00 Mas se mudar de ideia, eu fico ali na esquina até amanhecer."
         }
+    },
+    "amanda": {
+        "humano": {
+            "chegada": "Boa noite. Desculpa incomodar a essa hora. Minha família está lá dentro, e eu vim ficar com eles.",
+            "perguntas": [
+                {
+                    "acao": "informar_motivo",
+                    "pergunta": "Qual é o seu motivo para entrar?",
+                    "resposta": "Meus tios e a minha prima entraram aqui faz três dias. A gente se separou quando a noite caiu, na hora de correr. Eu demorei mais pra chegar, mas eles me disseram onde ficava. A minha prima se chama Bia, tem dez anos. Se você perguntar para ela, ela vai saber quem eu sou."
+                },
+                {
+                    "acao": "entregar_documento",
+                    "pergunta": "Poderia me entregar seus documentos?",
+                    "resposta": "Peraí... Aqui. Meu documento tem um cantinho rasgado, mas dá pra ler tudo. Se precisar, minha tia também tem uma cópia lá dentro, ela guardou uma pra mim."
+                },
+                {
+                    "acao": "explicar_aparencia",
+                    "pergunta": "O que aconteceu com a sua aparência?",
+                    "resposta": "Minha aparência? Ah... eu não percebi que estava diferente. Faz uns dias que não consigo arrumar o cabelo direito. O colar era da minha avó e eu não tiro nunca. Rezo toda noite com ele. Parece bobagem, mas me faz bem."
+                }
+            ],
+            "repetir": "Você já me perguntou isso, mas tudo bem. Eu entendo, deve ser difícil confiar em alguém numa noite como essa. Meus tios estão aí dentro. Pode chamar eles.",
+            "liberar": "Obrigada. Eu fico mais tranquila agora. Que Deus te proteja.",
+            "recusar": "Eu entendo. Se puder, só avisa a minha prima que eu cheguei até aqui e que estou bem. Eu espero lá fora até o dia amanhecer."
+        },
+        "ia": {
+            "chegada": "Boa noite. Minha família está no refúgio e vim encontrá-la. Posso entrar?",
+            "perguntas": [
+                {
+                    "acao": "informar_motivo",
+                    "pergunta": "Qual é o seu motivo para entrar?",
+                    "resposta": "Meus tios e minha prima entraram aqui há três dias. Nós nos separamos na fuga. Minha prima se chama Bia e tem dez anos. Eles podem confirmar minha identidade."
+                },
+                {
+                    "acao": "entregar_documento",
+                    "pergunta": "Poderia me entregar seus documentos?",
+                    "resposta": "Aqui está meu documento. O canto está rasgado, mas as informações permanecem legíveis. Minha tia possui outra cópia."
+                },
+                {
+                    "acao": "explicar_aparencia",
+                    "pergunta": "O que aconteceu com a sua aparência?",
+                    "resposta": "O colar pertencia à minha avó. Continuo usando e rezando todas as noites. O cabelo está desarrumado por causa dos últimos dias."
+                }
+            ],
+            "repetir": "Minha família está no refúgio há três dias. Minha prima Bia e meus tios podem confirmar quem sou.",
+            "liberar": "Obrigada. Vou encontrar minha família agora.",
+            "recusar": "Entendido. Permanecerei do lado de fora até uma nova autorização."
+        }
     }
 }

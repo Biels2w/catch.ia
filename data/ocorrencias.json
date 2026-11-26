@@ -1,7 +1,17 @@
 [
   {
-    "nome": "Lucas",
-    "caso": "lucas_codigo_copiado",
+    "nome": "Nayra",
+    "caso": "nayra_cadastro_clonado",
+    "tipo": "ia",
+    "decisao": "recusar",
+    "acertou": true,
+    "vidas": 3,
+    "data": "22/11/2042",
+    "hora": "08:00"
+  },
+  {
+    "nome": "Gael",
+    "caso": "gael_ia_relato_contraditorio",
     "tipo": "ia",
     "decisao": "liberar",
     "acertou": false,
@@ -10,22 +20,32 @@
     "hora": "08:00"
   },
   {
-    "nome": "Gael",
-    "caso": "gael_humano_refugiado",
-    "tipo": "humano",
+    "nome": "Nayra",
+    "caso": "nayra_cadastro_clonado",
+    "tipo": "ia",
     "decisao": "recusar",
-    "acertou": false,
-    "vidas": 1,
+    "acertou": true,
+    "vidas": 2,
     "data": "22/11/2042",
     "hora": "08:00"
   },
   {
-    "nome": "Nayra",
-    "caso": "nayra_humana_regular",
+    "nome": "Gael",
+    "caso": "gael_ia_relato_contraditorio",
+    "tipo": "ia",
+    "decisao": "recusar",
+    "acertou": true,
+    "vidas": 2,
+    "data": "22/11/2042",
+    "hora": "08:00"
+  },
+  {
+    "nome": "Estefanny",
+    "caso": "estefanny_humana_regular",
     "tipo": "humano",
     "decisao": "liberar",
     "acertou": true,
-    "vidas": 1,
+    "vidas": 2,
     "data": "22/11/2042",
     "hora": "08:00"
   }
