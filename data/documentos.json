@@ -38,6 +38,24 @@
             "setor": "B-03",
             "validade": "31/12/2043"
         }
+    },
+    "nayra": {
+        "humano": {
+            "nome": "Nayra",
+            "registro": "641205",
+            "codigo": "V-045",
+            "nascimento": "24/04/2021",
+            "setor": "B-02",
+            "validade": "31/12/2043"
+        },
+        "ia": {
+            "nome": "Nayra",
+            "registro": "641205",
+            "codigo": "V-045",
+            "nascimento": "24/04/2021",
+            "setor": "B-02",
+            "validade": "31/12/2043"
+        }
     }
 }
 

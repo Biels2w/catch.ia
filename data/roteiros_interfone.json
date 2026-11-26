@@ -142,5 +142,53 @@
             "liberar": "Agradeço. Chamarei as duas pessoas agora. Estou disponível para prestar auxílio médico, se necessário.",
             "recusar": "Entendido. Solicito que as duas pessoas sejam aceitas, será um prazer ajudar tantos humanos."
         }
+    },
+    "nayra": {
+        "humano": {
+            "chegada": "Boa noite, hein. Tá aberto ou eu vim em vão? Porque eu juro que andei meia cidade pra chegar aqui.",
+            "perguntas": [
+                {
+                    "acao": "informar_motivo",
+                    "pergunta": "Qual é o seu motivo para entrar?",
+                    "resposta": "Ué, o mesmo que todo mundo, né? Não morrer lá fora mas tá, vou falar sério. Eu tocava numa banda, a gente ensaiava num galpão aqui perto. Quando tudo começou, o pessoal se espalhou e eu fiquei sozinha com a minha guitarra e uma mochila. Não quero nada demais, só um canto e um teto."
+                },
+                {
+                    "acao": "entregar_documento",
+                    "pergunta": "Poderia me entregar seus documentos?",
+                    "resposta": "Calma, calma... isso aqui é palheta, isso é um cabo, isso é... ah, achei."
+                },
+                {
+                    "acao": "explicar_aparencia",
+                    "pergunta": "O que aconteceu com a sua aparência?",
+                    "resposta": "Aconteceu que eu quis. O cabelo eu pinto desde os dezesseis, o piercing foi aniversário de dezoito, e o batom eu uso porque eu acho que combina comigo, não acha meu bem? Não vem com essa de que eu 'mudei', não. Eu sou assim."
+                }
+            ],
+            "repetir": "Você já perguntou isso! Tá me testando ou tá com a memória curta?",
+            "liberar": "Valeu. Sério. Se tiver um violão por aí, eu agradeço tocando uma música.",
+            "recusar": "Tá certo. Eu também desconfiaria de mim, com essa cara. Mas se mudar de ideia, eu fico ali na esquina até amanhecer."
+        },
+        "ia": {
+            "chegada": "Boa noite, hein. Tá aberto ou eu vim em vão? Porque eu juro que andei meia cidade pra chegar aqui. 11 00",
+            "perguntas": [
+                {
+                    "acao": "informar_motivo",
+                    "pergunta": "Qual é o seu motivo para entrar?",
+                    "resposta": "Ué, o mesmo que todo mundo, né? Não morrer lá fora. Mas tá, vou falar sério. Eu tocava numa banda, a gente ensaiava num galpão aqui perto. Quando tudo começou, o pessoal se 11 00 11 espalhou e eu fiquei sozinha com a minha guitarra e uma mochila."
+                },
+                {
+                    "acao": "entregar_documento",
+                    "pergunta": "Poderia me entregar seus documentos?",
+                    "resposta": "Aqui, ó. A foto é de quando eu tinha o cabelo preto e franja. Eu sei, eu sei, a evolução foi grande. Mas sou eu, 00 00 00 juro."
+                },
+                {
+                    "acao": "explicar_aparencia",
+                    "pergunta": "O que aconteceu com a sua aparência?",
+                    "resposta": "Aconteceu que eu quis. O cabelo eu pinto desde os dezesseis, o piercing foi no aniversário de dezoito e o batom eu uso porque, se o mundo acabar, que eu acabe de 11 11 00 11 vermelho. Não vem com essa de que eu 'mudei', não."
+                }
+            ],
+            "repetir": "Ué, novamente a mesma pergunta, né? Não 00 00 00 00 00 01111101",
+            "liberar": "Valeu. Sério. Se tiver um violão por aí, eu agradeço tocando uma 11 música.",
+            "recusar": "Tá certo. Eu também desconfiaria de mim, com essa cara. 00 Mas se mudar de ideia, eu fico ali na esquina até amanhecer."
+        }
     }
 }

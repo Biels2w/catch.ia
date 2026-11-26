@@ -1,82 +1,32 @@
 [
   {
     "nome": "Lucas",
-    "caso": "lucas_passe_vencido",
+    "caso": "lucas_codigo_copiado",
     "tipo": "ia",
     "decisao": "liberar",
     "acertou": false,
     "vidas": 2,
     "data": "22/11/2042",
     "hora": "08:00"
-  },
-  {
-    "nome": "Estefanny",
-    "caso": "estefanny_humana_regular",
-    "tipo": "humano",
-    "decisao": "liberar",
-    "acertou": true,
-    "vidas": 2,
-    "data": "22/11/2042",
-    "hora": "08:00"
-  },
-  {
-    "nome": "Estefanny",
-    "caso": "estefanny_setor_adulterado",
-    "tipo": "ia",
-    "decisao": "recusar",
-    "acertou": true,
-    "vidas": 2,
-    "data": "22/11/2042",
-    "hora": "08:00"
-  },
-  {
-    "nome": "Estefanny",
-    "caso": "estefanny_nascimento_adulterado",
-    "tipo": "ia",
-    "decisao": "liberar",
-    "acertou": false,
-    "vidas": 1,
-    "data": "22/11/2042",
-    "hora": "08:00"
-  },
-  {
-    "nome": "Lucas",
-    "caso": "lucas_codigo_inexistente",
-    "tipo": "ia",
-    "decisao": "recusar",
-    "acertou": true,
-    "vidas": 1,
-    "data": "22/11/2042",
-    "hora": "08:00"
-  },
-  {
-    "nome": "Lucas",
-    "caso": "lucas_humano_regular",
-    "tipo": "humano",
-    "decisao": "liberar",
-    "acertou": true,
-    "vidas": 1,
-    "data": "22/11/2042",
-    "hora": "08:00"
-  },
-  {
-    "nome": "Lucas",
-    "caso": "lucas_passe_vencido",
-    "tipo": "ia",
-    "decisao": "recusar",
-    "acertou": true,
-    "vidas": 1,
-    "data": "22/11/2042",
-    "hora": "08:01"
   },
   {
     "nome": "Gael",
-    "caso": "gael_ia_relato_contraditorio",
-    "tipo": "ia",
-    "decisao": "liberar",
+    "caso": "gael_humano_refugiado",
+    "tipo": "humano",
+    "decisao": "recusar",
     "acertou": false,
-    "vidas": 0,
+    "vidas": 1,
     "data": "22/11/2042",
-    "hora": "08:01"
+    "hora": "08:00"
+  },
+  {
+    "nome": "Nayra",
+    "caso": "nayra_humana_regular",
+    "tipo": "humano",
+    "decisao": "liberar",
+    "acertou": true,
+    "vidas": 1,
+    "data": "22/11/2042",
+    "hora": "08:00"
   }
 ]

@@ -67,6 +67,18 @@ def carregar_personagens(imagens_lucas, foto_lucas):
         "estefanny/estefanny_ia_transparente.png",
     )
 
+    # Carrega as duas formas com o mesmo tamanho.
+    imagens_nayra = carregar_par(
+        pasta,
+        "Nayra/nayra_transparente.png",
+        "Nayra/nayra_ia_transparente.png",
+    )
+
+    # Foto antiga com cabelo preto e franja, conforme o roteiro.
+    foto_nayra = pygame.image.load(
+        pasta / "Nayra" / "nayra_documento.png"
+    ).convert_alpha()
+
     return {
         "lucas": {
             "nome": "Lucas",
@@ -88,5 +100,12 @@ def carregar_personagens(imagens_lucas, foto_lucas):
 
             # A foto apresentada não revela a identidade sorteada.
             "foto": preparar_foto(imagens_estefanny["humano"]),
+        },
+        "nayra": {
+            "nome": "Nayra",
+            "imagens": imagens_nayra,
+
+            # A foto antiga é apresentada pelas duas identidades.
+            "foto": preparar_foto(foto_nayra),
         },
     }

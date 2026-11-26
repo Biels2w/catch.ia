@@ -255,3 +255,59 @@ def test_estefanny_nao_reaproveita_atendimento_do_lucas():
     assert anterior["perguntadas"] == {0}
     assert nova["perguntadas"] == set()
     assert nova["nome"] == "Estefanny"
+
+# ==================== NAYRA ====================
+
+def test_nayra_humana_confere_com_cadastro():
+    cadastro = next(
+        morador
+        for morador in carregar_moradores()
+        if morador["nome"] == "Nayra"
+    )
+
+    documento, _ = montar_caso(
+        carregar_casos()["nayra"]["humano"][0],
+        carregar_documentos()["nayra"],
+        carregar_dialogos()["nayra"]["humano"],
+        "humano",
+    )
+
+    # A versão humana apresenta os dados registrados na lista.
+    for campo in ("nome", "codigo", "nascimento", "setor"):
+        assert documento[campo] == cadastro[campo]
+
+
+def test_nayra_ia_pode_apresentar_documento_identico():
+    caso = next(
+        caso
+        for caso in carregar_casos()["nayra"]["ia"]
+        if caso["id"] == "nayra_cadastro_clonado"
+    )
+
+    documento, roteiro = montar_caso(
+        caso,
+        carregar_documentos()["nayra"],
+        carregar_dialogos()["nayra"]["ia"],
+        "ia",
+    )
+
+    # Neste caso, todos os dados do documento estão corretos.
+    assert documento == carregar_documentos()["nayra"]["humano"]
+
+    # A pista está nas falas previstas no roteiro.
+    assert "11 00" in roteiro["chegada"]
+
+
+def test_nayra_ia_mantem_pista_ao_repetir_pergunta():
+    conversa = preparar_dialogo(
+        carregar_dialogos()["nayra"]["ia"], "Nayra"
+    )
+
+    responder_pergunta(conversa, 0)
+    assert "11 00 11" in conversa["fala"]
+
+    # Repetir a pergunta continua oferecendo uma pista.
+    responder_pergunta(conversa, 0)
+    assert "00 00 00" in conversa["fala"]
+
+    assert conversa["nome"] == "Nayra"
