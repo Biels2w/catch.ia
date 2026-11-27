@@ -4,38 +4,43 @@ Esta pasta reúne os recursos visuais e sonoros do jogo.
 
 ## Organização
 
-- [imagens/](imagens/README.md): texturas, sprites de objetos, personagens e ícones.
-- [sons/](sons/README.md): trilha ambiente e efeitos sonoros.
-- [fontes/](fontes/README.md): pasta destinada a arquivos de fontes.
+- [imagens/](imagens/README.md): cenário, objetos, personagens e ícones.
+- [sons/](sons/README.md): trilha ambiente e efeitos.
+- [fontes/](fontes/README.md): pasta destinada a fontes externas.
 
-## Uso no projeto
+## Carregamento
 
 Os recursos utilizados são carregados antes do loop principal.
 
-As imagens transparentes usam PNG e `convert_alpha()`, após a criação da janela.
+As imagens transparentes utilizam PNG e convert_alpha(), após
+a criação da janela.
 
-A trilha e os efeitos sonoros são controlados pelo módulo `src/audio.py`.
+personagens.py organiza imagens e fotos dos visitantes.
+sprites.py carrega as imagens das vidas e do relatório.
+audio.py organiza os efeitos e inicia a trilha.
 
-A interface atual utiliza a fonte padrão do Pygame.
+A interface utiliza a fonte padrão do Pygame.
 
 ## Caminhos
 
-Preserve os nomes e as pastas referenciados pelo código.
+Preserve os nomes e as pastas utilizados pelo código.
 
-Vários caminhos são relativos à raiz do projeto. Execute o jogo com `python main.py` a partir da pasta que contém esse arquivo.
+Execute o projeto a partir da raiz, pois parte dos recursos
+ainda utiliza caminhos relativos.
 
-Ao mover ou renomear um recurso, atualize sua referência no código.
+## Materiais auxiliares
 
-## Recursos em preparação
+Algumas pastas contêm GIFs, imagens originais e scripts de preparação.
+A presença de um arquivo não significa que ele seja carregado
+pela partida.
 
-Existem imagens e sons preparados para funcionalidades futuras, como interfone, lista de moradores e scanner.
+Os sprites transparentes referenciados pelo código são as imagens
+utilizadas no atendimento atual.
 
-Os READMEs das subpastas indicam quais recursos já estão integrados à versão atual.
+## Origem
 
-## Origem e autoria
+Os recursos gerados ou preparados com apoio do ChatGPT e as
+referências do grupo estão registrados nos READMEs das subpastas.
 
-Os recursos produzidos com apoio do ChatGPT e as referências fornecidas pelo grupo estão descritos nos READMEs de imagens e sons.
-
-Não há uma licença única declarada para todo o conteúdo desta pasta.
-
-Ao adicionar recursos externos, registre o nome do arquivo, sua origem, autoria e licença, quando essas informações estiverem disponíveis.
+Não há uma licença única declarada para todos os materiais.
+Registre a origem, autoria e licença disponível de novos recursos.

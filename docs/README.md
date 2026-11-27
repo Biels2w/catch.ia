@@ -1,53 +1,33 @@
 # Documentação do Catch.IA
 
-Esta pasta reúne os documentos de planejamento e apoio ao desenvolvimento do jogo.
-
-Catch.IA é um projeto em Python e Pygame da disciplina de Introdução a Algoritmos/Programação.
+Esta pasta reúne o planejamento e o material de apoio à apresentação.
 
 ## Arquivos
 
-- [proposta.MD](proposta.MD): proposta do grupo, com integrantes, tema, objetivos, regras, controles e escopo planejado.
-- `README.md`: apresentação da documentação e orientações de atualização.
+- [proposta.MD](proposta.MD): proposta e evolução do escopo.
+- [guia_apresentacao.md](guia_apresentacao.md): roteiro de estudo do código.
 
-## Tema
+## Estado atual
 
-O tema escolhido é segurança e confiabilidade na identificação de IAs.
+O jogo possui sete personagens, instruções iniciais, investigação
+por documentos e diálogos, cadastro de moradores, visitas,
+scanner com falhas, vidas, ocorrências e relatório final.
 
-A proposta é que o jogador compare documentos, respostas e outras evidências para controlar o acesso a um refúgio humano.
+Bia, Helena e Davi recebem visitas, mas não integram a fila
+da recepção.
 
-## Acompanhamento do desenvolvimento
+## Atualização
 
-O protótipo já possui:
+Mudanças de regras, controles, recursos e escopo devem ser
+registradas na proposta e no README principal.
 
-- Atendimentos com o personagem Lucas.
-- Decisões de autorizar ou recusar.
-- Sistema de três vidas.
-- Meta de 10 atendimentos.
-- Animações de revelação e desfecho.
-- Livro de ocorrências com gravação em JSON.
-- Consultas do cenário.
-- Trilha e efeitos sonoros.
-- Relatório final de vitória ou derrota.
+O número de atendimentos da partida e a quantidade de personagens
+são informações diferentes: são dez atendimentos com sete modelos
+de personagens disponíveis.
 
-O interfone, a lista de moradores, o scanner com falhas e a conexão das pistas à identidade do visitante continuam em desenvolvimento.
+## Referências internas
 
-A existência de imagens ou sons preparados não significa que essas funcionalidades já estejam implementadas.
-
-## Atualização da proposta
-
-Mudanças nas regras, nos controles e no escopo devem ser registradas em `proposta.MD`.
-
-A proposta deve diferenciar as funcionalidades implementadas das melhorias planejadas e acompanhar decisões como:
-
-- Quantidade de atendimentos.
-- Condições de vitória e derrota.
-- Comportamento do livro ao reiniciar.
-- Integração das pistas à investigação.
-- Organização dos módulos.
-- Recursos externos utilizados.
-
-## Outros documentos
-
-As instruções de instalação, os controles e o estado atual do jogo estão no [README principal](../README.md).
-
-Os testes automatizados e o roteiro de verificação manual estão em [tests/README.md](../tests/README.md).
+- [README principal](../README.md)
+- [Módulos do código](../src/README.md)
+- [Testes](../tests/README.md)
+- [Recursos](../assets/README.md)

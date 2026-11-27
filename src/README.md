@@ -1,80 +1,110 @@
 # Código-fonte do Catch.IA
 
-Esta pasta contém os módulos responsáveis pelo funcionamento do jogo. O ponto de entrada é `main.py`, localizado na raiz do projeto.
+O ponto de entrada é main.py, na raiz do projeto.
+Ele importa e chama executar_jogo(), de jogo.py.
 
 ## Módulos
 
 | Arquivo | Responsabilidade |
 | --- | --- |
-| `jogo.py` | Inicializa a partida, processa eventos, controla visitantes, decisões e animações e desenha o cenário |
-| `config.py` | Define tela, FPS, título, cores, caminhos e meta de 10 atendimentos |
-| `funcoes.py` | Avalia decisões, atualiza vidas e desenha o relógio e os corações |
-| `consultas.py` | Desenha o calendário, o jornal e o livro de ocorrências |
-| `relatorio.py` | Verifica o encerramento, monta os dados do resultado e desenha o relatório |
-| `audio.py` | Carrega os efeitos e inicia a trilha ambiente em repetição |
-| `dados.py` | Salva e recupera ocorrências em JSON e mantém utilitários de recorde da base inicial |
-| `sprites.py` | Carrega os sprites da interface e mantém a função de recorte de spritesheet |
-| `__init__.py` | Identifica a pasta como um pacote Python |
+| jogo.py | Inicialização, eventos, estados, animações e desenho do cenário |
+| config.py | Tela, FPS, título, cores, caminhos e meta de atendimentos |
+| instrucoes.py | Páginas de orientação antes da partida |
+| personagens.py | Imagens, formas reveladas e fotos dos personagens |
+| casos.py | Carregamento e montagem das variações dos atendimentos |
+| dialogos.py | Roteiros, perguntas, respostas e apresentação das falas |
+| documentos.py | Modelos, entrega do documento, ficha e miniatura do passe |
+| moradores.py | Cadastro, ordenação, paginação e desenho da lista |
+| scanner.py | Estado, duração e resultados simulados da leitura |
+| funcoes.py | Avaliação das decisões e desenho do relógio e das vidas |
+| consultas.py | Calendário, jornal e livro de ocorrências |
+| dados.py | Leitura e gravação de ocorrências |
+| efeitos.py | Tremor e rachaduras ao perder uma vida |
+| relatorio.py | Condições de encerramento e relatório final |
+| audio.py | Carregamento da trilha e dos efeitos |
+| sprites.py | Carregamento das imagens das vidas e do relatório |
+| __init__.py | Identificação do pacote Python |
 
-## Fluxo da partida
+## Inicialização
 
-A campainha chama Lucas quando o posto está livre. Sua identidade é sorteada como `humano` ou `ia`, mantendo inicialmente a aparência humana.
+O jogo inicializa o Pygame, cria a janela e carrega os recursos.
 
-O visitante entra pela esquerda, aguarda no centro da janela e recebe uma decisão do jogador.
+As imagens que utilizam convert() ou convert_alpha() são carregadas
+depois da criação da janela.
 
-A função `avaliar_decisao` retorna as vidas atualizadas e um valor booleano que indica se a escolha foi correta. O atendimento é contado e gravado uma única vez.
+As instruções são exibidas antes do primeiro turno. Sua função
+retorna True para iniciar ou False para encerrar.
 
-A chave `registrado` do visitante impede que a mesma decisão seja contabilizada novamente nos quadros seguintes.
+Os relógios da partida começam após a leitura.
 
-Depois da revelação:
+## Loop principal
+
+Cada quadro executa três tarefas:
+
+1. Processar eventos.
+2. Atualizar estados, movimentos e regras.
+3. Desenhar a tela e atualizar a exibição.
+
+Clock.tick limita os quadros por segundo. O tempo entre quadros
+é convertido para segundos e usado na movimentação.
+
+## Atendimento
+
+A campainha inicia um atendimento quando o posto está livre.
+
+São sorteados personagem, identidade e caso. Documento e roteiro
+são preparados uma única vez e mantidos durante a investigação.
+
+O visitante entra pela esquerda e aguarda uma decisão.
+
+avaliar_decisao retorna as vidas atualizadas e um booleano
+indicando se houve acerto.
+
+A chave registrado impede que a decisão seja contabilizada
+novamente nos quadros seguintes.
+
+## Desfecho e encerramento
 
 - Visitantes autorizados saem pela direita.
 - IAs recusadas são desativadas.
-- Humanos recusados são capturados para cima e desaparecem antes de expor o corte inferior do sprite.
+- Humanos recusados são capturados para cima.
 
-## Encerramento
+O relatório aparece após a última animação. A derrota tem prioridade
+quando a última vida é perdida no décimo atendimento.
 
-Completar 10 atendimentos com vidas restantes resulta em vitória.
-
-Esgotar as três vidas resulta em derrota, inclusive no décimo atendimento.
-
-O relatório é montado uma única vez, após a animação final. Isso mantém a duração congelada enquanto o resultado está sendo consultado.
+O relatório é montado uma vez, mantendo a duração congelada.
 
 ## Estruturas de dados
 
-- O visitante é representado por um dicionário com imagem, posição, identidade e estado.
-- As ocorrências são dicionários armazenados em uma lista.
-- O manual utiliza uma lista de páginas contendo códigos.
-- Os sprites e os efeitos sonoros são organizados em dicionários.
+- Dicionários representam visitante, scanner, casos e recursos.
+- Listas armazenam páginas, moradores e ocorrências.
+- Um conjunto guarda os índices das perguntas realizadas.
+- Retângulos representam posições e áreas clicáveis.
 
-## Persistência
+deepcopy protege os modelos e roteiros originais durante a montagem
+de um caso. Cópias das superfícies preservam as imagens reutilizadas.
 
-Os atendimentos são gravados em `data/ocorrencias.json`.
+## Moradores e visitantes
 
-O livro começa vazio ao abrir o jogo e é limpo ao reiniciar o turno.
+A fila utiliza o banco de src/personagens.py.
 
-Os utilitários de recorde e de recorte de spritesheet permanecem na base do projeto, mas não representam um ranking ou uma mecânica de coleta integrada à partida atual.
+O cadastro utiliza data/moradores.json. Uma pessoa cadastrada
+não passa automaticamente a integrar a fila da recepção.
 
-## Datas e tempo
+As visitas são descritas nos casos. O jogador confere o nome
+e o setor citado na lista.
 
-O relógio e as ocorrências usam o expediente fictício do jogo.
+## Persistência e utilitários da base
 
-O relatório usa a data real do computador e a duração medida pelo Pygame.
+As decisões são gravadas em data/ocorrencias.json. O arquivo é
+limpo ao iniciar ou reiniciar a partida.
 
-## Desenvolvimento em andamento
+Os utilitários salvar_recorde e carregar_recorde, e algumas constantes
+da base inicial, não estão integrados à mecânica atual.
 
-Os diálogos, os documentos individuais, a lista de moradores e o scanner ainda precisam ser conectados à identidade do visitante.
-
-As consultas existentes ainda não fornecem evidências que permitam deduzir a identidade sorteada antes da decisão.
+A função criar_som_campainha permanece em funcoes.py, mas o jogo
+utiliza o arquivo de áudio carregado por audio.py.
 
 ## Execução
-
-Na raiz do projeto:
-
-```powershell
-python main.py
-```
-
-Imagens que utilizam `convert()` ou `convert_alpha()` devem ser carregadas depois da criação da janela com `pygame.display.set_mode()`.
 
 Consulte o [README principal](../README.md) para instalação, controles e regras.

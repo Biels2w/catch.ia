@@ -96,10 +96,25 @@ Informe o nome provisório do jogo.
 
 **Escopo mínimo:**
 
-> Cenário com todos os elementos necessários para a interação das mecânicas, 10 modelos de personagens que terão as características "humano" ou "ia" sorteadas, garantindo que as partidas não sejam sempre iguais e efeitos sonoros suficientes para trazer mais imersão e diminuir possível tédio do jogador.
+> Cenário com os elementos necessários à investigação, dez modelos de personagens com identidades "humano" ou "ia" sorteadas, casos variados, documentos, diálogos, consultas e efeitos sonoros. A partida deverá possuir instruções iniciais, três vidas e meta de dez atendimentos.
 
 ## 14. Possíveis melhorias, caso haja tempo
 
 - Melhoria 1: Adição de mais modelos de personagens, a fim de tornar as partidas mais interessantes e diversificadas
 - Melhoria 2: Criação de novas mecânicas para tornar o o jogo mais desafiador.
 - Melhoria 3: Novas dificuldades e modos de jogo.
+
+## 15. Atualização do desenvolvimento — 27/11/2026
+
+A versão atual possui sete personagens disponíveis e dez atendimentos
+por partida. Foram integrados documentos individuais, interfone,
+lista de moradores, scanner com falhas, vidas, ocorrências e relatório.
+
+Bia, Helena e Davi foram incluídos como moradores que recebem visitas,
+sem participar da fila da recepção. Novos casos permitem conferir
+os dados do morador citado durante a conversa.
+
+Foram adicionadas instruções antes do primeiro turno.
+A leitura não entra na duração da partida.
+
+A organização atual do código está descrita em src/README.md.

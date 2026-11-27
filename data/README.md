@@ -1,53 +1,76 @@
 # Dados do Catch.IA
 
-Esta pasta contém os arquivos de persistência do jogo.
+Os arquivos JSON usam UTF-8 e separam o conteúdo dos atendimentos
+do código responsável por executá-los.
 
 ## Arquivos
 
-| Arquivo | Uso atual |
+| Arquivo | Conteúdo |
 | --- | --- |
-| `ocorrencias.json` | Armazena os atendimentos da partida atual |
-| `recorde.txt` | Arquivo da base inicial, sem integração à mecânica atual |
-| `ranking.txt` | Arquivo reservado; não há ranking funcional na partida atual |
+| roteiros_interfone.json | Chegadas, perguntas, respostas e reações |
+| documentos.json | Modelos de documentos por personagem e identidade |
+| casos.json | Variações e alterações aplicadas aos atendimentos |
+| moradores.json | Cadastro de referência consultado pelo jogador |
+| ocorrencias.json | Decisões da partida atual |
+| recorde.txt | Arquivo da base inicial, sem uso na partida atual |
+| ranking.txt | Arquivo reservado, sem ranking integrado |
+
+## Roteiros e documentos
+
+Os visitantes são identificados por chaves como lucas e amanda.
+As identidades usam humano e ia.
+
+As perguntas possuem ações, como informar_motivo e entregar_documento.
+Essas ações permitem conectar as respostas às regras do jogo.
+
+O valor null indica ausência de documento, como nos modelos de Gael.
+
+## Casos
+
+Cada caso possui um id.
+
+Pode utilizar:
+
+- base_documento: modelo usado como origem.
+- documento: campos que substituem os dados do modelo.
+- respostas: substituições selecionadas pela ação da pergunta.
+- chegada: fala inicial alternativa.
+- repetir: reação alternativa à repetição.
+
+O caso é sorteado uma vez na chegada. Reabrir consultas não muda
+os dados do atendimento.
+
+## Cadastro e visitas
+
+O cadastro contém nome, código, nascimento e setor.
+
+Bia, Helena e Davi recebem visitas, mas não integram a fila
+de personagens atendidos.
+
+O setor do visitante pode ser diferente do setor da pessoa visitada.
 
 ## Ocorrências
 
-O arquivo `ocorrencias.json` contém uma lista de registros.
+Cada registro contém:
 
-Cada atendimento possui os seguintes campos:
+- nome e caso.
+- tipo: identidade real.
+- decisao: liberar ou recusar.
+- acertou: resultado booleano.
+- vidas: quantidade restante após a decisão.
+- data e hora: informações fictícias do expediente.
 
-| Campo | Informação |
-| --- | --- |
-| `nome` | Nome do visitante |
-| `tipo` | Identidade real: `humano` ou `ia` |
-| `decisao` | Escolha do jogador: `liberar` ou `recusar` |
-| `acertou` | Valor booleano que indica se a decisão foi correta |
-| `vidas` | Vidas restantes depois da decisão |
-| `data` | Data fictícia do atendimento |
-| `hora` | Horário fictício do atendimento |
+O livro apresenta três registros por página.
 
-Cada decisão gera uma gravação. O livro apresenta três registros por página.
-
-## Reinício
-
-Ao abrir o jogo ou reiniciar o turno:
-
-- A lista de ocorrências é esvaziada.
-- A página do livro volta à primeira.
-- O arquivo JSON é sobrescrito com uma lista vazia.
-
-Os registros não são acumulados entre partidas.
-
-## Leitura e gravação
-
-As funções estão em `src/dados.py`.
-
-Os arquivos JSON usam UTF-8 e preservam os acentos. A função de gravação cria a pasta de destino quando necessário.
-
-A função de leitura retorna uma lista vazia quando o arquivo ainda não existe.
+Ao abrir o jogo ou reiniciar o turno, a lista e o arquivo são
+esvaziados. Não há histórico acumulado entre partidas.
 
 ## Informações mantidas na memória
 
-O relatório final é montado e exibido durante a execução. Ele não é exportado como PDF ou salvo em um arquivo de relatório separado.
+As páginas das consultas e o relatório final não são gravados
+em arquivos próprios.
 
-A página selecionada no manual também é mantida apenas na memória, sem gravação em arquivo.
+O relatório usa a data real do computador. O expediente e
+as ocorrências usam a data fictícia 22/11/2042.
+
+Todos os dados pessoais do cadastro pertencem à narrativa fictícia.
