@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pygame
+from random import shuffle
 
 
 def carregar_par(pasta, caminho_humano, caminho_ia, altura=280):
@@ -200,4 +201,17 @@ def carregar_personagens(imagens_lucas, foto_lucas):
             "foto": preparar_foto(imagens_otavio["humano"]),
         },
     }
+
+
+def criar_fila_personagens(personagens):
+    """Cria uma ordem aleatória sem repetir personagens na partida."""
+
+    # Copia os identificadores para uma lista.
+    # O dicionário original dos personagens permanece intacto.
+    fila = list(personagens)
+
+    # Embaralha a própria lista.
+    shuffle(fila)
+
+    return fila
 

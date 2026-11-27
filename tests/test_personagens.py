@@ -9,7 +9,7 @@ from src.dialogos import (
 )
 from src.documentos import carregar_documentos, entregar_documento
 from src.moradores import carregar_moradores
-
+from src.personagens import criar_fila_personagens
 
 # ==================== AUXILIAR ====================
 
@@ -830,3 +830,34 @@ def test_otavio_ia_exige_conferir_nascimento_ou_data():
 
     assert "23/11/2042" in motivo
     assert "23/11/2042" in roteiro["repetir"]
+
+def test_fila_atende_todos_sem_repeticao():
+    banco = carregar_casos()
+    fila = criar_fila_personagens(banco)
+    atendidos = []
+
+    # Simula o consumo da fila durante os atendimentos.
+    while fila:
+        atendidos.append(fila.pop(0))
+
+    assert len(atendidos) == 10
+    assert len(set(atendidos)) == 10
+    assert set(atendidos) == set(banco)
+
+    # Consumir a fila não apaga os personagens do banco.
+    assert len(banco) == 10
+
+
+def test_nova_partida_recebe_uma_fila_completa():
+    banco = carregar_casos()
+
+    primeira = criar_fila_personagens(banco)
+
+    while primeira:
+        primeira.pop(0)
+
+    segunda = criar_fila_personagens(banco)
+
+    assert primeira == []
+    assert len(segunda) == 10
+    assert set(segunda) == set(banco)

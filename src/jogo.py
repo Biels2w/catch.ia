@@ -43,7 +43,7 @@ from src.scanner import (
 )
 
 from src.casos import carregar_casos, montar_caso
-from src.personagens import carregar_personagens
+from src.personagens import carregar_personagens, criar_fila_personagens
 from src.instrucoes import mostrar_instrucoes
 
 from src.config import LARGURA_TELA, ALTURA_TELA, FPS, TITULO_JOGO, CINZA, PRETO
@@ -627,6 +627,9 @@ def executar_jogo():
         imagens_visitante, foto_documento
     )
 
+    # Embaralha a fila uma vez no início da partida.
+    fila_personagens = criar_fila_personagens(personagens)
+
     # Começa totalmente à esquerda da abertura.
     rect_visitante = imagem_lucas.get_rect()
     rect_visitante.right = abertura_janela.left
@@ -680,7 +683,8 @@ def executar_jogo():
                 vidas = 3
                 acertos = 0
                 erros = 0
-                atendimentos = 0
+                # Disponibiliza os dez personagens em uma nova ordem aleatória.
+                fila_personagens = criar_fila_personagens(personagens)
                 # Limpa os registros e volta à primeira página.
                 relatorio_final = None
                 # Cancela qualquer efeito que ainda estivesse ativo.
@@ -905,8 +909,8 @@ def executar_jogo():
                         # Inicia a chegada somente se ainda não houver visitante.
                         # Tocar novamente não reinicia o movimento.
                         if visitante["estado"] == "ausente":
-                            # Sorteia primeiro o personagem e depois sua identidade.
-                            personagem_id = choice(list(personagens))
+                            # Retira o primeiro nome e o remove da fila deste turno.
+                            personagem_id = fila_personagens.pop(0)
                             personagem = personagens[personagem_id]
 
                             visitante["nome"] = personagem["nome"]
