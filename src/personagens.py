@@ -1,11 +1,81 @@
 from pathlib import Path
+from random import shuffle
 
 import pygame
-from random import shuffle
+
+
+# Os caminhos partem de assets/imagens/personagens.
+#
+# foto:
+# - caminho de um PNG: utiliza uma fotografia específica;
+# - "humano": utiliza a imagem humana preparada como fotografia;
+# - None: o personagem não apresenta fotografia.
+ARQUIVOS = {
+    "lucas": {
+        "nome": "Lucas",
+        "humano": "Lucas/Lucas_transparente.png",
+        "ia": "Lucas/lucas_ia_transparente.png",
+        "foto": "Lucas/lucas_documento.png",
+    },
+    "gael": {
+        "nome": "Gael",
+        "humano": "Gael/gael_transparente.png",
+        "ia": "Gael/gael_ia_transparente.png",
+        "foto": None,
+    },
+    "estefanny": {
+        "nome": "Estefanny",
+        "humano": "estefanny/estefanny_transparente.png",
+        "ia": "estefanny/estefanny_ia_transparente.png",
+        "foto": "humano",
+    },
+    "nayra": {
+        "nome": "Nayra",
+        "humano": "Nayra/nayra_transparente.png",
+        "ia": "Nayra/nayra_ia_transparente.png",
+        "foto": "Nayra/nayra_documento.png",
+    },
+    "amanda": {
+        "nome": "Amanda",
+        "humano": "Amanda/amanda_transparente.png",
+        "ia": "Amanda/amanda_ia_transparente.png",
+        "foto": "humano",
+    },
+    "nero": {
+        "nome": "Nero",
+        "humano": "Nero/nero_transparente.png",
+        "ia": "Nero/nero_ia_transparente.png",
+        "foto": "humano",
+    },
+    "sarah": {
+        "nome": "Sarah",
+        "humano": "Sarah/sarah_transparente.png",
+        "ia": "Sarah/sarah_ia_transparente.png",
+        "foto": "Sarah/sarah_documento.png",
+    },
+    "matheus": {
+        "nome": "Matheus",
+        "humano": "Matheus/matheus_transparente.png",
+        "ia": "Matheus/matheus_ia_transparente.png",
+        "foto": "humano",
+    },
+    "lia": {
+        "nome": "Lia",
+        "humano": "Lia/lia_transparente.png",
+        "ia": "Lia/lia_ia_transparente.png",
+        "foto": "humano",
+    },
+    "otavio": {
+        "nome": "Otávio",
+        "humano": "Otavio/otavio_transparente.png",
+        "ia": "Otavio/otavio_ia_transparente.png",
+        "foto": "humano",
+    },
+}
 
 
 def carregar_par(pasta, caminho_humano, caminho_ia, altura=280):
-    """Carrega as duas formas de um personagem com o mesmo tamanho."""
+    """Prepara as duas formas de um personagem com o mesmo tamanho."""
     humano = pygame.image.load(
         pasta / caminho_humano
     ).convert_alpha()
@@ -14,8 +84,7 @@ def carregar_par(pasta, caminho_humano, caminho_ia, altura=280):
         pasta / caminho_ia
     ).convert_alpha()
 
-    # Remove margens transparentes e pixels quase invisíveis.
-    # Assim, o busto alcança o peitoril após o redimensionamento.
+    # Remove as margens transparentes antes do redimensionamento.
     humano = humano.subsurface(
         humano.get_bounding_rect(min_alpha=128)
     ).copy()
@@ -24,13 +93,13 @@ def carregar_par(pasta, caminho_humano, caminho_ia, altura=280):
         ia.get_bounding_rect(min_alpha=128)
     ).copy()
 
-    # Mantém a proporção da imagem humana.
+    # Calcula a largura mantendo a proporção da imagem humana.
     largura = round(
         humano.get_width() * altura / humano.get_height()
     )
     tamanho = (largura, altura)
 
-    # A revelação não altera o tamanho do retângulo.
+    # As duas formas usam o mesmo tamanho durante a revelação.
     return {
         "humano": pygame.transform.scale(humano, tamanho),
         "ia": pygame.transform.scale(ia, tamanho),
@@ -38,14 +107,12 @@ def carregar_par(pasta, caminho_humano, caminho_ia, altura=280):
 
 
 def preparar_foto(imagem):
-    """Ajusta uma imagem humana ao espaço disponível no documento."""
-
-    # Desconsidera as margens transparentes.
+    """Ajusta a fotografia aos limites da identificação."""
     recorte = imagem.subsurface(
         imagem.get_bounding_rect()
     ).copy()
 
-    # A foto precisa caber tanto na largura quanto na altura.
+    # Escolhe uma escala que respeita largura e altura disponíveis.
     escala = min(
         90 / recorte.get_width(),
         106 / recorte.get_height(),
@@ -59,159 +126,51 @@ def preparar_foto(imagem):
     return pygame.transform.scale(recorte, tamanho)
 
 
-def carregar_personagens(imagens_lucas, foto_lucas):
-    """Carrega os personagens uma única vez, depois de criar a janela."""
+def carregar_personagens():
+    """Carrega todos os personagens e fotos após criar a janela."""
     pasta = (
         Path(__file__).resolve().parent.parent
         / "assets" / "imagens" / "personagens"
     )
 
-    imagens_gael = carregar_par(
-        pasta,
-        "Gael/gael_transparente.png",
-        "Gael IA/gael_ia_transparente.png",
-    )
+    personagens = {}
 
-    imagens_estefanny = carregar_par(
-        pasta,
-        "estefanny/estefanny_transparente.png",
-        "estefanny/estefanny_ia_transparente.png",
-    )
+    # Percorre o catálogo para preparar cada personagem.
+    for identificador, dados in ARQUIVOS.items():
+        imagens = carregar_par(
+            pasta,
+            dados["humano"],
+            dados["ia"],
+        )
 
-    # Carrega as duas formas com o mesmo tamanho.
-    imagens_nayra = carregar_par(
-        pasta,
-        "Nayra/nayra_transparente.png",
-        "Nayra/nayra_ia_transparente.png",
-    )
+        if dados["foto"] is None:
+            foto = None
 
-    # Foto antiga com cabelo preto e franja, conforme o roteiro.
-    foto_nayra = pygame.image.load(
-        pasta / "Nayra" / "nayra_documento.png"
-    ).convert_alpha()
+        elif dados["foto"] == "humano":
+            foto = preparar_foto(imagens["humano"])
 
-    # Carrega a aparência de chegada e a forma revelada.
-    imagens_amanda = carregar_par(
-        pasta,
-        "amanda/amanda_transparente.png",
-        "amanda/amanda_ia_transparente.png",
-    )
+        else:
+            original = pygame.image.load(
+                pasta / dados["foto"]
+            ).convert_alpha()
 
-    # Carrega as duas formas do Nero antes do loop principal.
-    imagens_nero = carregar_par(
-        pasta,
-        "Nero/nero_transparente.png",
-        "Nero/nero_ia_transparente.png",
-    )
+            foto = preparar_foto(original)
 
-    # Carrega a aparência inicial e a forma revelada.
-    imagens_sarah = carregar_par(
-        pasta,
-        "Sarah/sarah_transparente.png",
-        "Sarah/sarah_ia_transparente.png",
-    )
+        # As mesmas chaves são utilizadas por jogo.py.
+        personagens[identificador] = {
+            "nome": dados["nome"],
+            "imagens": imagens,
+            "foto": foto,
+        }
 
-    # A foto antiga mostra o cabelo antes do corte.
-    foto_sarah = pygame.image.load(
-        pasta / "Sarah" / "sarah_documento.png"
-    ).convert_alpha()
-
-    # Carrega os novos personagens uma única vez.
-    imagens_matheus = carregar_par(
-        pasta,
-        "Matheus/matheus_transparente.png",
-        "Matheus/matheus_ia_transparente.png",
-    )
-
-    imagens_lia = carregar_par(
-        pasta,
-        "Lia/lia_transparente.png",
-        "Lia/lia_ia_transparente.png",
-    )
-
-    imagens_otavio = carregar_par(
-        pasta,
-        "Otavio/otavio_transparente.png",
-        "Otavio/otavio_ia_transparente.png",
-    )
-
-    return {
-        "lucas": {
-            "nome": "Lucas",
-            "imagens": imagens_lucas,
-
-            # Preserva a foto antiga do Lucas com cabelo curto.
-            "foto": foto_lucas,
-        },
-        "gael": {
-            "nome": "Gael",
-            "imagens": imagens_gael,
-
-            # Gael não apresenta documento.
-            "foto": None,
-        },
-        "estefanny": {
-            "nome": "Estefanny",
-            "imagens": imagens_estefanny,
-
-            # A foto apresentada não revela a identidade sorteada.
-            "foto": preparar_foto(imagens_estefanny["humano"]),
-        },
-        "nayra": {
-            "nome": "Nayra",
-            "imagens": imagens_nayra,
-
-            # A foto antiga é apresentada pelas duas identidades.
-            "foto": preparar_foto(foto_nayra),
-        },
-            "amanda": {
-            "nome": "Amanda",
-            "imagens": imagens_amanda,
-
-            # As duas identidades apresentam a mesma foto humana.
-            "foto": preparar_foto(imagens_amanda["humano"]),
-        },
-            "nero": {
-            "nome": "Nero",
-            "imagens": imagens_nero,
-
-            # O documento usa a foto humana nas duas identidades.
-            "foto": preparar_foto(imagens_nero["humano"]),
-        },
-            "sarah": {
-            "nome": "Sarah",
-            "imagens": imagens_sarah,
-
-            # A foto antiga é usada pelas duas identidades.
-            "foto": preparar_foto(foto_sarah),
-        },
-        "matheus": {
-            "nome": "Matheus",
-            "imagens": imagens_matheus,
-            "foto": preparar_foto(imagens_matheus["humano"]),
-        },
-        "lia": {
-            "nome": "Lia",
-            "imagens": imagens_lia,
-            "foto": preparar_foto(imagens_lia["humano"]),
-        },
-        "otavio": {
-            "nome": "Otávio",
-            "imagens": imagens_otavio,
-            "foto": preparar_foto(imagens_otavio["humano"]),
-        },
-    }
+    return personagens
 
 
 def criar_fila_personagens(personagens):
-    """Cria uma ordem aleatória sem repetir personagens na partida."""
-
-    # Copia os identificadores para uma lista.
-    # O dicionário original dos personagens permanece intacto.
+    """Cria uma fila aleatória sem alterar o banco de personagens."""
     fila = list(personagens)
 
-    # Embaralha a própria lista.
+    # Embaralha os identificadores uma vez por partida.
     shuffle(fila)
 
     return fila
-

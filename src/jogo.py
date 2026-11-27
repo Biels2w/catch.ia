@@ -46,7 +46,7 @@ from src.casos import carregar_casos, montar_caso
 from src.personagens import carregar_personagens, criar_fila_personagens
 from src.instrucoes import mostrar_instrucoes
 
-from src.config import LARGURA_TELA, ALTURA_TELA, FPS, TITULO_JOGO, CINZA, PRETO
+from src.config import LARGURA_TELA, ALTURA_TELA, FPS, TITULO_JOGO, CINZA
 
 #======================================================================
 
@@ -385,16 +385,6 @@ def executar_jogo():
     # O expediente começa às 08:00.
     horario_inicial = 8 * 60 * 60
 
-    # Guarda o instante inicial uma única vez, fora do while.
-    inicio_turno = pygame.time.get_ticks()
-
-    # Horário fictício de início do expediente: 08:00.
-    horario_inicial = 8 * 60 * 60
-
-    # Guarda o instante inicial uma única vez.
-    # get_ticks() informa quantos milissegundos passaram desde pygame.init().
-    inicio_turno = pygame.time.get_ticks()
-
     fonte_relogio = pygame.font.Font(None, 18)
 
     #=====================SPRITE CAMPAINHA=====================
@@ -562,96 +552,26 @@ def executar_jogo():
         for indice in range(3)
     ]
 
-
-    #=====================SPRITES VISITANTES=====================
-
-    #=====================PRIMEIRO VISITANTE=====================
-
-    imagem_lucas = pygame.image.load(
-        "assets/imagens/personagens/Lucas/lucas_transparente.png"
-    ).convert_alpha()
-
-    # Define a altura e calcula a largura mantendo a proporção.
-    altura_visitante = 280
-    largura_visitante = round(
-        imagem_lucas.get_width() * altura_visitante
-        / imagem_lucas.get_height()
-    )
-
-    imagem_lucas = pygame.transform.scale(
-        imagem_lucas, (largura_visitante, altura_visitante)
-    )
-
-    # Foto antiga de Lucas com cabelo mais curto.
-    foto_documento = pygame.image.load(
-        "assets/imagens/lucas_documento.png"
-    ).convert_alpha()
-
-    # Desconsidera as margens transparentes para aproveitar melhor
-    # o espaço da foto dentro do documento.
-    foto_documento = foto_documento.subsurface(
-        foto_documento.get_bounding_rect()
-    ).copy()
-
-    # Mantém a proporção ao ajustar a altura.
-    altura_foto = 106
-    largura_foto = round(
-        foto_documento.get_width()
-        * altura_foto
-        / foto_documento.get_height()
-    )
-
-    foto_documento = pygame.transform.scale(
-        foto_documento, (largura_foto, altura_foto)
-    )
-
-    # A foto será colocada na miniatura quando o visitante entregar o passe.
-
-    # A forma revelada usa o mesmo tamanho da aparência humana.
-    imagem_lucas_ia = pygame.image.load(
-        "assets/imagens/personagens/Lucas_ia/lucas_ia_transparente.png"
-    ).convert_alpha()
-
-    imagem_lucas_ia = pygame.transform.scale(
-        imagem_lucas_ia, (largura_visitante, altura_visitante)
-    )
-
-    # Permite selecionar a imagem pelo tipo do visitante.
-    imagens_visitante = {
-        "humano": imagem_lucas,
-        "ia": imagem_lucas_ia,
-    }
-
-    # Carrega todos os personagens disponíveis antes do loop.
-    personagens = carregar_personagens(
-        imagens_visitante, foto_documento
-    )
-
-    # Embaralha a fila uma vez no início da partida.
+    # Todos os personagens são preparados pelo mesmo módulo.
+    personagens = carregar_personagens()
     fila_personagens = criar_fila_personagens(personagens)
 
-    # Começa totalmente à esquerda da abertura.
-    rect_visitante = imagem_lucas.get_rect()
-    rect_visitante.right = abertura_janela.left
-
-    # O corpo continua abaixo do peitoril, como alguém do lado de fora.
-    rect_visitante.bottom = abertura_janela.bottom + 20
-
-    # O dicionário reúne a imagem, a posição e o estado do visitante.
+    # Não existe personagem ativo antes do primeiro toque da campainha.
+    # Na chegada, o jogo preenche imagem, posição, documento e identidade.
     visitante = {
-        "nome": "Lucas",
-        "imagem": imagem_lucas,
-        "rect": rect_visitante,
-        "x": float(rect_visitante.x),
-        "destino_x": abertura_janela.centerx - rect_visitante.width // 2,
-        "velocidade": 220,  # Pixels percorridos por segundo.
+        "nome": "",
+        "imagem": None,
+        "rect": pygame.Rect(0, 0, 0, 0),
+        "x": 0.0,
+        "destino_x": 0,
+        "velocidade": 220,
         "estado": "ausente",
-        "documento": None,  # Será preenchido quando o jogador solicitar.
+        "documento": None,
         "caso": None,
         "modelo_documento": None,
-        "tipo": None, # Será sorteado na chegada.
-        "revelado": False, # Controla a exibição da identidade.
-        "revelacao_ate": 0, # Momento em que poderá começar a sair.
+        "tipo": None,
+        "revelado": False,
+        "revelacao_ate": 0,
         "registrado": False,
         "desfecho": "saindo",
         "efeito_inicio": 0,
