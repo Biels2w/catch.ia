@@ -1,28 +1,9 @@
 # Fontes do Catch.IA
 
-Esta pasta é destinada a arquivos de fontes, como `.ttf` e `.otf`.
+A interface utiliza a fonte padrão disponibilizada pelo Pygame, criada com `pygame.font.Font(None, tamanho)`.
 
-## Uso atual
+Nenhum arquivo de fonte externa precisa ser colocado nesta pasta para executar a versão atual.
 
-A versão atual não carrega fontes personalizadas desta pasta.
+Os diferentes tamanhos distinguem títulos, diálogos, códigos e informações menores. A criação das fontes ocorre após a inicialização do Pygame.
 
-Os textos utilizam `pygame.font.Font(None, tamanho)`, que seleciona a fonte padrão disponibilizada pelo Pygame.
-
-Os tamanhos são definidos no código de acordo com o uso:
-
-- Rótulos do cenário.
-- Códigos do manual.
-- Conteúdo das consultas.
-- Informações do livro.
-- Relatório final.
-
-## Adição de novas fontes
-
-Ao incorporar uma fonte:
-
-1. Coloque o arquivo nesta pasta.
-2. Atualize seu carregamento no código.
-3. Registre aqui seu nome, autoria, origem e licença.
-4. Preserve os arquivos de licença fornecidos junto da fonte.
-
-Priorize fontes legíveis nos tamanhos utilizados pela interface.
+Caso uma fonte externa seja adicionada, registre aqui o nome do arquivo, autor, origem e licença disponível, e atualize o código responsável pelo carregamento.

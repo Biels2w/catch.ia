@@ -1,92 +1,51 @@
 # Imagens do Catch.IA
 
-Esta pasta reúne texturas, sprites, fotos e ícones.
-
 ## Cenário
 
-| Arquivo | Uso |
+| Arquivos | Uso |
 | --- | --- |
-| parede.png | Parede interna |
-| moldura.png | Moldura e peitoril |
-| ceu.png | Céu externo |
-| muro.png | Muro externo |
-| floor.png | Chão externo |
-| balcao.png | Tampo e frente do balcão |
+| `parede.png`, `moldura.png` | Parede interna e janela |
+| `ceu.png`, `muro.png`, `floor.png` | Área externa |
+| `balcao.png` | Tampo e frente do balcão |
 
-## Objetos e consultas
+## Objetos e interface
 
-| Arquivo | Uso |
+- `arquivo.png` e `folha_manual.png`: manual e fundo das consultas.
+- `botoes.png`: painel de autorizar e recusar.
+- `calendario.png`, `jornal.png`, `relogio.png`: objetos da parede.
+- `campainha.png`, `interfone.png`, `scanner.png`: equipamentos.
+- `lista_moradores.png`, `livro_ocorrencias.png`: consultas do posto.
+- `passe_documento.png`, `fundo_documento.png`: documento entregue e identificação ampliada.
+- `coracao_cheio.png`, `coracao_vazio.png`: vidas.
+- `fundo_relatorio.png`, `icone_vitoria.png`, `icone_derrota.png`: encerramento.
+
+A luminária, a iluminação, os ponteiros, os textos e alguns efeitos são desenhados pelo Pygame.
+
+## Personagens
+
+Cada pasta abaixo fica dentro de `personagens/` e reúne as duas formas do personagem:
+
+| Identificador | Pasta |
 | --- | --- |
-| arquivo.png | Pasta do manual |
-| folha_manual.png | Fundo das consultas |
-| botoes.png | Painel de autorizar e recusar |
-| calendario.png | Calendário |
-| jornal.png | Boletim do refúgio |
-| relogio.png | Base do relógio |
-| campainha.png | Campainha |
-| livro_ocorrencias.png | Livro sobre o balcão |
-| interfone.png | Interfone |
-| lista_moradores.png | Prancheta de moradores |
-| scanner.png | Scanner |
-| passe_documento.png | Passe sobre a mesa |
-| fundo_documento.png | Fundo da identificação aberta |
+| `lucas` | `Lucas/` |
+| `gael` | `Gael/` |
+| `estefanny` | `estefanny/` |
+| `nayra` | `Nayra/` |
+| `amanda` | `Amanda/` |
+| `nero` | `Nero/` |
+| `sarah` | `Sarah/` |
+| `matheus` | `Matheus/` |
+| `lia` | `Lia/` |
+| `otavio` | `Otavio/` |
 
-Os textos, ponteiros, luminária e efeitos de iluminação são
-desenhados pelo Pygame.
+O catálogo `ARQUIVOS`, em `src/personagens.py`, informa os nomes exatos dos PNGs. Todos chegam com aparência humana. A identidade sorteada é revelada após a decisão.
 
-## Vidas e relatório
+As fotos antigas de Lucas, Nayra e Sarah ficam nas respectivas pastas, com nomes terminados em `_documento.png`. Os demais personagens com documento usam a imagem humana preparada como foto. Gael não apresenta documento.
 
-- coracao_cheio.png
-- coracao_vazio.png
-- icone_derrota.png
-- icone_vitoria.png
-- fundo_relatorio.png
-
-Esses arquivos são carregados por carregar_sprites_interface().
-
-## Personagens utilizados
-
-| Personagem | Pasta e arquivos |
-| --- | --- |
-| Lucas | Lucas/Lucas_transparente.png e Lucas_ia/lucas_ia_transparente.png |
-| Gael | Gael/gael_transparente.png e Gael IA/gael_ia_transparente.png |
-| Estefanny | estefanny/estefanny_transparente.png e estefanny_ia_transparente.png |
-| Nayra | Nayra/nayra_transparente.png e nayra_ia_transparente.png |
-| Amanda | amanda/amanda_transparente.png e amanda_ia_transparente.png |
-| Nero | Nero/nero_transparente.png e nero_ia_transparente.png |
-| Sarah | Sarah/sarah_transparente.png e sarah_ia_transparente.png |
-
-Os caminhos da tabela partem de personagens/.
-
-Todos chegam com aparência humana. A forma correspondente à
-identidade sorteada aparece após a decisão.
-
-## Fotos dos documentos
-
-- lucas_documento.png: foto antiga do Lucas.
-- personagens/Nayra/nayra_documento.png: cabelo preto e franja.
-- personagens/Sarah/sarah_documento.png: cabelo comprido.
-- Estefanny, Amanda e Nero utilizam imagens humanas preparadas como foto.
-- Gael não apresenta documento.
-
-As duas identidades de um personagem podem apresentar a mesma foto.
-
-## Preparação
-
-carregar_par remove margens transparentes e ajusta as duas formas
-ao mesmo tamanho.
-
-preparar_foto ajusta as imagens ao espaço da identificação.
-preparar_passe cria uma miniatura independente para o atendimento.
-
-GIFs, imagens originais e scripts auxiliares não são carregados
-automaticamente pela partida.
+`carregar_par()` ajusta as formas ao mesmo tamanho; `preparar_foto()` preserva a proporção dentro do espaço da identificação.
 
 ## Origem
 
-As texturas e sprites preparados durante o desenvolvimento receberam
-apoio da geração de imagens do ChatGPT, com referências fornecidas
-pelo grupo.
+Texturas e sprites preparados durante o desenvolvimento receberam apoio da geração de imagens do ChatGPT, com referências fornecidas pelo grupo. That's Not My Neighbor foi uma referência de ambientação e disposição dos objetos de fiscalização.
 
-That's Not My Neighbor foi uma referência de ambientação e
-organização dos elementos de fiscalização.
+Os materiais originais e intermediários preservados em `referencias/personagens/` não são carregados pelo jogo. Autoria e licença de recursos externos devem ser registradas quando identificadas; não há uma licença única declarada para todas as imagens.

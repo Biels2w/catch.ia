@@ -1,76 +1,35 @@
 # Dados do Catch.IA
 
-Os arquivos JSON usam UTF-8 e separam o conteúdo dos atendimentos
-do código responsável por executá-los.
+Os arquivos JSON utilizam UTF-8 e são lidos pelos módulos de `src`.
 
-## Arquivos
+| Arquivo | Conteúdo | Módulo principal |
+| --- | --- | --- |
+| `casos.json` | Variações de cada atendimento | `casos.py` |
+| `documentos.json` | Modelos de documento para humano e IA | `documentos.py` |
+| `roteiros_interfone.json` | Chegada, perguntas, respostas e repetições | `dialogos.py` |
+| `moradores.json` | Nome, código, nascimento e setor dos moradores | `moradores.py` |
+| `ocorrencias.json` | Decisões realizadas no turno | `dados.py` |
 
-| Arquivo | Conteúdo |
-| --- | --- |
-| roteiros_interfone.json | Chegadas, perguntas, respostas e reações |
-| documentos.json | Modelos de documentos por personagem e identidade |
-| casos.json | Variações e alterações aplicadas aos atendimentos |
-| moradores.json | Cadastro de referência consultado pelo jogador |
-| ocorrencias.json | Decisões da partida atual |
-| recorde.txt | Arquivo da base inicial, sem uso na partida atual |
-| ranking.txt | Arquivo reservado, sem ranking integrado |
+## Identificadores
 
-## Roteiros e documentos
+Casos, documentos e roteiros reconhecem os mesmos 10 visitantes:
 
-Os visitantes são identificados por chaves como lucas e amanda.
-As identidades usam humano e ia.
+`lucas`, `gael`, `estefanny`, `nayra`, `amanda`, `nero`, `sarah`, `matheus`, `lia` e `otavio`.
 
-As perguntas possuem ações, como informar_motivo e entregar_documento.
-Essas ações permitem conectar as respostas às regras do jogo.
+Cada visitante possui dados para `humano` e `ia`. Gael possui documento `null` nas duas identidades, pois chega sem passe.
 
-O valor null indica ausência de documento, como nos modelos de Gael.
+O cadastro de moradores possui 12 registros: nove visitantes cadastrados e Bia, Helena e Davi. Gael não está cadastrado. A lista de moradores não define quem entra na fila de atendimento.
 
-## Casos
+## Casos e coerência
 
-Cada caso possui um id.
+Um caso pode alterar campos do documento, escolher um modelo-base ou substituir falas por suas ações. Os identificadores das ações devem corresponder às perguntas do roteiro.
 
-Pode utilizar:
-
-- base_documento: modelo usado como origem.
-- documento: campos que substituem os dados do modelo.
-- respostas: substituições selecionadas pela ação da pergunta.
-- chegada: fala inicial alternativa.
-- repetir: reação alternativa à repetição.
-
-O caso é sorteado uma vez na chegada. Reabrir consultas não muda
-os dados do atendimento.
-
-## Cadastro e visitas
-
-O cadastro contém nome, código, nascimento e setor.
-
-Bia, Helena e Davi recebem visitas, mas não integram a fila
-de personagens atendidos.
-
-O setor do visitante pode ser diferente do setor da pessoa visitada.
+O documento pode estar copiado corretamente enquanto a contradição aparece na conversa. Códigos, nomes, setores, datas e falas precisam ser conferidos em conjunto. A data fictícia de referência é 22/11/2042.
 
 ## Ocorrências
 
-Cada registro contém:
+Cada registro contém `nome`, `caso`, `tipo`, `decisao`, `acertou`, `vidas`, `data` e `hora`. A data e a hora do registro pertencem ao mundo fictício do jogo.
 
-- nome e caso.
-- tipo: identidade real.
-- decisao: liberar ou recusar.
-- acertou: resultado booleano.
-- vidas: quantidade restante após a decisão.
-- data e hora: informações fictícias do expediente.
+As ocorrências são atualizadas após uma decisão confirmada. O arquivo começa vazio no início da partida e é limpo ao reiniciar com `R`. Não representa um ranking ou histórico permanente de vários turnos.
 
-O livro apresenta três registros por página.
-
-Ao abrir o jogo ou reiniciar o turno, a lista e o arquivo são
-esvaziados. Não há histórico acumulado entre partidas.
-
-## Informações mantidas na memória
-
-As páginas das consultas e o relatório final não são gravados
-em arquivos próprios.
-
-O relatório usa a data real do computador. O expediente e
-as ocorrências usam a data fictícia 22/11/2042.
-
-Todos os dados pessoais do cadastro pertencem à narrativa fictícia.
+`recorde.txt` e `ranking.txt` pertenciam ao template e foram separados em `referencias/template/`, pois não são usados nesta versão.

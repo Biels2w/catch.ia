@@ -1,55 +1,32 @@
 # Sons do Catch.IA
 
-Esta pasta contém a trilha ambiente e os efeitos sonoros do projeto.
-
-O módulo `src/audio.py` carrega os sons antes do loop principal e define seus volumes.
-
-## Arquivos utilizados
+`src/audio.py` carrega os efeitos antes do loop e define os volumes.
 
 | Arquivo | Uso |
 | --- | --- |
-| `trilha_refugio.wav` | Trilha ambiente reproduzida em repetição |
-| `pagina_generica.wav` | Abertura, fechamento e troca de páginas das consultas |
-| `botao.wav` | Confirmação de autorizar ou recusar |
-| `luz_ligar.wav` | Interruptor ao acender a luminária |
-| `luz_desligar.wav` | Interruptor ao apagar a luminária |
-| `campainha.wav` | Chamada do próximo visitante |
+| `trilha_refugio.wav` | Trilha ambiente em repetição |
+| `pagina_generica.wav` | Abertura, fechamento e troca de páginas |
+| `botao.wav` | Botões de decisão |
+| `luz_ligar.wav`, `luz_desligar.wav` | Luminária |
+| `campainha.wav` | Chamada de visitante |
+| `interfone_chamar.wav`, `interfone_resposta.wav` | Interação com o interfone |
+| `lista_abrir.wav` | Abertura do cadastro de moradores |
+| `scanner_ler.wav` | Início da leitura |
+| `scanner_ok.wav` | Leitura concluída |
+| `scanner_falha.wav` | Leitura inconclusiva |
+
+O som de conclusão do scanner não garante que o indício esteja correto. O equipamento pode produzir um resultado incorreto sem reconhecer o próprio erro.
+
+`livro_abrir.wav` e `virar_pagina.wav` estão reservados e não fazem parte do mapa atual. O livro utiliza o efeito genérico de papel.
 
 ## Reprodução
 
-O mesmo arquivo de papel é utilizado nas ações `abrir`, `fechar` e `pagina`, com volumes definidos separadamente.
+A música usa `pygame.mixer.music`; os efeitos usam `pygame.mixer.Sound`. Se o mixer não iniciar, o carregador retorna um dicionário vazio e permite continuar sem áudio.
 
-Essas ações são utilizadas pelo manual, calendário, jornal e livro de ocorrências.
-
-A trilha usa `pygame.mixer.music`. Os efeitos usam `pygame.mixer.Sound`.
-
-Se o mixer não estiver inicializado, o módulo permite que o jogo continue sem reproduzir áudio.
-
-## Recursos reservados
-
-Os seguintes arquivos estão disponíveis na pasta, mas não são carregados pelo mapa de efeitos atual:
-
-- `interfone_chamar.wav`
-- `interfone_resposta.wav`
-- `lista_abrir.wav`
-- `livro_abrir.wav`
-- `scanner_ler.wav`
-- `scanner_ok.wav`
-- `scanner_falha.wav`
-- `virar_pagina.wav`
-
-O livro usa atualmente `pagina_generica.wav`.
-
-A integração do interfone, da lista de moradores e do scanner continua em desenvolvimento.
-
-## Origem e referências
+## Origem
 
 A trilha e os efeitos sintéticos preparados durante o projeto foram produzidos com apoio do ChatGPT.
 
-O arquivo `pagina_generica.wav` foi preparado a partir da referência sonora fornecida pelo grupo nos vídeos anexados durante o desenvolvimento.
+O efeito de papel foi preparado a partir das referências sonoras fornecidas pelo grupo nos vídeos anexados. Também foi indicada esta [referência no YouTube](https://www.youtube.com/watch?v=CPVDvxPlhlc).
 
-Também foi indicada esta [referência de som de papel no YouTube](https://www.youtube.com/watch?v=CPVDvxPlhlc).
-
-A autoria original e a licença da gravação utilizada como referência para o efeito de papel ainda não estão documentadas no repositório. Esse efeito não é apresentado como uma criação inteiramente sintetizada ou como um recurso de licença livre.
-
-Ao acrescentar ou substituir sons, registre o arquivo, sua origem, autoria e licença disponível.
+A autoria e a licença da gravação original usada como referência do papel ainda não estão documentadas. Esse efeito não é declarado como inteiramente sintetizado ou de licença livre.
