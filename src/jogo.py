@@ -683,6 +683,7 @@ def executar_jogo():
                 vidas = 3
                 acertos = 0
                 erros = 0
+                atendimentos = 0
                 # Disponibiliza os dez personagens em uma nova ordem aleatória.
                 fila_personagens = criar_fila_personagens(personagens)
                 # Limpa os registros e volta à primeira página.
