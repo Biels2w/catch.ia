@@ -34,5 +34,23 @@
         "codigo": "V-068",
         "nascimento": "16/07/2018",
         "setor": "B-04"
+    },
+    {
+        "nome": "Bia",
+        "codigo": "V-027",
+        "nascimento": "15/03/2032",
+        "setor": "C-01"
+    },
+    {
+        "nome": "Helena",
+        "codigo": "V-073",
+        "nascimento": "08/11/2000",
+        "setor": "C-01"
+    },
+    {
+        "nome": "Davi",
+        "codigo": "V-081",
+        "nascimento": "02/08/2023",
+        "setor": "A-03"
     }
 ]

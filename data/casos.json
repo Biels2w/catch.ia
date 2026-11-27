@@ -4,6 +4,13 @@
     {
         "id": "lucas_humano_regular",
         "documento": {}
+    },
+    {
+        "id": "lucas_visita_davi",
+        "respostas": {
+            "informar_motivo": "Vim visitar meu amigo Davi. Ele mora no setor A-03 e disse que podia me receber. Eu moro no setor A-01."
+        },
+        "repetir": "Eu moro no setor A-01 e vim visitar Davi, que mora no setor A-03."
     }
     ],
     "ia": [
@@ -97,6 +104,13 @@
         "humano": [
             {
                 "id": "amanda_humana_regular"
+            },
+            {
+                "id": "amanda_visita_familia",
+                "respostas": {
+                    "informar_motivo": "Vim encontrar minha tia Helena e minha prima Bia. Elas estão no setor C-01. Minha família entrou aqui há três dias e a Bia tem dez anos."
+                },
+                "repetir": "Minha tia Helena e minha prima Bia estão no setor C-01. Vim ficar com elas."
             }
         ],
         "ia": [
@@ -113,6 +127,14 @@
                 "documento": {
                     "setor": "B-03"
                 }
+            },
+            {
+                "id": "amanda_visita_setor_incorreto",
+                "base_documento": "humano",
+                "respostas": {
+                    "informar_motivo": "Vim visitar minha tia Helena. Ela mora no setor B-03 e já está me esperando. Pode conferir meu documento."
+                },
+                "repetir": "Minha tia Helena mora no setor B-03. Ela pode confirmar quem sou."
             }
         ]
     },
