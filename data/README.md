@@ -32,4 +32,4 @@ Cada registro contém `nome`, `caso`, `tipo`, `decisao`, `acertou`, `vidas`, `da
 
 As ocorrências são atualizadas após uma decisão confirmada. O arquivo começa vazio no início da partida e é limpo ao reiniciar com `R`. Não representa um ranking ou histórico permanente de vários turnos.
 
-`recorde.txt` e `ranking.txt` pertenciam ao template e foram separados em `referencias/template/`, pois não são usados nesta versão.
+A versão atual não utiliza recorde ou ranking. O desempenho é apresentado no relatório final, e as decisões do turno são gravadas em `ocorrencias.json`.
