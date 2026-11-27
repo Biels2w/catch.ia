@@ -1,9 +1,9 @@
 [
   {
-    "nome": "Gael",
-    "caso": "gael_ia_relato_contraditorio",
-    "tipo": "ia",
-    "decisao": "recusar",
+    "nome": "Otávio",
+    "caso": "otavio_humano_regular",
+    "tipo": "humano",
+    "decisao": "liberar",
     "acertou": true,
     "vidas": 3,
     "data": "22/11/2042",

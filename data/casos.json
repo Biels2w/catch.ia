@@ -180,5 +180,74 @@
                 }
             }
         ]
+    },
+    "matheus": {
+        "humano": [
+            {
+                "id": "matheus_humano_regular"
+            }
+        ],
+        "ia": [
+            {
+                "id": "matheus_codigo_copiado",
+                "documento": {
+                    "codigo": "V-068"
+                }
+            },
+            {
+                "id": "matheus_setor_declarado_incorreto",
+                "base_documento": "humano",
+                "respostas": {
+                    "informar_motivo": "Moro no setor D-02 e estava voltando do trabalho. Vim descansar neste refúgio."
+                },
+                "repetir": "Eu moro no setor D-02 e preciso descansar."
+            }
+        ]
+    },
+    "lia": {
+        "humano": [
+            {
+                "id": "lia_humana_regular"
+            }
+        ],
+        "ia": [
+            {
+                "id": "lia_visita_setor_incorreto",
+                "base_documento": "humano",
+                "respostas": {
+                    "informar_motivo": "Vim entregar remédios para Helena. Ela mora no setor B-03 e está me esperando."
+                },
+                "repetir": "A entrega é para Helena, no setor B-03."
+            },
+            {
+                "id": "lia_passe_vencido",
+                "documento": {
+                    "validade": "31/12/2041"
+                }
+            }
+        ]
+    },
+    "otavio": {
+        "humano": [
+            {
+                "id": "otavio_humano_regular"
+            }
+        ],
+        "ia": [
+            {
+                "id": "otavio_nascimento_adulterado",
+                "documento": {
+                    "nascimento": "07/06/1999"
+                }
+            },
+            {
+                "id": "otavio_data_impossivel",
+                "base_documento": "humano",
+                "respostas": {
+                    "informar_motivo": "Visitei Davi ontem, em 23/11/2042. Ele disse que eu podia voltar para descansar."
+                },
+                "repetir": "Ontem foi 23/11/2042. Visitei Davi e combinei de voltar."
+            }
+        ]
     }
 }

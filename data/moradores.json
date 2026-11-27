@@ -52,5 +52,23 @@
         "codigo": "V-081",
         "nascimento": "02/08/2023",
         "setor": "A-03"
+    },
+    {
+        "nome": "Matheus",
+        "codigo": "V-096",
+        "nascimento": "12/01/2017",
+        "setor": "D-01"
+    },
+    {
+        "nome": "Lia",
+        "codigo": "V-104",
+        "nascimento": "30/09/2016",
+        "setor": "C-02"
+    },
+    {
+        "nome": "Otávio",
+        "codigo": "V-118",
+        "nascimento": "07/06/1989",
+        "setor": "D-02"
     }
 ]

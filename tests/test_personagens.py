@@ -684,3 +684,149 @@ def test_amanda_visita_irregular_exige_conferir_morador():
     assert "B-03" in motivo["resposta"]
     assert helena["setor"] != "B-03"
     assert "B-03" in roteiro["repetir"]
+
+
+def montar_adicional(personagem, tipo, id_caso):
+    """Prepara um caso específico para os testes."""
+    caso = next(
+        caso
+        for caso in carregar_casos()[personagem][tipo]
+        if caso["id"] == id_caso
+    )
+
+    return montar_caso(
+        caso,
+        carregar_documentos()[personagem],
+        carregar_dialogos()[personagem][tipo],
+        tipo,
+    )
+
+
+def test_dez_personagens_tem_dados_completos():
+    esperados = {
+        "lucas", "gael", "estefanny", "nayra", "amanda",
+        "nero", "sarah", "matheus", "lia", "otavio",
+    }
+
+    documentos = carregar_documentos()
+    roteiros = carregar_dialogos()
+    casos = carregar_casos()
+
+    # Os três arquivos precisam reconhecer os mesmos dez personagens.
+    assert set(documentos) == set(roteiros) == set(casos) == esperados
+
+    for personagem in esperados:
+        for tipo in ("humano", "ia"):
+            assert tipo in documentos[personagem]
+            assert len(roteiros[personagem][tipo]["perguntas"]) == 3
+            assert casos[personagem][tipo]
+
+
+def test_novos_humanos_conferem_com_cadastro():
+    moradores = carregar_moradores()
+
+    for personagem in ("matheus", "lia", "otavio"):
+        documento = carregar_documentos()[personagem]["humano"]
+
+        cadastro = next(
+            morador
+            for morador in moradores
+            if morador["nome"] == documento["nome"]
+        )
+
+        for campo in ("nome", "codigo", "nascimento", "setor"):
+            assert documento[campo] == cadastro[campo]
+
+    # Cada código deve identificar um único cadastro.
+    codigos = [morador["codigo"] for morador in moradores]
+    assert len(codigos) == len(set(codigos))
+
+
+def test_matheus_ia_tem_pistas_verificaveis():
+    documento, _ = montar_adicional(
+        "matheus", "ia", "matheus_codigo_copiado"
+    )
+
+    dono_codigo = next(
+        morador
+        for morador in carregar_moradores()
+        if morador["codigo"] == documento["codigo"]
+    )
+
+    assert dono_codigo["nome"] == "Nero"
+
+    documento, roteiro = montar_adicional(
+        "matheus", "ia", "matheus_setor_declarado_incorreto"
+    )
+
+    assert documento == carregar_documentos()["matheus"]["humano"]
+
+    motivo = next(
+        pergunta["resposta"]
+        for pergunta in roteiro["perguntas"]
+        if pergunta.get("acao") == "informar_motivo"
+    )
+
+    assert "D-02" in motivo
+    assert documento["setor"] == "D-01"
+    assert "D-02" in roteiro["repetir"]
+
+
+def test_lia_ia_exige_conferir_visita_ou_validade():
+    helena = next(
+        morador
+        for morador in carregar_moradores()
+        if morador["nome"] == "Helena"
+    )
+
+    documento, roteiro = montar_adicional(
+        "lia", "ia", "lia_visita_setor_incorreto"
+    )
+
+    assert documento == carregar_documentos()["lia"]["humano"]
+
+    motivo = next(
+        pergunta["resposta"]
+        for pergunta in roteiro["perguntas"]
+        if pergunta.get("acao") == "informar_motivo"
+    )
+
+    assert "Helena" in motivo and "B-03" in motivo
+    assert helena["setor"] != "B-03"
+    assert "B-03" in roteiro["repetir"]
+
+    documento, _ = montar_adicional(
+        "lia", "ia", "lia_passe_vencido"
+    )
+
+    validade = datetime.strptime(
+        documento["validade"], "%d/%m/%Y"
+    ).date()
+
+    assert validade < date(2042, 11, 22)
+
+
+def test_otavio_ia_exige_conferir_nascimento_ou_data():
+    documento, _ = montar_adicional(
+        "otavio", "ia", "otavio_nascimento_adulterado"
+    )
+
+    assert (
+        documento["nascimento"]
+        != carregar_documentos()["otavio"]["humano"]["nascimento"]
+    )
+
+    documento, roteiro = montar_adicional(
+        "otavio", "ia", "otavio_data_impossivel"
+    )
+
+    assert documento == carregar_documentos()["otavio"]["humano"]
+
+    motivo = next(
+        pergunta["resposta"]
+        for pergunta in roteiro["perguntas"]
+        if pergunta.get("acao") == "informar_motivo"
+    )
+
+    assert "23/11/2042" in motivo
+    assert "23/11/2042" in roteiro["repetir"]

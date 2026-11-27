@@ -115,6 +115,25 @@ def carregar_personagens(imagens_lucas, foto_lucas):
         pasta / "Sarah" / "sarah_documento.png"
     ).convert_alpha()
 
+    # Carrega os novos personagens uma única vez.
+    imagens_matheus = carregar_par(
+        pasta,
+        "Matheus/matheus_transparente.png",
+        "Matheus/matheus_ia_transparente.png",
+    )
+
+    imagens_lia = carregar_par(
+        pasta,
+        "Lia/lia_transparente.png",
+        "Lia/lia_ia_transparente.png",
+    )
+
+    imagens_otavio = carregar_par(
+        pasta,
+        "Otavio/otavio_transparente.png",
+        "Otavio/otavio_ia_transparente.png",
+    )
+
     return {
         "lucas": {
             "nome": "Lucas",
@@ -165,113 +184,20 @@ def carregar_personagens(imagens_lucas, foto_lucas):
             # A foto antiga é usada pelas duas identidades.
             "foto": preparar_foto(foto_sarah),
         },
+        "matheus": {
+            "nome": "Matheus",
+            "imagens": imagens_matheus,
+            "foto": preparar_foto(imagens_matheus["humano"]),
+        },
+        "lia": {
+            "nome": "Lia",
+            "imagens": imagens_lia,
+            "foto": preparar_foto(imagens_lia["humano"]),
+        },
+        "otavio": {
+            "nome": "Otávio",
+            "imagens": imagens_otavio,
+            "foto": preparar_foto(imagens_otavio["humano"]),
+        },
     }
 
-# ==================== VISITAS ====================
-
-def test_moradores_de_visita_nao_tem_casos_de_atendimento():
-    nomes = {
-        morador["nome"]
-        for morador in carregar_moradores()
-    }
-
-    assert {"Bia", "Helena", "Davi"}.issubset(nomes)
-
-    # Cadastro de moradores e dados dos visitantes são separados.
-    for nome in ("bia", "helena", "davi"):
-        assert nome not in carregar_casos()
-        assert nome not in carregar_dialogos()
-
-
-def test_lucas_visita_davi_confere_com_setor_do_morador():
-    davi = next(
-        morador
-        for morador in carregar_moradores()
-        if morador["nome"] == "Davi"
-    )
-
-    caso = next(
-        caso
-        for caso in carregar_casos()["lucas"]["humano"]
-        if caso["id"] == "lucas_visita_davi"
-    )
-
-    documento, roteiro = montar_lucas(caso, "humano")
-
-    motivo = next(
-        pergunta
-        for pergunta in roteiro["perguntas"]
-        if pergunta.get("acao") == "informar_motivo"
-    )
-
-    assert "Davi" in motivo["resposta"]
-    assert davi["setor"] in motivo["resposta"]
-
-    # Cada pessoa possui seu próprio setor.
-    assert documento["setor"] != davi["setor"]
-
-
-def test_amanda_visita_familia_confere_com_cadastro():
-    caso = next(
-        caso
-        for caso in carregar_casos()["amanda"]["humano"]
-        if caso["id"] == "amanda_visita_familia"
-    )
-
-    _, roteiro = montar_caso(
-        caso,
-        carregar_documentos()["amanda"],
-        carregar_dialogos()["amanda"]["humano"],
-        "humano",
-    )
-
-    motivo = next(
-        pergunta
-        for pergunta in roteiro["perguntas"]
-        if pergunta.get("acao") == "informar_motivo"
-    )
-
-    for nome in ("Bia", "Helena"):
-        morador = next(
-            morador
-            for morador in carregar_moradores()
-            if morador["nome"] == nome
-        )
-
-        assert nome in motivo["resposta"]
-        assert morador["setor"] in motivo["resposta"]
-
-
-def test_amanda_visita_irregular_exige_conferir_morador():
-    helena = next(
-        morador
-        for morador in carregar_moradores()
-        if morador["nome"] == "Helena"
-    )
-
-    caso = next(
-        caso
-        for caso in carregar_casos()["amanda"]["ia"]
-        if caso["id"] == "amanda_visita_setor_incorreto"
-    )
-
-    documento, roteiro = montar_caso(
-        caso,
-        carregar_documentos()["amanda"],
-        carregar_dialogos()["amanda"]["ia"],
-        "ia",
-    )
-
-    # O documento correto não elimina a contradição na conversa.
-    assert documento == carregar_documentos()["amanda"]["humano"]
-
-    motivo = next(
-        pergunta
-        for pergunta in roteiro["perguntas"]
-        if pergunta.get("acao") == "informar_motivo"
-    )
-
-    assert "Helena" in motivo["resposta"]
-    assert "B-03" in motivo["resposta"]
-    assert helena["setor"] != "B-03"
-    assert "B-03" in roteiro["repetir"]

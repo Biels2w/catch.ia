@@ -334,5 +334,149 @@
             "liberar": "Obrigada. Vou entrar e descansar um pouco.",
             "recusar": "Entendido. Vou aguardar do lado de fora."
         }
+    },
+    "matheus": {
+        "humano": {
+            "chegada": "E aí! Boa noite. Tá aberto, né? Porque se não estiver, eu vou ter que dormir num banco de praça, e acho que eu não ia gostar.",
+            "perguntas": [
+                {
+                    "acao": "informar_motivo",
+                    "pergunta": "Qual é o seu motivo para entrar?",
+                    "resposta": "Olha, sendo bem sincero? Eu tava voltando do trabalho e a noite caiu mais rápido do que eu esperava. Eu moro longe, e andar por aí depois que escurece não é uma ideia muito boa hoje em dia. Então vi a luz acesa aqui e pensei: 'Matheus, vai lá e pergunta'. Aí eu vim."
+                },
+                {
+                    "acao": "entregar_documento",
+                    "pergunta": "Poderia me entregar seus documentos?",
+                    "resposta": "Tá aqui, tá aqui... só que cuidado, que a foto está horrível. Tirei na pressa, no dia da prova, e fiquei com cara de quem não dormiu."
+                },
+                {
+                    "acao": "explicar_aparencia",
+                    "pergunta": "O que aconteceu com a sua aparência?",
+                    "resposta": "Minha aparência? Ué, eu tô tão ruim assim?Tá bom, o cabelo eu admito, o vento me derrotou. Mas o brinco eu não tiro de jeito nenhum, foi presente do meu irmão. Se algum monstro quiser, vai ter que tirar a força."
+                }
+            ],
+            "repetir": "Ei, você já me perguntou isso! Ou é um teste, ou você tá nervoso também. Tá, eu respondo de novo, mas com outras palavras...",
+            "liberar": "Valeu, valeu mesmo! Se precisar de alguém pra ajudar em alguma coisa lá dentro, pode chamar. Eu faço qualquer coisa, menos cozinhar.",
+            "recusar": "Ah... tá, entendi. Sem problema. Mas se eu não voltar amanhã, você vai ficar pensando nisso, hein?"
+        },
+        "ia": {
+            "chegada": "Boa noite. Sou Matheus e preciso de um lugar para passar a noite.",
+            "perguntas": [
+                {
+                    "acao": "informar_motivo",
+                    "pergunta": "Qual é o seu motivo para entrar?",
+                    "resposta": "Eu estava voltando do trabalho. Como moro longe, procurei este refúgio para descansar em segurança."
+                },
+                {
+                    "acao": "entregar_documento",
+                    "pergunta": "Poderia me entregar seus documentos?",
+                    "resposta": "Aqui está minha identificação. Os dados podem ser conferidos no cadastro."
+                },
+                {
+                    "acao": "explicar_aparencia",
+                    "pergunta": "O que aconteceu com a sua aparência?",
+                    "resposta": "O cabelo ficou assim por causa do vento. O brinco foi um presente do meu irmão."
+                }
+            ],
+            "repetir": "Eu voltava do trabalho e preciso de um lugar seguro para descansar.",
+            "liberar": "Obrigado. Vou entrar e descansar.",
+            "recusar": "Entendido. Procurarei outro local."
+        }
+    },
+    "lia": {
+        "humano": {
+            "chegada": "Oi, eu sou a Lia. Trouxe uma entrega para a Helena. Posso entrar?",
+            "perguntas": [
+                {
+                    "acao": "informar_motivo",
+                    "pergunta": "Qual é o seu motivo para entrar?",
+                    "resposta": "Vim entregar remédios para a Helena, que mora no setor C-01. Eu moro no setor C-02 e faço entregas para os vizinhos."
+                },
+                {
+                    "acao": "entregar_documento",
+                    "pergunta": "Poderia me entregar seus documentos?",
+                    "resposta": "Aqui está meu documento. Guardo ele junto das anotações das entregas."
+                },
+                {
+                    "acao": "explicar_aparencia",
+                    "pergunta": "O que aconteceu com a sua aparência?",
+                    "resposta": "Prendi o cabelo para não atrapalhar no caminho. A jaqueta já está gasta de tanto andar, mas ainda protege do frio."
+                }
+            ],
+            "repetir": "A entrega é para a Helena, do setor C-01. Eu moro no C-02.",
+            "liberar": "Obrigada! Vou deixar a entrega e descansar um pouco.",
+            "recusar": "Tudo bem. Se puder, avise a Helena que a entrega chegou."
+        },
+        "ia": {
+            "chegada": "Olá. Sou Lia e trouxe uma entrega para uma moradora.",
+            "perguntas": [
+                {
+                    "acao": "informar_motivo",
+                    "pergunta": "Qual é o seu motivo para entrar?",
+                    "resposta": "Tenho uma entrega para Helena. Preciso entrar para concluir o serviço."
+                },
+                {
+                    "acao": "entregar_documento",
+                    "pergunta": "Poderia me entregar seus documentos?",
+                    "resposta": "Aqui está meu documento. Pode verificar as informações."
+                },
+                {
+                    "acao": "explicar_aparencia",
+                    "pergunta": "O que aconteceu com a sua aparência?",
+                    "resposta": "O cabelo está preso para facilitar o transporte. Esta é minha roupa de trabalho."
+                }
+            ],
+            "repetir": "Vim concluir uma entrega para Helena.",
+            "liberar": "Obrigada. Vou procurar a destinatária.",
+            "recusar": "Entendido. Vou aguardar outra autorização."
+        }
+    },
+    "otavio": {
+        "humano": {
+            "chegada": "Olá, meu nome é Otávio. O Davi disse que eu podia procurar abrigo aqui.",
+            "perguntas": [
+                {
+                    "acao": "informar_motivo",
+                    "pergunta": "Qual é o seu motivo para entrar?",
+                    "resposta": "Vim encontrar o Davi, que mora no setor A-03. Eu cuidava da manutenção dos prédios e ele me ajudava com os computadores. Trouxe algumas ferramentas e preciso de um lugar para descansar."
+                },
+                {
+                    "acao": "entregar_documento",
+                    "pergunta": "Poderia me entregar seus documentos?",
+                    "resposta": "Aqui está. Já está um pouco gasto, mas os dados continuam legíveis."
+                },
+                {
+                    "acao": "explicar_aparencia",
+                    "pergunta": "O que aconteceu com a sua aparência?",
+                    "resposta": "O cabelo ficou grisalho com os anos. Uso os óculos para ler e a jaqueta era do meu trabalho na manutenção."
+                }
+            ],
+            "repetir": "Procuro o Davi, do setor A-03. Ele me conhece do trabalho na manutenção.",
+            "liberar": "Muito obrigado. Se precisarem de algum conserto, posso ajudar.",
+            "recusar": "Compreendo. Vou esperar em algum lugar protegido."
+        },
+        "ia": {
+            "chegada": "Olá. Sou Otávio e fui orientado a procurar este refúgio.",
+            "perguntas": [
+                {
+                    "acao": "informar_motivo",
+                    "pergunta": "Qual é o seu motivo para entrar?",
+                    "resposta": "Preciso de abrigo. Conheço Davi, do setor A-03, e posso ajudar com serviços de manutenção."
+                },
+                {
+                    "acao": "entregar_documento",
+                    "pergunta": "Poderia me entregar seus documentos?",
+                    "resposta": "Aqui está a identificação. Os dados estão disponíveis para conferência."
+                },
+                {
+                    "acao": "explicar_aparencia",
+                    "pergunta": "O que aconteceu com a sua aparência?",
+                    "resposta": "Os óculos auxiliam a leitura. A jaqueta é uma peça de trabalho antiga."
+                }
+            ],
+            "repetir": "Vim procurar abrigo e posso colaborar com a manutenção.",
+            "liberar": "Obrigado. Vou entrar.",
+            "recusar": "Entendido. Aguardarei do lado de fora."
+        }
     }
 }
