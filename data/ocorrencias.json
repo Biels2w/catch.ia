@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "nome": "Gael",
+    "caso": "gael_ia_relato_contraditorio",
+    "tipo": "ia",
+    "decisao": "recusar",
+    "acertou": true,
+    "vidas": 3,
+    "data": "22/11/2042",
+    "hora": "08:00"
+  }
+]

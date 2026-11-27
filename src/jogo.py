@@ -44,6 +44,7 @@ from src.scanner import (
 
 from src.casos import carregar_casos, montar_caso
 from src.personagens import carregar_personagens
+from src.instrucoes import mostrar_instrucoes
 
 from src.config import LARGURA_TELA, ALTURA_TELA, FPS, TITULO_JOGO, CINZA, PRETO
 
@@ -653,8 +654,14 @@ def executar_jogo():
         "efeito_inicio": 0,
     }
     #=======================================================
-    # Começa depois do carregamento das imagens e sons.
+    # As instruções aparecem antes de começar a contar o tempo.
+    if not mostrar_instrucoes(tela, sons):
+        pygame.quit()
+        return
+
+    # A leitura das instruções não entra na duração da partida.
     inicio_partida = pygame.time.get_ticks()
+    inicio_turno = inicio_partida
     relogio = pygame.time.Clock()
     rodando = True
 
