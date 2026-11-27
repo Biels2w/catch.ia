@@ -1,11 +1,61 @@
 [
   {
-    "nome": "Otávio",
-    "caso": "otavio_humano_regular",
+    "nome": "Lia",
+    "caso": "lia_visita_setor_incorreto",
+    "tipo": "ia",
+    "decisao": "liberar",
+    "acertou": false,
+    "vidas": 2,
+    "data": "22/11/2042",
+    "hora": "08:00"
+  },
+  {
+    "nome": "Gael",
+    "caso": "gael_ia_relato_contraditorio",
+    "tipo": "ia",
+    "decisao": "recusar",
+    "acertou": true,
+    "vidas": 2,
+    "data": "22/11/2042",
+    "hora": "08:00"
+  },
+  {
+    "nome": "Lucas",
+    "caso": "lucas_visita_davi",
     "tipo": "humano",
     "decisao": "liberar",
     "acertou": true,
-    "vidas": 3,
+    "vidas": 2,
+    "data": "22/11/2042",
+    "hora": "08:00"
+  },
+  {
+    "nome": "Estefanny",
+    "caso": "estefanny_humana_regular",
+    "tipo": "humano",
+    "decisao": "recusar",
+    "acertou": false,
+    "vidas": 1,
+    "data": "22/11/2042",
+    "hora": "08:00"
+  },
+  {
+    "nome": "Matheus",
+    "caso": "matheus_humano_regular",
+    "tipo": "humano",
+    "decisao": "liberar",
+    "acertou": true,
+    "vidas": 1,
+    "data": "22/11/2042",
+    "hora": "08:00"
+  },
+  {
+    "nome": "Amanda",
+    "caso": "amanda_visita_familia",
+    "tipo": "humano",
+    "decisao": "recusar",
+    "acertou": false,
+    "vidas": 0,
     "data": "22/11/2042",
     "hora": "08:00"
   }

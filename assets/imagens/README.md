@@ -48,4 +48,4 @@ As fotos antigas de Lucas, Nayra e Sarah ficam nas respectivas pastas, com nomes
 
 Texturas e sprites preparados durante o desenvolvimento receberam apoio da geração de imagens do ChatGPT, com referências fornecidas pelo grupo. That's Not My Neighbor foi uma referência de ambientação e disposição dos objetos de fiscalização.
 
-Os materiais originais e intermediários preservados em `referencias/personagens/` não são carregados pelo jogo. Autoria e licença de recursos externos devem ser registradas quando identificadas; não há uma licença única declarada para todas as imagens.
+As pastas dos personagens também preservam materiais originais e intermediários, como GIFs, imagens e scripts de preparação. Apenas os arquivos indicados em `src/personagens.py` são carregados pela partida. Autoria e licença de recursos externos devem ser registradas quando identificadas; não há uma licença única declarada para todas as imagens.

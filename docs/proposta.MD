@@ -1,120 +1,137 @@
-<!-- COMO FAZER O COMMIT -->
-<!-- git add .
-git commit -m "mensagem do commit"
-git checkout main
-git pull origin main
-git merge nome-da-sua-branch
-git push origin main -->
+# Proposta do projeto — Catch.IA
 
-## 1. Nome provisório do jogo
+Proposta atualizada em 27/11/2026. Versão final do game.
 
-Informe o nome provisório do jogo.
+## 1. Nome do jogo
 
-**Nome:**
+**Catch.IA**
 
-> Catch.IA
+## 2. Integrantes
 
-## 2. Integrantes do grupo
+- Gabriel de Oliveira Costa
+- Ana Ayla Pires Reis
+- Gabriel Rodrigues Lima
+- Patrick Souza
 
-- Nome 1: Gabriel de Oliveira Costa
-- Nome 2: Ana Ayla Pires Reis 
-- Nome 3: Gabriel Rodrigues Lima 
-- Nome 4: Patrick Souza 
+## 3. Tema específico e uso responsável
 
-## 3. Tema escolhido
+Dentro do eixo **Inteligência Artificial no Cotidiano: Aplicações e Uso Responsável**, o grupo escolheu **segurança e confiabilidade de sistemas automatizados de identificação**, com ênfase na conferência de informações e na supervisão humana.
 
-**Tema:**
+O jogo aborda o risco de confiar em uma única evidência ou aceitar automaticamente a resposta de uma ferramenta. O scanner pode falhar, um documento pode conter dados copiados e diferenças na aparência não bastam para determinar uma identidade.
 
-> Segurança e confiabilidade na identificação e detecção de IA.
+## 4. Integração do tema com a jogabilidade
 
-**Como esse tema se relaciona com o jogo?**
+O jogador precisa cruzar documentos, respostas, códigos, cadastro e datas para decidir quem pode entrar no refúgio. Uma leitura do scanner funciona apenas como indício. Liberar uma IA ou recusar um humano retira uma vida, fazendo a análise crítica das informações influenciar diretamente o resultado da partida.
 
-> O jogador deverá analisar documentos, respostas e pistas para decidir quem pode entrar na área protegida. Autorizar uma IA disfarçada ou impedir a entrada de um humano contará como erro, afetando a vida do jogador. Assim, conferir informações e avaliar as evidências serão ações necessárias para vencer.
+As identidades e leituras são simuladas por regras, estruturas de dados e sorteios. O projeto não implementa uma tecnologia real de detecção de IA.
 
-## 4. Tipo de jogo
+## 5. Estilo e descrição geral
 
-**Tipo escolhido:**
+Jogo de investigação e tomada de decisões, com visão em primeira pessoa de um posto de fiscalização.
 
-> Jogo de investigação e tomada de decisões.
+Em um futuro fictício, após uma revolta de inteligências artificiais, o jogador assume o papel de fiscal de um refúgio humano. Um visitante por vez chega à janela. O jogador controla o atendimento com o mouse, consulta os objetos do cenário, faz perguntas e decide entre autorizar e recusar a entrada.
 
-## 5. Descrição geral do jogo
+O desafio está nas contradições entre fontes: documentos adulterados, códigos pertencentes a outra pessoa, datas incompatíveis, relatos inconsistentes e resultados falhos do scanner. Alguns casos apresentam documentos corretos e exigem conferir a conversa.
 
-**Descrição:**
+## 6. Objetivo
 
-> Na tela aparecerá um posto de fiscalização, com um personagem em primeira pessoal, por vez solicitando entrada na área protegida. O jogador usará o mouse para consultar documentos, selecionar perguntas e analisar as respostas antes de autorizar ou negar o acesso. O desafio será identificar contradições e reunir pistas para distinguir humanos de IAs disfarçadas, sem decidir apenas pela aparência. Cada decisão correta renderá pontos que serão expostos ao final, enquanto os erros comprometerão a vida do jogador, a cada erro um coração de vida é perdido, caso perca todos os corações (3 corações) a partida é encerrada e mostra o relatório final. 
-
-## 6. Objetivo do jogador
-
-**Objetivo:**
-
-> Identificar humanos e IAs disfarçadas por meio da análise de documentos, respostas e pistas, autorizando ou negando sua entrada na área protegida. O jogador deverá concluir os atendimentos com o maior número possível de acertos, evitando a infiltração de IAs e a recusa indevida de humanos.
+Concluir 10 atendimentos com pelo menos uma vida restante, identificando humanos e IAs disfarçadas por meio da análise das evidências disponíveis.
 
 ## 7. Regras principais
 
-- Regra 1: O jogador começa com 3 vidas.
-- Regra 2: Autorizar a entrada das IAs ou negar a entrada de humanos o jogador perderá uma vida.
-- Regra 3: Antes de decidir, poderá consultar documentos e fazer perguntas para reunir pistas sobre cada personagem.
-- Regra 4: O jogador vence quando consegue concluir todos os atendimentos com pelo menos uma vida restante.
-- Regra 5: Após o jogador confirmar sua escolha, não poderá voltar atrás na sua decisão/
+1. O jogador começa com 3 vidas.
+2. Um turno completo apresenta 10 personagens diferentes, em ordem embaralhada; a identidade humana ou IA e o caso são sorteados na chegada.
+3. Antes de decidir, o jogador pode fazer perguntas e consultar os recursos do posto. Uma leitura inconclusiva do scanner pode ser repetida.
+4. Liberar um humano ou recusar uma IA conta como acerto; a decisão contrária retira uma vida.
+5. Uma escolha confirmada é registrada uma única vez, não pode ser desfeita e inicia a revelação e a saída do visitante.
 
-## 8. Condição de vitória
+## 8. Vitória
 
-**Condição de vitória:**
+O jogador vence ao concluir os 10 atendimentos com pelo menos uma vida. Após o desfecho do último visitante, é exibido um relatório com resultado, quantidade de atendimentos, acertos, erros, duração e data real da partida.
 
-> O jogador vence ao concluir 10 atendimentos com pelo menos uma vida restante. Ao final, será exibida o número de decisões corretas.
+## 9. Derrota e encerramento
 
-## 9. Condição de derrota ou encerramento
+O jogador perde ao cometer três erros e esgotar suas vidas. Isso também vale se o terceiro erro ocorrer no décimo atendimento. A derrota pode encerrar o turno antes da apresentação dos 10 personagens.
 
-**Condição de derrota ou encerramento:**
+Não existe limite de tempo para decidir. No relatório, `R` inicia uma nova partida e limpa as ocorrências do turno anterior. Fechar a janela encerra o programa.
 
-> O jogador perde quando comete três erros e esgota suas vidas antes de concluir todos os atendimentos. Cada humano barrado indevidamente ou IA autorizada a entrar conta como um erro.
+## 10. Personagens e moradores
 
-## 10. Elementos previstos no jogo
+O jogo possui 10 personagens atendidos: Lucas, Gael, Estefanny, Nayra, Amanda, Nero, Sarah, Matheus, Lia e Otávio. Cada personagem possui formas humana e IA. Portanto, são 10 nomes disponíveis, com duas formas visuais cada, e não 20 visitantes diferentes.
 
-- **Personagem ou elemento principal:**
-> Visão em primeira pessoa 
-- **Obstáculos ou desafios:**
-> A identificação de personagem, se é uma IA ou um humano
-- **Itens ou objetos de interação (se houver):**
-> Documentos, Botão de aceitar ou rejeitar, dialogo, cénario.
-- **Pontuação, vidas, tempo ou progresso:**
-> O jogo será feito utilizando sistema de vidas. Caso o jogador deixe uma Ia entrar na área segura ou rejeite a entrada de um humano, perderá vida. 
+Todos chegam com aparência humana. Gael não apresenta documento e não consta no cadastro, exigindo atenção ao diálogo.
 
-## 11. Controles previstos
+Bia, Helena e Davi constam apenas na lista de moradores e podem ser mencionados como pessoas que recebem visitas. Eles não entram na fila da recepção.
 
-**Controles:**
+## 11. Elementos e interações
 
-> Mouse para selecionar itens de interação.
+| Elemento | Participação no jogo |
+| --- | --- |
+| Posto e janela | Espaço do atendimento e das animações |
+| Campainha | Chamada do próximo visitante |
+| Interfone | Perguntas, respostas, repetições e pedido de documento |
+| Passe | Conferência de identificação e dados apresentados |
+| Manual | Páginas de códigos permitidos |
+| Lista de moradores | Conferência de nomes, códigos, nascimentos e setores |
+| Calendário e jornal | Referências de data e informações do refúgio |
+| Scanner | Leitura com duração e possibilidade de erro ou resultado inconclusivo |
+| Botões verde e vermelho | Autorização ou recusa da entrada |
+| Livro de ocorrências | Consulta das decisões registradas no turno |
+| Relógio e luminária | Horário do expediente e iluminação interativa |
+| Corações e relatório | Vidas, progresso e resultado |
 
-## 12. Principais dificuldades esperadas
+O scanner leva aproximadamente 2,2 segundos por leitura. Cada tentativa possui 25% de chance de ser inconclusiva, 15% de apresentar um indício incorreto e 60% de apresentar um indício correto. Um resultado regular ou irregular permanece associado ao visitante até o fim do atendimento.
 
-- Dificuldade 1: Criação de vários modelos de personagens e seus diálogos 
-- Dificuldade 2: Adicionar sons, como na interação com o cenário
-- Dificuldade 3: Design de cenário e interação com o mesmo
+O universo utiliza 22/11/2042 como data de referência e inicia o expediente às 08:00. O relatório final registra a data real do computador.
 
-## 13. Escopo mínimo para a entrega final
+## 12. Controles
 
-**Escopo mínimo:**
+- Mouse: objetos, perguntas, páginas e decisões.
+- Clique fora da consulta ou `Esc`: fechar a consulta.
+- Mouse, setas esquerda/direita e `Enter`: navegar pelas instruções.
+- `Esc` nas instruções: encerrar o jogo.
+- `R` no relatório: reiniciar a partida.
+- `B` no relatório: abrir o livro de ocorrências.
 
-> Cenário com os elementos necessários à investigação, dez modelos de personagens com identidades "humano" ou "ia" sorteadas, casos variados, documentos, diálogos, consultas e efeitos sonoros. A partida deverá possuir instruções iniciais, três vidas e meta de dez atendimentos.
+## 13. Organização do código e dos dados
 
-## 14. Possíveis melhorias, caso haja tempo
+`main.py` inicia a aplicação. `src/jogo.py` coordena o cenário, os eventos e os estados da partida. Os demais módulos separam personagens, regras, interface, casos, diálogos, documentos, moradores, scanner, consultas, arquivos, relatório, efeitos, áudio, sprites e instruções.
 
-- Melhoria 1: Adição de mais modelos de personagens, a fim de tornar as partidas mais interessantes e diversificadas
-- Melhoria 2: Criação de novas mecânicas para tornar o o jogo mais desafiador.
-- Melhoria 3: Novas dificuldades e modos de jogo.
+As responsabilidades de cada módulo estão descritas em `src/README.md`. Todos os personagens e fotos são carregados por `personagens.py`.
 
-## 15. Atualização do desenvolvimento — 27/11/2026
+Listas organizam a fila e as páginas; dicionários representam personagens, casos e estados; conjuntos controlam perguntas realizadas. Arquivos JSON armazenam casos, documentos, diálogos, moradores e ocorrências. Cópias dos modelos evitam que um atendimento altere os dados originais.
 
-A versão atual possui sete personagens disponíveis e dez atendimentos
-por partida. Foram integrados documentos individuais, interfone,
-lista de moradores, scanner com falhas, vidas, ocorrências e relatório.
+O histórico é gravado em `data/ocorrencias.json` durante o turno e limpo ao começar uma nova partida. Os testes com `pytest` verificam funções de lógica e a coerência dos dados.
 
-Bia, Helena e Davi foram incluídos como moradores que recebem visitas,
-sem participar da fila da recepção. Novos casos permitem conferir
-os dados do morador citado durante a conversa.
+## 14. Recursos
 
-Foram adicionadas instruções antes do primeiro turno.
-A leitura não entra na duração da partida.
+- Python e Pygame para implementação e interface.
+- Pytest para testes de lógica.
+- Sprites e texturas PNG, efeitos WAV e fonte padrão do Pygame.
+- Git e GitHub para versionamento e colaboração.
+- Roteiro fornecido pelo grupo, com adaptações para os casos.
+- Apoio do ChatGPT em explicações, código, documentação e preparação de recursos.
 
-A organização atual do código está descrita em src/README.md.
+As origens conhecidas e as informações disponíveis sobre licenças estão registradas nos READMEs de `assets/`.
+
+## 15. Dificuldades do desenvolvimento
+
+- Manter documentos, diálogos e casos coerentes para as duas identidades dos 10 personagens.
+- Controlar cliques, consultas e animações sem duplicar decisões ou perder o estado do atendimento.
+- Preparar imagens com transparência, proporção e posicionamento adequados.
+- Integrar sons e efeitos sem interromper o loop.
+- Separar responsabilidades e manter os testes e a documentação consistentes.
+
+## 16. Escopo mínimo e melhorias possíveis
+
+O escopo mínimo compreende cenário funcional, instruções, 10 personagens disponíveis, turno de 10 atendimentos sem repetição, investigação por documentos e diálogos, consultas, scanner com falhas, três vidas, vitória, derrota, relatório, reinício, gravação de ocorrências e testes de lógica.
+
+A versão desenvolvida contempla esses elementos. Melhorias futuras podem incluir novos casos, mais informações de acessibilidade, ajustes de dificuldade e separação adicional do desenho do cenário em módulos. Essas melhorias não são necessárias para concluir o turno atual.
+
+## 17. Originalidade, autoria e referências
+
+O projeto parte do template da disciplina e foi adaptado à proposta de investigação do grupo. That's Not My Neighbor serviu como referência de ambientação e organização visual do posto; o código e os recursos do jogo de referência não são apresentados como produção do grupo.
+
+O roteiro-base foi fornecido no documento `Roteiro- Catch.ia.pdf`, com adaptações e complementos para os atendimentos. Recursos e trechos preparados com apoio do ChatGPT são reconhecidos na documentação.
+
+O grupo declara que não apresenta um jogo integralmente copiado de projetos anteriores, tutoriais ou repositórios prontos. Cada integrante deve compreender e explicar suas contribuições e as principais rotinas implementadas. Recursos externos devem manter os créditos e as informações de licença disponíveis; não é declarada uma licença única para todo o material.

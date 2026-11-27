@@ -80,7 +80,7 @@ No VS Code, selecione o mesmo interpretador em que as dependências foram instal
 - [assets/](assets/README.md): recursos visuais e sonoros usados pela partida.
 - [tests/](tests/README.md): testes automatizados de lógica.
 - [docs/](docs/README.md): planejamento e [proposta](docs/proposta.MD).
-- [referencias/](referencias/README.md): materiais de preparação e arquivos antigos.
+
 
 ## Tempo e arquivos
 

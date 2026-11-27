@@ -6,7 +6,8 @@ from src.consultas import MESES, desenhar_calendario, desenhar_jornal, desenhar_
 from src.sprites import carregar_sprites_interface
 
 from src.audio import carregar_audio, tocar_som
-from src.funcoes import desenhar_relogio, avaliar_decisao, desenhar_vidas
+from src.interface import desenhar_relogio, desenhar_vidas
+from src.regras import avaliar_decisao
 from src.dados import salvar_ocorrencias
 
 from src.config import META_ATENDIMENTOS
